@@ -1,76 +1,125 @@
-import type { Intervention } from '@/types';
+'use client';
+
+import { useState, useEffect } from 'react';
+import { Loader2, AlertCircle } from 'lucide-react';
 
 interface InterventionTabProps {
   patientId: string;
 }
 
-const mockInterventions: Intervention[] = [
-  {
-    id: 1,
-    title: 'Perbaikan Sanitasi Lingkungan',
-    description:
-      'Koordinasi dengan program STBM untuk perbaikan fasilitas toilet dan pengelolaan sampah',
-    color: 'green',
-  },
-  {
-    id: 2,
-    title: 'Pemberian Makanan Tambahan (PMT)',
-    description:
-      'PMT intensif tinggi protein 2x sehari, monitoring berat badan mingguan',
-    color: 'blue',
-  },
-  {
-    id: 3,
-    title: 'Edukasi Orang Tua',
-    description:
-      'Konseling gizi dan pola asuh, fokus pada pentingnya ASI eksklusif dan MP-ASI berkualitas',
-    color: 'orange',
-  },
-  {
-    id: 4,
-    title: 'Pemantauan Pertumbuhan Intensif',
-    description:
-      'Kunjungan rumah bulanan untuk memantau perkembangan dan memberikan dukungan langsung',
-    color: 'blue',
-  },
-  {
-    id: 5,
-    title: 'Rujukan ke Spesialis Gizi',
-    description:
-      'Konsultasi dengan ahli gizi untuk penyusunan menu makanan sesuai kebutuhan anak',
-    color: 'green',
-  },
-];
+interface Intervention {
+  judul: string;
+  deskripsi: string;
+  prioritas: 'Prioritas Tinggi' | 'Prioritas Sedang' | 'Prioritas Rendah';
+  icon: string;
+  dayLabel?: string;
+}
 
 export function InterventionTab({ patientId }: InterventionTabProps) {
-  const getColorClasses = (color: string) => {
-    switch (color) {
-      case 'green':
+  const [interventions, setInterventions] = useState<Intervention[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchInterventions();
+  }, [patientId]);
+
+  const fetchInterventions = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`/api/bayi/${patientId}/shap-analysis`);
+      const result = await response.json();
+
+      if (result.success && result.hasAnalysis) {
+        setInterventions(result.data.insights.rekomendasiTindakan || []);
+      } else {
+        setInterventions([]);
+      }
+    } catch (err) {
+      console.error('Error fetching interventions:', err);
+      setError('Gagal memuat rekomendasi intervensi');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getColorClasses = (prioritas: string) => {
+    switch (prioritas) {
+      case 'Prioritas Tinggi':
         return {
-          bg: 'bg-green-50',
-          border: 'border-green-200',
-          badge: 'bg-green-500',
+          bg: 'bg-red-50',
+          border: 'border-red-200',
+          badge: 'bg-red-500',
+          text: 'text-red-700',
         };
-      case 'blue':
-        return {
-          bg: 'bg-blue-50',
-          border: 'border-blue-200',
-          badge: 'bg-blue-500',
-        };
-      case 'orange':
+      case 'Prioritas Sedang':
         return {
           bg: 'bg-orange-50',
           border: 'border-orange-200',
           badge: 'bg-orange-500',
+          text: 'text-orange-700',
+        };
+      case 'Prioritas Rendah':
+        return {
+          bg: 'bg-green-50',
+          border: 'border-green-200',
+          badge: 'bg-green-500',
+          text: 'text-green-700',
         };
       default:
         return {
           bg: 'bg-gray-50',
           border: 'border-gray-200',
           badge: 'bg-gray-500',
+          text: 'text-gray-700',
         };
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        <span className="ml-3 text-gray-600">Memuat rekomendasi intervensi...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+        <div className="flex items-center space-x-3">
+          <AlertCircle className="w-6 h-6 text-red-600" />
+          <p className="text-red-700">{error}</p>
+        </div>
+        <button
+          onClick={fetchInterventions}
+          className="mt-3 text-sm text-red-600 hover:text-red-700 font-medium"
+        >
+          Coba Lagi
+        </button>
+      </div>
+    );
+  }
+
+  if (interventions.length === 0) {
+    return (
+      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+        <div className="flex items-center space-x-3 mb-3">
+          <AlertCircle className="w-6 h-6 text-yellow-600" />
+          <h5 className="font-semibold text-gray-900">
+            Belum Ada Rekomendasi Intervensi
+          </h5>
+        </div>
+        <p className="text-sm text-gray-700 mb-4">
+          Rekomendasi intervensi akan muncul setelah analisis SHAP dilakukan. 
+          Silakan generate analisis SHAP terlebih dahulu di tab "Analisis AI (SHAP)".
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -84,28 +133,36 @@ export function InterventionTab({ patientId }: InterventionTabProps) {
         </p>
       </div>
 
-      {mockInterventions.map((intervention) => {
-        const colors = getColorClasses(intervention.color);
+      {interventions.map((intervention, index) => {
+        const colors = getColorClasses(intervention.prioritas);
         return (
           <div
-            key={intervention.id}
+            key={index}
             className={`${colors.bg} border ${colors.border} rounded-lg p-4`}
           >
             <div className="flex items-start space-x-3">
               <div
-                className={`w-6 h-6 ${colors.badge} rounded-full flex items-center justify-center flex-shrink-0`}
+                className={`w-10 h-10 ${colors.badge} rounded-full flex items-center justify-center flex-shrink-0`}
               >
-                <span className="text-white text-xs font-bold">
-                  {intervention.id}
-                </span>
+                <span className="text-2xl">{intervention.icon}</span>
               </div>
-              <div>
-                <p className="font-semibold text-gray-900">
-                  {intervention.title}
+              <div className="flex-1">
+                <div className="flex items-start justify-between mb-2">
+                  <p className="font-semibold text-gray-900">
+                    {intervention.judul}
+                  </p>
+                  <span className={`text-xs font-semibold px-2 py-1 rounded ${colors.badge} text-white ml-2`}>
+                    {intervention.prioritas}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-700 mb-2">
+                  {intervention.deskripsi}
                 </p>
-                <p className="text-sm text-gray-600 mt-1">
-                  {intervention.description}
-                </p>
+                {intervention.dayLabel && (
+                  <span className="inline-block text-xs font-medium bg-white px-2 py-1 rounded border border-gray-200">
+                    Timeline: {intervention.dayLabel}
+                  </span>
+                )}
               </div>
             </div>
           </div>

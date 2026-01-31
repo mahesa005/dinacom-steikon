@@ -171,4 +171,53 @@ export async function getStatistikHasilAnalisis() {
   };
 }
 
+// ==================== SHAP ANALYSIS HELPERS ====================
+
+/**
+ * Get latest SHAP analysis for a patient with parsed JSON
+ */
+export async function getLatestSHAPAnalysis(bayiId: string) {
+  const analysis = await getLatestHasilAnalisis(bayiId, 'SHAP_ANALYSIS');
+  
+  if (!analysis) {
+    return null;
+  }
+
+  try {
+    return {
+      id: analysis.id,
+      createdAt: analysis.createdAt,
+      tingkatKepercayaan: analysis.tingkatKepercayaan,
+      shapResult: JSON.parse(analysis.dataInput),
+      insights: JSON.parse(analysis.hasilPrediksi),
+      rekomendasiTindakan: analysis.rekomendasiTindakan,
+      catatanAI: analysis.catatanAI,
+    };
+  } catch (error) {
+    console.error('Error parsing SHAP analysis JSON:', error);
+    return null;
+  }
+}
+
+/**
+ * Create SHAP analysis record with proper JSON stringification
+ */
+export async function createSHAPAnalysis(data: {
+  bayiId: string;
+  shapResult: any;
+  insights: any;
+  confidence: number;
+}) {
+  return await createHasilAnalisis({
+    bayiId: data.bayiId,
+    jenisAnalisis: 'SHAP_ANALYSIS',
+    hasilPrediksi: JSON.stringify(data.insights),
+    tingkatKepercayaan: data.confidence,
+    dataInput: JSON.stringify(data.shapResult),
+    rekomendasiTindakan: data.insights.rekomendasiTindakan
+      ?.map((r: any) => `${r.judul}: ${r.deskripsi}`)
+      .join('\n\n'),
+    catatanAI: `Analisis SHAP - ${data.insights.statusRisiko?.levelRisiko || 'Unknown'}`,
+  });
+}
 

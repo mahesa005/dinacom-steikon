@@ -61,9 +61,10 @@ export async function createBayi(data: {
 
 // ==================== READ ====================
 
-export async function getBayiById(id: string) {
-  return await prisma.bayi.findUnique({
-    where: { id },
+export async function getBayiById(nomorPasienOrId: string) {
+  // Try to find by nomorPasien first, then by id
+  let bayi = await prisma.bayi.findUnique({
+    where: { nomorPasien: nomorPasienOrId },
     include: {
       createdBy: {
         select: {
@@ -75,10 +76,33 @@ export async function getBayiById(id: string) {
         orderBy: {
           tanggalKontrol: 'desc',
         },
-        take: 5, // 5 history terakhir
+        take: 5,
       },
     },
   });
+
+  // If not found by nomorPasien, try by id
+  if (!bayi) {
+    bayi = await prisma.bayi.findUnique({
+      where: { id: nomorPasienOrId },
+      include: {
+        createdBy: {
+          select: {
+            username: true,
+            namaPuskesmas: true,
+          },
+        },
+        historyKontrol: {
+          orderBy: {
+            tanggalKontrol: 'desc',
+          },
+          take: 5,
+        },
+      },
+    });
+  }
+
+  return bayi;
 }
 
 export async function getBayiByNomorPasien(nomorPasien: string) {
@@ -122,6 +146,46 @@ export async function getAllBayi(filters?: {
           tanggalKontrol: 'desc',
         },
         take: 1, // Hanya kontrol terakhir
+      },
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+}
+
+export async function getAllBayiForChatbot(filters?: {
+  search?: string;
+}) {
+  const where: any = {};
+
+  if (filters?.search) {
+    where.OR = [
+      { nama: { contains: filters.search, mode: 'insensitive' } },
+      { nomorPasien: { contains: filters.search, mode: 'insensitive' } },
+      { namaIbu: { contains: filters.search, mode: 'insensitive' } },
+      { namaAyah: { contains: filters.search, mode: 'insensitive' } },
+    ];
+  }
+
+  return await prisma.bayi.findMany({
+    where,
+    include: {
+      createdBy: {
+        select: {
+          username: true,
+          namaPuskesmas: true,
+        },
+      },
+      historyKontrol: {
+        orderBy: {
+          tanggalKontrol: 'desc',
+        },
+      },
+      hasilAnalisis: {
+        orderBy: {
+          createdAt: 'desc',
+        },
       },
     },
     orderBy: {
