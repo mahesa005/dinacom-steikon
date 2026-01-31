@@ -179,7 +179,9 @@ export function PatientTable({
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center space-x-2">
-                      <span className="text-lg">{patient.mainFactorIcon}</span>
+                      {patient.mainFactorIcon && (
+                        <span className="text-lg">{patient.mainFactorIcon}</span>
+                      )}
                       <span className="text-sm text-gray-700">
                         {patient.mainFactor}
                       </span>

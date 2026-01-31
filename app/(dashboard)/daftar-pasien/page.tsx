@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, Suspense, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/Header';
 import { Button } from '@/components/ui/Button';
@@ -19,135 +19,6 @@ import {
 } from 'lucide-react';
 import type { Patient } from '@/types';
 
-// Mock data
-const mockPatients: Patient[] = [
-  {
-    id: 'P001',
-    name: 'Ahmad Fadhil',
-    birthDate: '30 Juli 2025',
-    ageMonths: 6,
-    gender: 'male',
-    birthWeight: 2.8,
-    birthLength: 47,
-    parentName: 'Siti Nurhaliza',
-    parentPhone: '0812-3456-7890',
-    parentEducation: 'SMP',
-    parentHeight: 148,
-    fatherName: 'Ahmad Dhani',
-    fatherEducation: 'SMA',
-    fatherHeight: 165,
-    riskLevel: 'HIGH',
-    riskPercentage: 78,
-    mainFactor: 'Sanitasi',
-    mainFactorIcon: '🚽',
-    lastCheckup: '8 Jan 2026',
-    nextCheckup: '15 Jan 2026',
-    toiletFacility: 'poor',
-    wasteManagement: 'poor',
-    waterAccess: 'adequate',
-  },
-  {
-    id: 'P002',
-    name: 'Zahra Amelia',
-    birthDate: '30 Sep 2025',
-    ageMonths: 4,
-    gender: 'female',
-    birthWeight: 3.0,
-    birthLength: 49,
-    parentName: 'Dewi Kartika',
-    parentPhone: '0813-9876-5432',
-    parentEducation: 'SMA',
-    parentHeight: 155,
-    fatherName: 'Budi Santoso',
-    fatherEducation: 'S1',
-    fatherHeight: 170,
-    riskLevel: 'MEDIUM',
-    riskPercentage: 45,
-    mainFactor: 'Pend. Ibu',
-    mainFactorIcon: '👩',
-    lastCheckup: '10 Jan 2026',
-    nextCheckup: '10 Feb 2026',
-    toiletFacility: 'adequate',
-    wasteManagement: 'adequate',
-    waterAccess: 'good',
-  },
-  {
-    id: 'P003',
-    name: 'Muhammad Rizki',
-    birthDate: '30 Mei 2025',
-    ageMonths: 8,
-    gender: 'male',
-    birthWeight: 3.2,
-    birthLength: 50,
-    parentName: 'Ani Suryani',
-    parentPhone: '0814-5678-1234',
-    parentEducation: 'S1',
-    parentHeight: 160,
-    fatherName: 'Rudi Hartono',
-    fatherEducation: 'S1',
-    fatherHeight: 172,
-    riskLevel: 'LOW',
-    riskPercentage: 18,
-    mainFactor: 'Normal',
-    mainFactorIcon: '✅',
-    lastCheckup: '5 Jan 2026',
-    nextCheckup: '9 Feb 2026',
-    toiletFacility: 'good',
-    wasteManagement: 'good',
-    waterAccess: 'good',
-  },
-  {
-    id: 'P004',
-    name: 'Aisha Putri',
-    birthDate: '30 Agu 2025',
-    ageMonths: 5,
-    gender: 'female',
-    birthWeight: 2.6,
-    birthLength: 46,
-    parentName: 'Rina Marlina',
-    parentPhone: '0813-8765-4321',
-    parentEducation: 'SD',
-    parentHeight: 145,
-    fatherName: 'Joko Widodo',
-    fatherEducation: 'SMP',
-    fatherHeight: 160,
-    riskLevel: 'HIGH',
-    riskPercentage: 82,
-    mainFactor: 'Pendidikan Ibu',
-    mainFactorIcon: '👩',
-    lastCheckup: '3 Jan 2026',
-    nextCheckup: '3 Feb 2026',
-    toiletFacility: 'poor',
-    wasteManagement: 'poor',
-    waterAccess: 'adequate',
-  },
-  {
-    id: 'P005',
-    name: 'Dimas Pratama',
-    birthDate: '15 Jun 2025',
-    ageMonths: 7,
-    gender: 'male',
-    birthWeight: 3.1,
-    birthLength: 48,
-    parentName: 'Lina Sari',
-    parentPhone: '0815-1234-5678',
-    parentEducation: 'SMA',
-    parentHeight: 158,
-    fatherName: 'Agus Pratama',
-    fatherEducation: 'SMA',
-    fatherHeight: 168,
-    riskLevel: 'MEDIUM',
-    riskPercentage: 52,
-    mainFactor: 'Gizi',
-    mainFactorIcon: '🍎',
-    lastCheckup: '12 Jan 2026',
-    nextCheckup: '12 Feb 2026',
-    toiletFacility: 'adequate',
-    wasteManagement: 'good',
-    waterAccess: 'good',
-  },
-];
-
 function DaftarPasienContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -156,10 +27,93 @@ function DaftarPasienContent() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [patients, setPatients] = useState<Patient[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Handle filter from URL params
+  useEffect(() => {
+    const filterParam = searchParams.get('filter');
+    if (filterParam) {
+      setStatusFilter(filterParam);
+    }
+  }, [searchParams]);
+
+  // Fetch patients from API
+  useEffect(() => {
+    fetchPatients();
+  }, [searchQuery]);
+
+  const fetchPatients = async () => {
+    setIsLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (searchQuery) params.append('search', searchQuery);
+
+      const response = await fetch(`/api/bayi?${params.toString()}`);
+      const result = await response.json();
+
+      if (result.success) {
+        // Map API data to Patient type
+        const mappedPatients: Patient[] = result.data.map((bayi: any) => {
+          // Calculate age in months
+          const birthDate = new Date(bayi.tanggalLahir);
+          const today = new Date();
+          const ageMonths = Math.floor(
+            (today.getTime() - birthDate.getTime()) / (1000 * 60 * 60 * 24 * 30)
+          );
+
+          // Get latest control data if available
+          const latestControl = bayi.historyKontrol?.[0];
+
+          return {
+            id: bayi.nomorPasien,
+            name: bayi.nama,
+            birthDate: new Date(bayi.tanggalLahir).toLocaleDateString('id-ID', {
+              day: 'numeric',
+              month: 'short',
+              year: 'numeric',
+            }),
+            ageMonths,
+            gender: bayi.jenisKelamin === 'LAKI-LAKI' ? 'male' : 'female',
+            birthWeight: bayi.beratLahir,
+            birthLength: bayi.panjangLahir,
+            parentName: bayi.namaIbu,
+            parentPhone: bayi.nomorHpOrangTua,
+            parentEducation: 'SMA', // TODO: Add to schema
+            parentHeight: 155, // TODO: Add to schema
+            fatherName: bayi.namaAyah,
+            fatherEducation: 'SMA', // TODO: Add to schema
+            fatherHeight: 170, // TODO: Add to schema
+            riskLevel: latestControl?.statusStunting || 'MEDIUM',
+            riskPercentage: 50, // TODO: Calculate from AI analysis
+            mainFactor: 'Sanitasi',
+            mainFactorIcon: '',
+            lastCheckup: latestControl
+              ? new Date(latestControl.tanggalKontrol).toLocaleDateString('id-ID', {
+                  day: 'numeric',
+                  month: 'short',
+                  year: 'numeric',
+                })
+              : '-',
+            nextCheckup: '-', // TODO: Calculate next checkup
+            toiletFacility: 'adequate', // TODO: Add to schema
+            wasteManagement: 'adequate', // TODO: Add to schema
+            waterAccess: 'good', // TODO: Add to schema
+          };
+        });
+
+        setPatients(mappedPatients);
+      }
+    } catch (error) {
+      console.error('Error fetching patients:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // URL-based state for patient detail modal
   const selectedPatientId = searchParams.get('patient');
-  const selectedPatient = mockPatients.find((p) => p.id === selectedPatientId);
+  const selectedPatient = patients.find((p) => p.id === selectedPatientId);
 
   const openPatientDetail = (patient: Patient) => {
     router.push(`/daftar-pasien?patient=${patient.id}`, { scroll: false });
@@ -182,11 +136,79 @@ function DaftarPasienContent() {
     }
   };
 
+  // Calculate stats from actual data
   const stats = {
-    total: 150,
-    high: 24,
-    medium: 38,
-    low: 88,
+    total: patients.length,
+    high: patients.filter((p) => p.riskLevel === 'HIGH').length,
+    medium: patients.filter((p) => p.riskLevel === 'MEDIUM').length,
+    low: patients.filter((p) => p.riskLevel === 'LOW').length,
+  };
+
+  // Filter patients based on search and status
+  const filteredPatients = patients.filter((patient) => {
+    const matchesSearch =
+      searchQuery === '' ||
+      patient.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      patient.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      patient.parentName.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesStatus =
+      statusFilter === 'all' ||
+      (statusFilter === 'high' && patient.riskLevel === 'HIGH') ||
+      (statusFilter === 'medium' && patient.riskLevel === 'MEDIUM') ||
+      (statusFilter === 'low' && patient.riskLevel === 'LOW');
+
+    return matchesSearch && matchesStatus;
+  });
+
+  // Sort patients
+  const sortedPatients = [...filteredPatients].sort((a, b) => {
+    switch (sortBy) {
+      case 'newest':
+        return b.id.localeCompare(a.id);
+      case 'risk':
+        const riskOrder = { HIGH: 3, MEDIUM: 2, LOW: 1 };
+        return riskOrder[b.riskLevel as keyof typeof riskOrder] - riskOrder[a.riskLevel as keyof typeof riskOrder];
+      case 'name':
+        return a.name.localeCompare(b.name);
+      case 'checkup':
+        return a.lastCheckup.localeCompare(b.lastCheckup);
+      default:
+        return 0;
+    }
+  });
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  const totalPages = Math.ceil(sortedPatients.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedPatients = sortedPatients.slice(startIndex, endIndex);
+
+  // Export function
+  const handleExport = () => {
+    const csvContent = [
+      ['ID', 'Nama', 'Usia (bulan)', 'Orang Tua', 'Kontrol Terakhir', 'Status Risiko'],
+      ...filteredPatients.map((p) => [
+        p.id,
+        p.name,
+        p.ageMonths.toString(),
+        p.parentName,
+        p.lastCheckup,
+        `${p.riskLevel} (${p.riskPercentage}%)`,
+      ]),
+    ]
+      .map((row) => row.join(','))
+      .join('\\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `daftar-pasien-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -321,7 +343,10 @@ function DaftarPasienContent() {
                 <option value="checkup">Urutkan: Kontrol Terdekat</option>
                 <option value="name">Urutkan: Nama A-Z</option>
               </select>
-              <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition flex items-center space-x-2 text-sm font-medium">
+              <button
+                onClick={handleExport}
+                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition flex items-center space-x-2 text-sm font-medium"
+              >
                 <Download className="w-4 h-4" />
                 <span>Export</span>
               </button>
@@ -357,7 +382,22 @@ function DaftarPasienContent() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {mockPatients.map((patient) => (
+                {isLoading ? (
+                  <tr>
+                    <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
+                      Memuat data...
+                    </td>
+                  </tr>
+                ) : paginatedPatients.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
+                      {searchQuery || statusFilter !== 'all' 
+                        ? 'Tidak ada data yang sesuai dengan filter' 
+                        : 'Belum ada data pasien'}
+                    </td>
+                  </tr>
+                ) : (
+                  paginatedPatients.map((patient) => (
                   <tr
                     key={patient.id}
                     className="hover:bg-gray-50 cursor-pointer transition"
@@ -407,7 +447,8 @@ function DaftarPasienContent() {
                       </button>
                     </td>
                   </tr>
-                ))}
+                  ))
+                )}
               </tbody>
             </table>
           </div>
@@ -415,28 +456,61 @@ function DaftarPasienContent() {
           {/* Pagination */}
           <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
             <div className="text-sm text-gray-600">
-              Menampilkan <span className="font-semibold">1-{mockPatients.length}</span>{' '}
-              dari <span className="font-semibold">{stats.total}</span> pasien
+              Menampilkan{' '}
+              <span className="font-semibold">
+                {startIndex + 1}-{Math.min(endIndex, sortedPatients.length)}
+              </span>{' '}
+              dari <span className="font-semibold">{sortedPatients.length}</span> pasien
+              {searchQuery || statusFilter !== 'all' ? ' (filtered)' : ''}
             </div>
             <div className="flex items-center space-x-2">
-              <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm flex items-center">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+              >
                 <ChevronLeft className="w-4 h-4 mr-1" />
                 Previous
               </button>
-              <button className="px-3 py-1 bg-blue-600 text-white rounded text-sm">
-                1
-              </button>
-              <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm">
-                2
-              </button>
-              <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm">
-                3
-              </button>
-              <span className="text-gray-500">...</span>
-              <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm">
-                19
-              </button>
-              <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm flex items-center">
+              
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                const pageNum = i + 1;
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => setCurrentPage(pageNum)}
+                    className={`px-3 py-1 rounded text-sm $\{
+                      currentPage === pageNum
+                        ? 'bg-blue-600 text-white'
+                        : 'border border-gray-300 hover:bg-gray-50'
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+              
+              {totalPages > 5 && (
+                <>
+                  <span className="text-gray-500">...</span>
+                  <button
+                    onClick={() => setCurrentPage(totalPages)}
+                    className={`px-3 py-1 rounded text-sm $\{
+                      currentPage === totalPages
+                        ? 'bg-blue-600 text-white'
+                        : 'border border-gray-300 hover:bg-gray-50'
+                    }`}
+                  >
+                    {totalPages}
+                  </button>
+                </>
+              )}
+              
+              <button
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+              >
                 Next
                 <ChevronRight className="w-4 h-4 ml-1" />
               </button>
