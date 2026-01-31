@@ -8,7 +8,7 @@ import { UrgentActionsCard } from '@/components/dashboard/UrgentActionsCard';
 import { AIInsightCard } from '@/components/dashboard/AIInsightCard';
 import { RiskDistributionChart } from '@/components/dashboard/RiskDistributionChart';
 import { PatientTable } from '@/components/dashboard/PatientTable';
-import { AlertTriangle, Eye, CheckCircle, Calendar } from 'lucide-react';
+import { AlertTriangle, Eye, CheckCircle, Users } from 'lucide-react';
 import type { Patient } from '@/types';
 
 export default function DashboardPage() {
@@ -17,27 +17,11 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [aiInsight, setAiInsight] = useState<string>('');
   const [isLoadingInsight, setIsLoadingInsight] = useState(true);
-  const [todayKontrolCount, setTodayKontrolCount] = useState(0);
 
   useEffect(() => {
     fetchPatients();
     fetchAIInsight();
-    fetchTodayKontrol();
   }, []);
-
-  const fetchTodayKontrol = async () => {
-    try {
-      const today = new Date().toISOString().split('T')[0];
-      const response = await fetch(`/api/jadwal-pemeriksaan?tanggal=${today}`);
-      const result = await response.json();
-
-      if (result.success) {
-        setTodayKontrolCount(result.count || 0);
-      }
-    } catch (error) {
-      console.error('Error fetching today kontrol:', error);
-    }
-  };
 
   const fetchAIInsight = async () => {
     setIsLoadingInsight(true);
@@ -94,27 +78,44 @@ export default function DashboardPage() {
           let mainFactor = '-';
 
           if (latestAnalysis) {
-            // Use AI analysis confidence as risk percentage
-            riskPercentage = Math.round((latestAnalysis.tingkatKepercayaan || 0.5) * 100);
-
-            // Parse hasilPrediksi to get risk level
+            // Parse hasilPrediksi to get skorRisiko and levelRisiko
             try {
               const hasilPrediksi = JSON.parse(latestAnalysis.hasilPrediksi || '{}');
-              if (hasilPrediksi.risk_level) {
-                riskLevel = hasilPrediksi.risk_level;
-              } else if (hasilPrediksi.is_stunting !== undefined) {
-                // Fallback: determine from is_stunting and stunting_risk
-                const stuntingRisk = hasilPrediksi.stunting_risk || 0;
-                if (hasilPrediksi.is_stunting || stuntingRisk > 70) {
+              
+              // Get skorRisiko from hasilPrediksi
+              if (hasilPrediksi.statusRisiko?.skorRisiko) {
+                riskPercentage = hasilPrediksi.statusRisiko.skorRisiko;
+              } else {
+                // Fallback to tingkatKepercayaan
+                riskPercentage = Math.round((latestAnalysis.tingkatKepercayaan || 0.5) * 100);
+              }
+
+              // Get levelRisiko from hasilPrediksi
+              if (hasilPrediksi.statusRisiko?.levelRisiko) {
+                const level = hasilPrediksi.statusRisiko.levelRisiko;
+                if (level.includes('Tinggi')) {
                   riskLevel = 'HIGH';
-                } else if (stuntingRisk < 30) {
+                } else if (level.includes('Rendah')) {
+                  riskLevel = 'LOW';
+                } else {
+                  riskLevel = 'MEDIUM';
+                }
+              } else {
+                // Fallback: determine from riskPercentage
+                if (riskPercentage > 75) {
+                  riskLevel = 'HIGH';
+                } else if (riskPercentage < 35) {
                   riskLevel = 'LOW';
                 } else {
                   riskLevel = 'MEDIUM';
                 }
               }
-            } catch {
-              // If parsing fails, use default
+            } catch (error) {
+              // Fallback to tingkatKepercayaan if parsing fails
+              riskPercentage = Math.round((latestAnalysis.tingkatKepercayaan || 0.5) * 100);
+              if (riskPercentage > 75) riskLevel = 'HIGH';
+              else if (riskPercentage < 35) riskLevel = 'LOW';
+              else riskLevel = 'MEDIUM';
             }
 
             // Try to extract main factor from dataInput (SHAP analysis)
@@ -221,6 +222,13 @@ export default function DashboardPage() {
         {/* Stats Cards Row */}
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatsCard
+            title="Total Pasien"
+            value={totalPatients}
+            icon={<Users className="w-6 h-6" />}
+            variant="info"
+            subtitle="Jumlah seluruh pasien terdaftar"
+          />
+          <StatsCard
             title="Risiko Tinggi"
             value={highRiskPatients.length}
             icon={<AlertTriangle className="w-6 h-6" />}
@@ -241,13 +249,6 @@ export default function DashboardPage() {
             icon={<CheckCircle className="w-6 h-6" />}
             variant="success"
             subtitle={`${riskDistributionData.low.percentage}% dari total pasien`}
-          />
-          <StatsCard
-            title="Kontrol Hari Ini"
-            value={todayKontrolCount}
-            icon={<Calendar className="w-6 h-6" />}
-            variant="info"
-            subtitle={todayKontrolCount > 0 ? `${todayKontrolCount} jadwal pemeriksaan` : "Tidak ada kontrol hari ini"}
           />
         </section>
 
