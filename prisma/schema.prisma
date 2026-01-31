@@ -12,3 +12,110 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+// Tabel User (Petugas Puskesmas)
+model User {
+  id            String   @id @default(cuid())
+  username      String   @unique
+  password      String
+  namaPuskesmas String
+  provinsi      String
+  kota          String   // Kota/Kabupaten
+  kecamatan     String
+  kelurahan     String   // Kelurahan/Desa
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relasi
+  bayiRegistered Bayi[]
+  
+  @@map("users")
+}
+
+// Tabel Bayi/Pasien
+model Bayi {
+  id                String    @id @default(cuid())
+  nomorPasien       String    @unique // ID Pasien unik
+  nik               String?   @unique // NIK bayi (optional, mungkin belum punya)
+  nama              String
+  tanggalLahir      DateTime
+  tempatLahir       String
+  jenisKelamin      String    // "LAKI-LAKI" atau "PEREMPUAN"
+  
+  // Data Kelahiran
+  beratLahir        Float     // dalam gram
+  panjangLahir      Float     // dalam cm
+  
+  // Data Orang Tua
+  namaIbu           String
+  namaAyah          String
+  nomorHpOrangTua   String
+  alamat            String
+  
+  // Data Tambahan
+  golonganDarah     String?   // A, B, AB, O
+
+  // Metadata
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  createdById       String
+  createdBy         User      @relation(fields: [createdById], references: [id])
+  
+  // Relasi
+  historyKontrol    HistoryKontrol[]
+  hasilAnalisis     HasilAnalisisAI[]
+  
+  @@map("bayi")
+}
+
+// Tabel History Kontrol (Pemeriksaan Berkala)
+model HistoryKontrol {
+  id                  String    @id @default(cuid())
+  bayiId              String
+  bayi                Bayi      @relation(fields: [bayiId], references: [id], onDelete: Cascade)
+  
+  // Data Kontrol
+  tanggalKontrol      DateTime
+  umurBulan           Int       // Umur dalam bulan saat kontrol
+  beratBadan          Float     // dalam gram
+  tinggiBadan         Float     // dalam cm
+  
+  // Status Gizi
+  statusGizi          String?   // Normal, Gizi Kurang, Gizi Buruk, dll
+  statusStunting      String?   // Normal, Stunting, Severely Stunting
+  
+  // Keluhan dan Catatan
+  catatanTambahan     String?
+  
+  // Metadata
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  
+  @@map("history_kontrol")
+  @@index([bayiId])
+  @@index([tanggalKontrol])
+}
+
+// Tabel Hasil Analisis AI
+model HasilAnalisisAI {
+  id                    String         @id @default(cuid())
+  bayiId                String
+  bayi                  Bayi           @relation(fields: [bayiId], references: [id], onDelete: Cascade)
+
+  // Hasil Analisis
+  jenisAnalisis         String         // "PREDIKSI_STUNTING", "REKOMENDASI_GIZI", dll
+  hasilPrediksi         String         // Hasil dari AI
+  tingkatKepercayaan    Float?         // Confidence score (0-1)
+  
+  // Detail Analisis
+  dataInput             String         // JSON string berisi data yang digunakan untuk analisis
+  rekomendasiTindakan   String?        // Rekomendasi dari AI
+  catatanAI             String?        // Catatan tambahan dari AI
+  
+  createdAt             DateTime       @default(now())
+  
+  @@map("hasil_analisis_ai")
+  @@index([bayiId])
+  @@index([createdAt])
+}
