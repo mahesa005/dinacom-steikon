@@ -91,10 +91,6 @@ export function PatientDetailModal({
               >
                 {getRiskLabel(patient.riskLevel)}
               </span>
-              <p className="text-3xl font-bold mt-2">
-                {patient.riskPercentage}%
-              </p>
-              <p className="text-teal-100 text-sm">Probabilitas Stunting</p>
             </div>
           </div>
         </div>

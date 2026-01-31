@@ -261,7 +261,10 @@ Berikan analisis dalam format JSON berikut (sesuai UI yang diminta):
     {
       "nama": "Nama Faktor (contoh: Tinggi Ibu, Pendapatan Keluarga, Kunjungan ANC)",
       "nilai": "Nilai yang mudah dipahami (contoh: '150 cm (pendek, risiko)', '180 cm (tinggi, sangat baik)', '< 1 juta', '2 kali (< 6 kali)')",
-      "persentasePengaruh": 15,  // ⚠️ PENTING: Gunakan nilai ASLI dari SHAP (bisa POSITIF atau NEGATIF). Positif = meningkatkan risiko, Negatif = menurunkan risiko. Konversi ke persentase relatif (sum absolute = 100)
+      "persentasePengaruh": 15,  // ⚠️ CRITICAL: WAJIB PERTAHANKAN TANDA +/- DARI SHAP!
+                                 // Jika SHAP = +0.3 → persentasePengaruh HARUS POSITIF (contoh: 25.5)
+                                 // Jika SHAP = -0.4 → persentasePengaruh HARUS NEGATIF (contoh: -32.8)
+                                 // JANGAN GUNAKAN ABSOLUTE VALUE! Tanda sangat penting untuk UI filtering!
       "penjelasan": "1-2 kalimat penjelasan faktor ini. WAJIB sebutkan apakah faktor ini MENINGKATKAN atau MENURUNKAN risiko sesuai tanda SHAP",
       "mengapaIniPenting": "1-2 kalimat mengapa faktor ini berkontribusi pada risiko stunting"
     }
@@ -279,8 +282,12 @@ Berikan analisis dalam format JSON berikut (sesuai UI yang diminta):
 
 PANDUAN KHUSUS:
 1. **Faktor Penyebab**: Urutkan dari persentase pengaruh tertinggi (top 3-6 faktor)
-   - Persentase dihitung dari absolute SHAP value relatif terhadap total
-   - **WAJIB**: Sebutkan apakah faktor ini "meningkatkan" atau "menurunkan" risiko berdasarkan TANDA SHAP
+   - Persentase dihitung dari SHAP value relatif terhadap total absolute SHAP
+   - **CRITICAL**: PERTAHANKAN TANDA +/- DARI SHAP VALUE!
+     * Jika SHAP = +0.25 (meningkatkan risiko) → persentasePengaruh = 30.5 (POSITIF)
+     * Jika SHAP = -0.35 (menurunkan risiko) → persentasePengaruh = -42.8 (NEGATIF)
+     * CONTOH BENAR: {"nama": "Tinggi Ibu", "persentasePengaruh": -34.9} ✅
+     * CONTOH SALAH: {"nama": "Tinggi Ibu", "persentasePengaruh": 34.9} ❌ (kehilangan tanda -)
    - Format nilai: Sebutkan nilai actual + interpretasi (contoh: "150 cm (kurang dari ideal)", "174 cm (tinggi, baik)")
    - Contoh penjelasan BENAR:
      * SHAP +0.5 → "Tinggi ayah 140 cm yang tergolong pendek menjadi FAKTOR RISIKO yang meningkatkan kemungkinan stunting"

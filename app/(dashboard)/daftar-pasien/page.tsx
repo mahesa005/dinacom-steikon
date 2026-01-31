@@ -493,7 +493,6 @@ function DaftarPasienContent() {
                           : patient.riskLevel === 'MEDIUM'
                           ? 'Sedang'
                           : 'Rendah'}{' '}
-                        ({patient.riskPercentage}%)
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">

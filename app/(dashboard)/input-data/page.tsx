@@ -398,27 +398,70 @@ export default function InputDataPage() {
                 <Card className="p-8">
                   <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
                     <AlertTriangle className="w-7 h-7 text-orange-600" />
-                    Faktor Risiko Terdeteksi
+                    Analisis Faktor
                   </h3>
-                  <div className="space-y-4">
-                    {analysisResult.analisisAI.insights.faktorPenyebab.map((faktor, idx) => (
-                      <div key={idx} className="border-l-4 border-orange-400 pl-6 py-4 bg-gray-50 rounded-r-lg">
-                        <div className="flex justify-between items-start mb-2">
-                          <h4 className="font-bold text-lg text-gray-900">{faktor.nama}</h4>
-                          <span className="text-sm font-semibold px-3 py-1 bg-orange-100 text-orange-700 rounded-full">
-                            {faktor.persentasePengaruh.toFixed(1)}%
-                          </span>
-                        </div>
-                        <p className="text-sm text-gray-600 mb-2">
-                          <span className="font-medium">Nilai:</span> {faktor.nilai}
-                        </p>
-                        <p className="text-sm text-gray-700 mb-3">{faktor.penjelasan}</p>
-                        <p className="text-sm text-teal-700 bg-teal-50 p-3 rounded-lg border-l-2 border-teal-400">
-                          <span className="font-semibold">Mengapa penting:</span> {faktor.mengapaIniPenting}
-                        </p>
+                  
+                  {/* Faktor yang meningkatkan risiko */}
+                  {analysisResult.analisisAI.insights.faktorPenyebab.some(f => f.persentasePengaruh > 0) && (
+                    <div className="mb-8">
+                      <h4 className="text-lg font-semibold text-red-600 mb-4 flex items-center gap-2">
+                        <span className="w-3 h-3 bg-red-500 rounded-full"></span>
+                        Faktor yang Meningkatkan Risiko
+                      </h4>
+                      <div className="space-y-4">
+                        {analysisResult.analisisAI.insights.faktorPenyebab
+                          .filter(faktor => faktor.persentasePengaruh > 0)
+                          .map((faktor, idx) => (
+                            <div key={idx} className="border-l-4 border-red-400 pl-6 py-4 bg-red-50 rounded-r-lg">
+                              <div className="flex justify-between items-start mb-2">
+                                <h4 className="font-bold text-lg text-gray-900">{faktor.nama}</h4>
+                                <span className="text-sm font-semibold px-3 py-1 bg-red-100 text-red-700 rounded-full">
+                                  +{Math.abs(faktor.persentasePengaruh).toFixed(1)}%
+                                </span>
+                              </div>
+                              <p className="text-sm text-gray-600 mb-2">
+                                <span className="font-medium">Nilai:</span> {faktor.nilai}
+                              </p>
+                              <p className="text-sm text-gray-700 mb-3">{faktor.penjelasan}</p>
+                              <p className="text-sm text-red-700 bg-red-100 p-3 rounded-lg border-l-2 border-red-400">
+                                <span className="font-semibold">Mengapa penting:</span> {faktor.mengapaIniPenting}
+                              </p>
+                            </div>
+                          ))}
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  )}
+
+                  {/* Faktor yang menurunkan risiko */}
+                  {analysisResult.analisisAI.insights.faktorPenyebab.some(f => f.persentasePengaruh < 0) && (
+                    <div>
+                      <h4 className="text-lg font-semibold text-green-600 mb-4 flex items-center gap-2">
+                        <span className="w-3 h-3 bg-green-500 rounded-full"></span>
+                        Faktor yang Menurunkan Risiko (Faktor Pelindung)
+                      </h4>
+                      <div className="space-y-4">
+                        {analysisResult.analisisAI.insights.faktorPenyebab
+                          .filter(faktor => faktor.persentasePengaruh < 0)
+                          .map((faktor, idx) => (
+                            <div key={idx} className="border-l-4 border-green-400 pl-6 py-4 bg-green-50 rounded-r-lg">
+                              <div className="flex justify-between items-start mb-2">
+                                <h4 className="font-bold text-lg text-gray-900">{faktor.nama}</h4>
+                                <span className="text-sm font-semibold px-3 py-1 bg-green-100 text-green-700 rounded-full">
+                                  {faktor.persentasePengaruh.toFixed(1)}%
+                                </span>
+                              </div>
+                              <p className="text-sm text-gray-600 mb-2">
+                                <span className="font-medium">Nilai:</span> {faktor.nilai}
+                              </p>
+                              <p className="text-sm text-gray-700 mb-3">{faktor.penjelasan}</p>
+                              <p className="text-sm text-green-700 bg-green-100 p-3 rounded-lg border-l-2 border-green-400">
+                                <span className="font-semibold">Mengapa penting:</span> {faktor.mengapaIniPenting}
+                              </p>
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+                  )}
                 </Card>
 
                 {/* Recommendations */}
