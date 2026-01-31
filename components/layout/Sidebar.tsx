@@ -1,0 +1,97 @@
+'use client';
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import {
+  Home,
+  Users,
+  PlusCircle,
+  Calendar,
+  Settings,
+  CheckCircle,
+} from 'lucide-react';
+
+const navItems = [
+  { href: '/dashboard', label: 'Dashboard', icon: Home },
+  { href: '/daftar-pasien', label: 'Daftar Pasien', icon: Users },
+  { href: '/input-data', label: 'Input Data Baru', icon: PlusCircle },
+  { href: '/kalender', label: 'Kalender Kontrol', icon: Calendar },
+  { href: '/pengaturan', label: 'Pengaturan', icon: Settings },
+];
+
+interface SidebarProps {
+  user?: {
+    name: string;
+    institution: string;
+    initials: string;
+  };
+}
+
+export function Sidebar({ user }: SidebarProps) {
+  const pathname = usePathname();
+
+  const defaultUser = {
+    name: 'Bidan Ani',
+    institution: 'Puskesmas Kertajaya',
+    initials: 'BA',
+  };
+
+  const currentUser = user || defaultUser;
+
+  return (
+    <aside className="w-64 bg-white border-r border-gray-200 flex flex-col h-screen">
+      {/* Logo */}
+      <div className="p-6 border-b border-gray-200">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+            <CheckCircle className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-lg font-bold text-gray-900">Sentinel</h1>
+            <p className="text-xs text-gray-500">Monitoring Stunting</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation */}
+      <nav className="flex-1 p-4 space-y-1">
+        {navItems.map((item) => {
+          const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+          const Icon = item.icon;
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                isActive
+                  ? 'bg-blue-50 text-blue-700'
+                  : 'text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              <Icon className="w-5 h-5" />
+              <span className="font-medium">{item.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* User Profile */}
+      <div className="p-4 border-t border-gray-200">
+        <div className="flex items-center space-x-3 px-4 py-3 bg-gray-50 rounded-lg">
+          <div className="w-10 h-10 bg-linear-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
+            {currentUser.initials}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-gray-900 truncate">
+              {currentUser.name}
+            </p>
+            <p className="text-xs text-gray-500 truncate">
+              {currentUser.institution}
+            </p>
+          </div>
+        </div>
+      </div>
+    </aside>
+  );
+}
