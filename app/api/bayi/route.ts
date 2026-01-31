@@ -57,6 +57,21 @@ export async function POST(request: NextRequest) {
 
     const bayi = await createBayi(body);
 
+    // Auto create first control schedule (1 week from now at 09:00)
+    const firstControlDate = new Date();
+    firstControlDate.setDate(firstControlDate.getDate() + 7);
+    
+    await prisma.jadwalKontrol.create({
+      data: {
+        bayiId: bayi.id,
+        tanggal: firstControlDate,
+        waktu: '09:00',
+        jenis: 'kontrol-rutin',
+        status: 'dijadwalkan',
+        catatan: 'Kontrol pertama setelah pendaftaran',
+      },
+    });
+
     return NextResponse.json({
       success: true,
       message: 'Bayi berhasil didaftarkan',

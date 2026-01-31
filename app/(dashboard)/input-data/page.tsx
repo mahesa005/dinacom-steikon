@@ -27,16 +27,31 @@ export default function InputDataPage() {
 
   // Generate patient number automatically
   useEffect(() => {
-    const generatePatientNumber = () => {
-      const timestamp = Date.now().toString().slice(-6);
-      const random = Math.random().toString(36).substring(2, 5).toUpperCase();
-      return `P${timestamp}${random}`;
+    const generatePatientNumber = async () => {
+      try {
+        // Get count of existing patients to generate sequential ID
+        const response = await fetch('/api/bayi');
+        const result = await response.json();
+        const count = result.success ? result.data.length + 1 : 1;
+        
+        // Format: SB-XXXXX (padded with zeros)
+        const patientNumber = `SB-${count.toString().padStart(5, '0')}`;
+        
+        setFormData(prev => ({
+          ...prev,
+          patientNumber
+        }));
+      } catch (error) {
+        // Fallback: use timestamp-based ID
+        const timestamp = Date.now().toString().slice(-5);
+        setFormData(prev => ({
+          ...prev,
+          patientNumber: `SB-${timestamp}`
+        }));
+      }
     };
     
-    setFormData(prev => ({
-      ...prev,
-      patientNumber: generatePatientNumber()
-    }));
+    generatePatientNumber();
   }, []);
 
   const [formData, setFormData] = useState({

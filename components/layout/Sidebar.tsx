@@ -9,7 +9,6 @@ import {
   Users,
   PlusCircle,
   Calendar,
-  Settings,
 } from 'lucide-react';
 
 const navItems = [
@@ -17,7 +16,6 @@ const navItems = [
   { href: '/daftar-pasien', label: 'Daftar Pasien', icon: Users },
   { href: '/input-data', label: 'Input Data Baru', icon: PlusCircle },
   { href: '/kalender', label: 'Kalender Kontrol', icon: Calendar },
-  { href: '/pengaturan', label: 'Pengaturan', icon: Settings },
 ];
 
 interface SidebarProps {

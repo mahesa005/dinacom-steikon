@@ -2,6 +2,7 @@ export type RiskLevel = 'HIGH' | 'MEDIUM' | 'LOW';
 
 export interface Patient {
   id: string;
+  bayiId?: string; // Database ID for API calls
   name: string;
   birthDate: string;
   ageMonths: number;

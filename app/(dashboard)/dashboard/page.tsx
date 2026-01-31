@@ -15,10 +15,30 @@ export default function DashboardPage() {
   const router = useRouter();
   const [patients, setPatients] = useState<Patient[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [aiInsight, setAiInsight] = useState<string>('');
+  const [isLoadingInsight, setIsLoadingInsight] = useState(true);
 
   useEffect(() => {
     fetchPatients();
+    fetchAIInsight();
   }, []);
+
+  const fetchAIInsight = async () => {
+    setIsLoadingInsight(true);
+    try {
+      const response = await fetch('/api/stunting/insight');
+      const result = await response.json();
+      
+      if (result.success) {
+        setAiInsight(result.data.insight);
+      }
+    } catch (error) {
+      console.error('Error fetching AI insight:', error);
+      setAiInsight('Tidak dapat memuat insight AI saat ini.');
+    } finally {
+      setIsLoadingInsight(false);
+    }
+  };
 
   const handleViewAllUrgent = () => {
     router.push('/daftar-pasien?filter=high');
@@ -172,7 +192,9 @@ export default function DashboardPage() {
         {/* AI Insight + Chart Row */}
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <AIInsightCard insight="" />
+            <AIInsightCard 
+              insight={isLoadingInsight ? 'Memuat insight AI...' : aiInsight} 
+            />
           </div>
           <RiskDistributionChart data={riskDistributionData} />
         </section>

@@ -7,6 +7,7 @@ import { OverviewTab } from './tabs/OverviewTab';
 import { HistoryTab } from './tabs/HistoryTab';
 import { ShapTab } from './tabs/ShapTab';
 import { InterventionTab } from './tabs/InterventionTab';
+import { AddControlModal } from './AddControlModal';
 import { User } from 'lucide-react';
 import type { Patient } from '@/types';
 
@@ -14,16 +15,29 @@ interface PatientDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
   patient: Patient | null;
+  bayiId?: string;
+  onRefresh?: () => void;
 }
 
 export function PatientDetailModal({
   isOpen,
   onClose,
   patient,
+  bayiId,
+  onRefresh,
 }: PatientDetailModalProps) {
   const [activeTab, setActiveTab] = useState('overview');
+  const [isAddControlOpen, setIsAddControlOpen] = useState(false);
+  const [historyKey, setHistoryKey] = useState(0);
 
   if (!patient) return null;
+
+  const handleAddControlSuccess = () => {
+    // Refresh history tab by changing key
+    setHistoryKey(prev => prev + 1);
+    // Also refresh parent data if callback provided
+    onRefresh?.();
+  };
 
   const getRiskLabel = (level: string) => {
     switch (level) {
@@ -105,7 +119,12 @@ export function PatientDetailModal({
             <OverviewTab patient={patient} />
           </TabsContent>
           <TabsContent value="history">
-            <HistoryTab patientId={patient.id} />
+            <HistoryTab 
+              key={historyKey}
+              patientId={patient.id} 
+              bayiId={bayiId}
+              onAddControl={() => setIsAddControlOpen(true)}
+            />
           </TabsContent>
           <TabsContent value="shap">
             <ShapTab patient={patient} />
@@ -128,11 +147,23 @@ export function PatientDetailModal({
           <button className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm font-medium">
             Cetak Laporan
           </button>
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-semibold">
-            Edit Data
+          <button 
+            onClick={() => setIsAddControlOpen(true)}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-semibold"
+          >
+            Tambah Kontrol Baru
           </button>
         </div>
       </div>
+
+      {/* Add Control Modal */}
+      <AddControlModal
+        isOpen={isAddControlOpen}
+        onClose={() => setIsAddControlOpen(false)}
+        patient={patient}
+        bayiId={bayiId || ''}
+        onSuccess={handleAddControlSuccess}
+      />
     </Modal>
   );
 }

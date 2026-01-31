@@ -67,6 +67,7 @@ function DaftarPasienContent() {
 
           return {
             id: bayi.nomorPasien,
+            bayiId: bayi.id, // Store the actual database ID
             name: bayi.nama,
             birthDate: new Date(bayi.tanggalLahir).toLocaleDateString('id-ID', {
               day: 'numeric',
@@ -524,6 +525,8 @@ function DaftarPasienContent() {
         isOpen={!!selectedPatient}
         onClose={closePatientDetail}
         patient={selectedPatient || null}
+        bayiId={selectedPatient?.bayiId}
+        onRefresh={fetchPatients}
       />
 
       <AddPatientModal
