@@ -24,26 +24,26 @@ model User {
 }
 
 model Bayi {
-  id                String              @id @default(cuid())
-  nomorPasien       String              @unique
-  nik               String?             @unique
-  nama              String
-  tanggalLahir      DateTime
-  tempatLahir       String
-  jenisKelamin      String
-  beratLahir        Float
-  panjangLahir      Float
-  namaIbu           String
-  namaAyah          String
-  nomorHpOrangTua   String
-  alamat            String
-  golonganDarah     String?
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
-  createdById       String
-  createdBy         User                @relation(fields: [createdById], references: [id])
-  hasilAnalisis     HasilAnalisisAI[]
-  historyKontrol    HistoryKontrol[]
+  id              String            @id @default(cuid())
+  nomorPasien     String            @unique
+  nik             String?           @unique
+  nama            String
+  tanggalLahir    DateTime
+  tempatLahir     String
+  jenisKelamin    String
+  beratLahir      Float
+  panjangLahir    Float
+  namaIbu         String
+  namaAyah        String
+  nomorHpOrangTua String
+  alamat          String
+  golonganDarah   String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  createdById     String
+  createdBy       User              @relation(fields: [createdById], references: [id])
+  hasilAnalisis   HasilAnalisisAI[]
+  historyKontrol  HistoryKontrol[]
   jadwalPemeriksaan JadwalPemeriksaan[]
 
   @@map("bayi")
@@ -85,24 +85,28 @@ model HasilAnalisisAI {
   @@map("hasil_analisis_ai")
 }
 
+enum JadwalStatus {
+  SCHEDULED // Jadwal aktif, bayi belum datang
+  COMPLETED // Bayi sudah datang (sinkron dengan HistoryKontrol)
+  MISSED    // Melewati range tanggal tapi belum datang
+}
+
 model JadwalPemeriksaan {
-  id              String       @id @default(cuid())
-  bayiId          String
-  targetUmurBulan Int
-  rentangAwal     DateTime
-  rentangAkhir    DateTime
-  status          JadwalStatus @default(SCHEDULED)
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
+  id                  String       @id @default(cuid())
+  bayiId              String
+  targetUmurBulan     Int          // Milestone ke-berapa (0, 1, 2, dst)
+  rentangAwal         DateTime     // Awal bayi boleh datang
+  rentangAkhir        DateTime     // Batas akhir bayi harus datang
+  status              JadwalStatus @default(SCHEDULED)
+  notifikasiTerkirim  Boolean      @default(false) // Tracking notifikasi WA
+  tanggalNotifikasi   DateTime?    // Kapan notifikasi dikirim
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+
   bayi            Bayi         @relation(fields: [bayiId], references: [id], onDelete: Cascade)
 
   @@index([bayiId])
   @@index([status])
+  @@index([notifikasiTerkirim])
   @@map("jadwal_pemeriksaan")
-}
-
-enum JadwalStatus {
-  SCHEDULED
-  COMPLETED
-  MISSED
 }
