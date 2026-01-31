@@ -1,9 +1,9 @@
-import { User, Lock, Bell, Globe } from 'lucide-react';
+import { User, Lock, Bell, Globe, type LucideIcon } from 'lucide-react';
 
 interface SettingsTab {
   id: string;
   label: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: LucideIcon;
 }
 
 interface SettingsTabsProps {

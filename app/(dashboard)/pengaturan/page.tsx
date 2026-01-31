@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Header } from '@/components/layout/Header';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -13,13 +13,35 @@ import { LanguageTab } from './_components/LanguageTab';
 
 export default function PengaturanPage() {
   const [activeTab, setActiveTab] = useState('profil');
+  const [loggedInUser, setLoggedInUser] = useState<any>(null);
+  
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const userData = localStorage.getItem('user');
+      if (userData && userData !== 'undefined') {
+        try {
+          const user = JSON.parse(userData);
+          setLoggedInUser(user);
+          setFormData(prev => ({
+            ...prev,
+            name: user.username || '',
+            institution: user.namaPuskesmas || '',
+          }));
+        } catch (error) {
+          console.error('Failed to parse user data:', error);
+          localStorage.removeItem('user');
+        }
+      }
+    }
+  }, []);
+
   const [formData, setFormData] = useState({
     // Profile
-    name: 'Bidan Ani',
-    email: 'bidan.ani@puskesmas.id',
-    phone: '081234567890',
-    institution: 'Puskesmas Kertajaya',
-    address: 'Jl. Kesehatan No. 123, Bandung',
+    name: '',
+    email: '',
+    phone: '',
+    institution: '',
+    address: '',
 
     // Password
     currentPassword: '',
@@ -56,7 +78,7 @@ export default function PengaturanPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header title="Pengaturan" subtitle="Kelola profil dan preferensi sistem Anda" />
+      <Header title="Pengaturan" subtitle="Kelola profil dan preferensi sistem Anda" showUserInfo />
 
       <div className="p-8">
         <div className="max-w-6xl mx-auto">

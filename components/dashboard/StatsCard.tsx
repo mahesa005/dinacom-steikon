@@ -69,9 +69,9 @@ export function StatsCard({
         )}
       </div>
       <h3 className="text-3xl font-bold text-gray-900 mb-1">{value}</h3>
-      <p className="text-sm text-gray-600 mb-2">{title}</p>
+      <p className="text-lg text-gray-600 mb-2">{title}</p>
       {trend && (
-        <div className="flex items-center text-xs">
+        <div className="flex items-center text-base">
           <span
             className={`flex items-center font-semibold ${
               trend.direction === 'up' ? 'text-green-500' : 'text-red-500'
@@ -111,7 +111,7 @@ export function StatsCard({
         </div>
       )}
       {subtitle && (
-        <div className="flex items-center text-xs">
+        <div className="flex items-center text-base">
           <span className="text-gray-500 font-semibold">{subtitle}</span>
         </div>
       )}

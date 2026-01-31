@@ -2,59 +2,102 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
-import { Lock, Mail, Eye, EyeOff } from 'lucide-react';
+import { Lock, Eye, EyeOff, User } from 'lucide-react';
 import Link from 'next/link';
 
 export default function LoginPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
-    email: '',
+    username: '',
     password: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // For demo purposes, just redirect to dashboard
-    router.push('/dashboard');
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || 'Login gagal');
+        setLoading(false);
+        return;
+      }
+
+      // Simpan user data (bisa gunakan localStorage, cookie, atau state management)
+      localStorage.setItem('user', JSON.stringify(data.data));
+      
+      // Simpan token ke cookie untuk middleware
+      document.cookie = `token=${data.token || 'authenticated'}; path=/; max-age=${60 * 60 * 24 * 7}`; // 7 hari
+      
+      // Redirect ke dashboard
+      router.push('/dashboard');
+    } catch (err) {
+      setError('Terjadi kesalahan. Silakan coba lagi.');
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-50 px-4">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 bg-linear-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
-              <span className="text-2xl text-white font-bold">SS</span>
-            </div>
+          <div className="flex justify-center mb-6">
+            <Image
+              src="/logo/logo-text.png"
+              alt="Stunting Sentinel"
+              width={250}
+              height={80}
+              className="w-auto h-16"
+              priority
+            />
           </div>
-          <h2 className="text-3xl font-bold text-gray-900">Stunting Sentinel</h2>
           <p className="mt-2 text-sm text-gray-600">
             Masuk ke akun Anda
           </p>
         </div>
 
         <div className="bg-white rounded-lg shadow-lg p-8">
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-sm text-red-600">{error}</p>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
+                Username
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
+                  <User className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
+                  id="username"
+                  name="username"
+                  type="text"
+                  autoComplete="username"
                   required
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  value={formData.username}
+                  onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="nama@email.com"
+                  placeholder="Masukkan username"
                 />
               </div>
             </div>
@@ -92,28 +135,14 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
-                  Ingat saya
-                </label>
-              </div>
-
-              <div className="text-sm">
-                <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
-                  Lupa password?
-                </a>
-              </div>
+            <div className="text-sm text-right">
+              <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
+                Lupa password?
+              </a>
             </div>
 
-            <Button type="submit" className="w-full">
-              Masuk
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? 'Memproses...' : 'Masuk'}
             </Button>
           </form>
 

@@ -1,11 +1,10 @@
 'use client';
 
-import { useState, Suspense, useEffect } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/Header';
 import { Button } from '@/components/ui/Button';
 import { PatientDetailModal } from './_components/PatientDetailModal';
-import { AddPatientModal } from './_components/AddPatientModal';
 import {
   Search,
   Plus,
@@ -26,7 +25,6 @@ function DaftarPasienContent() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [patients, setPatients] = useState<Patient[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -65,8 +63,72 @@ function DaftarPasienContent() {
           // Get latest control data if available
           const latestControl = bayi.historyKontrol?.[0];
 
+          // Get latest AI analysis if available
+          const latestAnalysis = bayi.hasilAnalisis?.[0];
+
+          // Determine risk level from AI analysis or control data
+          let riskLevel = 'MEDIUM';
+          let riskPercentage = 50;
+          let mainFactor = '-';
+
+          if (latestAnalysis) {
+            // Parse hasilPrediksi to get skorRisiko and levelRisiko
+            try {
+              const hasilPrediksi = JSON.parse(latestAnalysis.hasilPrediksi || '{}');
+              
+              // Get skorRisiko from hasilPrediksi
+              if (hasilPrediksi.statusRisiko?.skorRisiko) {
+                riskPercentage = hasilPrediksi.statusRisiko.skorRisiko;
+              } else {
+                // Fallback to tingkatKepercayaan
+                riskPercentage = Math.round((latestAnalysis.tingkatKepercayaan || 0.5) * 100);
+              }
+
+              // Get levelRisiko from hasilPrediksi
+              if (hasilPrediksi.statusRisiko?.levelRisiko) {
+                const level = hasilPrediksi.statusRisiko.levelRisiko;
+                if (level.includes('Tinggi')) {
+                  riskLevel = 'HIGH';
+                } else if (level.includes('Rendah')) {
+                  riskLevel = 'LOW';
+                } else {
+                  riskLevel = 'MEDIUM';
+                }
+              } else {
+                // Fallback: determine from riskPercentage
+                if (riskPercentage > 75) {
+                  riskLevel = 'HIGH';
+                } else if (riskPercentage < 35) {
+                  riskLevel = 'LOW';
+                } else {
+                  riskLevel = 'MEDIUM';
+                }
+              }
+            } catch (error) {
+              // Fallback to tingkatKepercayaan if parsing fails
+              riskPercentage = Math.round((latestAnalysis.tingkatKepercayaan || 0.5) * 100);
+              if (riskPercentage > 75) riskLevel = 'HIGH';
+              else if (riskPercentage < 35) riskLevel = 'LOW';
+              else riskLevel = 'MEDIUM';
+            }
+
+            // Try to extract main factor from dataInput (SHAP analysis)
+            try {
+              const dataInput = JSON.parse(latestAnalysis.dataInput || '{}');
+              if (dataInput.top_factors && dataInput.top_factors.length > 0) {
+                mainFactor = dataInput.top_factors[0].feature || '-';
+              }
+            } catch {
+              mainFactor = '-';
+            }
+          } else if (latestControl?.statusStunting) {
+            // Fallback to control data if no AI analysis
+            riskLevel = latestControl.statusStunting;
+          }
+
           return {
             id: bayi.nomorPasien,
+            bayiId: bayi.id,
             name: bayi.nama,
             birthDate: new Date(bayi.tanggalLahir).toLocaleDateString('id-ID', {
               day: 'numeric',
@@ -79,14 +141,14 @@ function DaftarPasienContent() {
             birthLength: bayi.panjangLahir,
             parentName: bayi.namaIbu,
             parentPhone: bayi.nomorHpOrangTua,
-            parentEducation: 'SMA', // TODO: Add to schema
-            parentHeight: 155, // TODO: Add to schema
+            parentEducation: 'SMA',
+            parentHeight: 155,
             fatherName: bayi.namaAyah,
-            fatherEducation: 'SMA', // TODO: Add to schema
-            fatherHeight: 170, // TODO: Add to schema
-            riskLevel: latestControl?.statusStunting || 'MEDIUM',
-            riskPercentage: 50, // TODO: Calculate from AI analysis
-            mainFactor: 'Sanitasi',
+            fatherEducation: 'SMA',
+            fatherHeight: 170,
+            riskLevel,
+            riskPercentage,
+            mainFactor,
             mainFactorIcon: '',
             lastCheckup: latestControl
               ? new Date(latestControl.tanggalKontrol).toLocaleDateString('id-ID', {
@@ -95,10 +157,10 @@ function DaftarPasienContent() {
                   year: 'numeric',
                 })
               : '-',
-            nextCheckup: '-', // TODO: Calculate next checkup
-            toiletFacility: 'adequate', // TODO: Add to schema
-            wasteManagement: 'adequate', // TODO: Add to schema
-            waterAccess: 'good', // TODO: Add to schema
+            nextCheckup: '-',
+            toiletFacility: 'adequate',
+            wasteManagement: 'adequate',
+            waterAccess: 'good',
           };
         });
 
@@ -301,7 +363,7 @@ function DaftarPasienContent() {
                 variant="primary"
                 size="lg"
                 icon={<Plus className="w-5 h-5" />}
-                onClick={() => setIsAddModalOpen(true)}
+                onClick={() => router.push('/input-data')}
               >
                 Tambah Pasien Baru
               </Button>
@@ -524,11 +586,8 @@ function DaftarPasienContent() {
         isOpen={!!selectedPatient}
         onClose={closePatientDetail}
         patient={selectedPatient || null}
-      />
-
-      <AddPatientModal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
+        bayiId={selectedPatient?.bayiId}
+        onRefresh={fetchPatients}
       />
     </>
   );

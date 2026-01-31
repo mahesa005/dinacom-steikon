@@ -15,10 +15,30 @@ export default function DashboardPage() {
   const router = useRouter();
   const [patients, setPatients] = useState<Patient[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [aiInsight, setAiInsight] = useState<string>('');
+  const [isLoadingInsight, setIsLoadingInsight] = useState(true);
 
   useEffect(() => {
     fetchPatients();
+    fetchAIInsight();
   }, []);
+
+  const fetchAIInsight = async () => {
+    setIsLoadingInsight(true);
+    try {
+      const response = await fetch('/api/stunting/insight');
+      const result = await response.json();
+      
+      if (result.success) {
+        setAiInsight(result.data.insight);
+      }
+    } catch (error) {
+      console.error('Error fetching AI insight:', error);
+      setAiInsight('Tidak dapat memuat insight AI saat ini.');
+    } finally {
+      setIsLoadingInsight(false);
+    }
+  };
 
   const handleViewAllUrgent = () => {
     router.push('/daftar-pasien?filter=high');
@@ -125,6 +145,7 @@ export default function DashboardPage() {
       <Header
         title="Dashboard"
         subtitle="Pantau dan kelola pasien stunting secara real-time"
+        showUserInfo
       />
 
       <div className="p-8 space-y-6">
@@ -168,25 +189,17 @@ export default function DashboardPage() {
           />
         </section>
 
-        {/* AI Insight + Chart Row */}
-        <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <AIInsightCard insight="" />
-          </div>
+        {/* Risk Distribution Chart - Full Width */}
+        <section>
           <RiskDistributionChart data={riskDistributionData} />
         </section>
 
-        {/* Patient Table */}
-        {isLoading ? (
-          <div className="text-center py-8 text-gray-500">Memuat data...</div>
-        ) : (
-          <PatientTable
-            patients={patients.slice(0, 10)}
-            totalCount={totalPatients}
-            onAddPatient={handleAddPatient}
-            onViewPatient={handleViewPatient}
+        {/* AI Insight */}
+        <section>
+          <AIInsightCard 
+            insight={isLoadingInsight ? 'Memuat insight AI...' : aiInsight} 
           />
-        )}
+        </section>
       </div>
     </>
   );
