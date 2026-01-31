@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createBayi, getAllBayi } from '@/lib/db';
+import { generateJadwalPemeriksaan } from '@/lib/jadwal';
 
 // GET /api/bayi - Get all bayi dengan filter
 export async function GET(request: NextRequest) {
@@ -57,24 +58,23 @@ export async function POST(request: NextRequest) {
 
     const bayi = await createBayi(body);
 
-    // Auto create first control schedule (1 week from now at 09:00)
-    const firstControlDate = new Date();
-    firstControlDate.setDate(firstControlDate.getDate() + 7);
-    
-    await prisma.jadwalKontrol.create({
-      data: {
-        bayiId: bayi.id,
-        tanggal: firstControlDate,
-        waktu: '09:00',
-        jenis: 'kontrol-rutin',
-        status: 'dijadwalkan',
-        catatan: 'Kontrol pertama setelah pendaftaran',
-      },
-    });
+    // Generate jadwal pemeriksaan otomatis sampai umur 2 tahun
+    // Default risk level: MEDIUM (akan di-update setelah pemeriksaan pertama)
+    // Gunakan bayi.id (internal ID), bukan nomorPasien
+    try {
+      await generateJadwalPemeriksaan(
+        bayi.id, // Internal ID dari database
+        bayi.tanggalLahir,
+        'MEDIUM' // Default risk level untuk bayi baru
+      );
+    } catch (jadwalError) {
+      console.error('Error generating jadwal:', jadwalError);
+      // Lanjutkan walaupun gagal membuat jadwal
+    }
 
     return NextResponse.json({
       success: true,
-      message: 'Bayi berhasil didaftarkan',
+      message: 'Bayi berhasil didaftarkan dan jadwal pemeriksaan telah dibuat',
       data: bayi,
     });
   } catch (error: any) {

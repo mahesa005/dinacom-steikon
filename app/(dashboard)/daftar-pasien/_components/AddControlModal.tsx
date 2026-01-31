@@ -98,10 +98,41 @@ export function AddControlModal({
       const result = await response.json();
 
       if (result.success) {
+        // Update jadwal status to COMPLETED and generate new schedules based on risk level
+        try {
+          // Find jadwal that matches the age and mark as completed
+          const scheduleResponse = await fetch(`/api/jadwal-pemeriksaan?bayiId=${bayiId}`);
+          const scheduleResult = await scheduleResponse.json();
+          
+          if (scheduleResult.success && scheduleResult.data.length > 0) {
+            // Find matching scheduled appointment based on age
+            const matchingSchedule = scheduleResult.data.find((s: any) => 
+              s.targetUmurBulan === parseInt(formData.umurBulan.toString()) && 
+              s.status === 'SCHEDULED'
+            );
+            
+            if (matchingSchedule) {
+              // Update status to COMPLETED and regenerate schedules with new risk level
+              await fetch(`/api/jadwal-pemeriksaan`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  jadwalId: matchingSchedule.id,
+                  bayiId: bayiId,
+                  newRiskLevel: statusStunting,
+                }),
+              });
+            }
+          }
+        } catch (scheduleError) {
+          console.error('Error updating schedule:', scheduleError);
+          // Continue anyway, schedule update is not critical
+        }
+
         alert(`Data kontrol berhasil disimpan!\n\nHasil Prediksi: ${
           statusStunting === 'HIGH' ? 'Risiko Tinggi' : 
           statusStunting === 'MEDIUM' ? 'Risiko Sedang' : 'Risiko Rendah'
-        } (${probability}%)`);
+        } (${probability}%)\n\nJadwal pemeriksaan telah diperbarui berdasarkan hasil pemeriksaan.`);
         onSuccess();
         onClose();
         // Reset form
@@ -171,7 +202,7 @@ export function AddControlModal({
               max="60"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               value={formData.umurBulan}
-              onChange={(e) => setFormData({ ...formData, umurBulan: e.target.value })}
+              onChange={(e) => setFormData({ ...formData, umurBulan: parseInt(e.target.value) || 0 })}
             />
           </div>
         </div>

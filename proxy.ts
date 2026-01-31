@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function middleware(request: NextRequest) {
+export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
   // Get token from cookies
@@ -13,7 +13,7 @@ export function middleware(request: NextRequest) {
   const isPublicRoute = publicRoutes.includes(pathname);
 
   // Protected routes yang butuh autentikasi
-  const protectedRoutes = ['/dashboard', '/daftar-pasien', '/tambah-pasien', '/deteksi-stunting'];
+  const protectedRoutes = ['/dashboard', '/daftar-pasien', '/tambah-pasien', '/deteksi-stunting', '/input-data', '/kalender', '/pengaturan'];
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
 
   // Jika sudah login dan mencoba akses login/register, redirect ke dashboard
@@ -31,7 +31,7 @@ export function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-// Konfigurasi route mana saja yang akan diproses middleware
+// Konfigurasi route mana saja yang akan diproses proxy
 export const config = {
   matcher: [
     /*

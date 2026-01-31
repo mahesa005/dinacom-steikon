@@ -1,12 +1,69 @@
-import { Calendar, Phone, MessageCircle } from 'lucide-react';
+'use client';
+
+import { useState, useEffect } from 'react';
+import { Calendar, Phone, MessageCircle, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import type { Patient } from '@/types';
 
-interface OverviewTabProps {
-  patient: Patient;
+interface JadwalPemeriksaan {
+  id: string;
+  bayiId: string;
+  targetUmurBulan: number;
+  rentangAwal: string;
+  rentangAkhir: string;
+  status: 'SCHEDULED' | 'COMPLETED' | 'MISSED';
 }
 
-export function OverviewTab({ patient }: OverviewTabProps) {
+interface OverviewTabProps {
+  patient: Patient;
+  bayiId?: string;
+}
+
+export function OverviewTab({ patient, bayiId }: OverviewTabProps) {
+  const [nextSchedule, setNextSchedule] = useState<JadwalPemeriksaan | null>(null);
+  const [isLoadingSchedule, setIsLoadingSchedule] = useState(true);
+
+  useEffect(() => {
+    if (bayiId) {
+      fetchNextSchedule();
+    }
+  }, [bayiId]);
+
+  const fetchNextSchedule = async () => {
+    try {
+      const response = await fetch(`/api/jadwal-pemeriksaan?bayiId=${bayiId}`);
+      const result = await response.json();
+      
+      if (result.success && result.data.length > 0) {
+        // Find next upcoming schedule
+        const today = new Date();
+        const upcoming = result.data.find(
+          (s: JadwalPemeriksaan) => s.status === 'SCHEDULED' && new Date(s.rentangAwal) >= today
+        );
+        setNextSchedule(upcoming || null);
+      }
+    } catch (error) {
+      console.error('Error fetching schedule:', error);
+    } finally {
+      setIsLoadingSchedule(false);
+    }
+  };
+
+  const getDaysUntil = (dateStr: string) => {
+    const targetDate = new Date(dateStr);
+    const today = new Date();
+    const diffTime = targetDate.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
+  const formatDateRange = (startStr: string, endStr: string) => {
+    const start = new Date(startStr);
+    const end = new Date(endStr);
+    
+    return `${start.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })} - ${end.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}`;
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Left Column: Patient Info */}
@@ -227,28 +284,72 @@ export function OverviewTab({ patient }: OverviewTabProps) {
         </div>
 
         {/* Next Checkup */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+        <div className={`border rounded-lg p-6 ${
+          nextSchedule && getDaysUntil(nextSchedule.rentangAwal) <= 3
+            ? 'bg-orange-50 border-orange-200'
+            : 'bg-blue-50 border-blue-200'
+        }`}>
           <div className="flex items-center space-x-3 mb-4">
-            <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+              nextSchedule && getDaysUntil(nextSchedule.rentangAwal) <= 3
+                ? 'bg-orange-500'
+                : 'bg-blue-500'
+            }`}>
               <Calendar className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h5 className="font-semibold text-gray-900">Kontrol Berikutnya</h5>
-              <p className="text-sm text-gray-600">Jadwal pemeriksaan ulang</p>
+              <h5 className="font-semibold text-gray-900">Jadwal Pemeriksaan Berikutnya</h5>
+              <p className="text-sm text-gray-600">Pemeriksaan rutin terjadwal</p>
             </div>
           </div>
-          <div className="bg-white rounded-lg p-4">
-            <p className="text-2xl font-bold text-gray-900">
-              {patient.nextCheckup}
-            </p>
-            <p className="text-sm text-gray-600 mt-1">5 hari lagi • 10:00 WIB</p>
-            <p className="text-xs text-gray-500 mt-2">
-              Lokasi: Posyandu Melati RW 05
-            </p>
-          </div>
-          <button className="mt-4 w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium text-sm">
-            Ubah Jadwal
-          </button>
+          
+          {isLoadingSchedule ? (
+            <div className="bg-white rounded-lg p-4 text-center">
+              <p className="text-sm text-gray-500">Memuat jadwal...</p>
+            </div>
+          ) : nextSchedule ? (
+            <>
+              <div className="bg-white rounded-lg p-4">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {formatDateRange(nextSchedule.rentangAwal, nextSchedule.rentangAkhir)}
+                    </p>
+                    <p className="text-sm text-gray-600 mt-1 flex items-center gap-1">
+                      <Clock className="w-4 h-4" />
+                      {(() => {
+                        const days = getDaysUntil(nextSchedule.rentangAwal);
+                        if (days === 0) return 'Hari ini';
+                        if (days === 1) return 'Besok';
+                        if (days < 0) return `Terlambat ${Math.abs(days)} hari`;
+                        return `${days} hari lagi`;
+                      })()}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-2">
+                      Pemeriksaan untuk umur {nextSchedule.targetUmurBulan} bulan
+                    </p>
+                  </div>
+                  {getDaysUntil(nextSchedule.rentangAwal) <= 3 && getDaysUntil(nextSchedule.rentangAwal) >= 0 && (
+                    <span className="px-2 py-1 bg-orange-100 text-orange-700 text-xs font-semibold rounded-full">
+                      SEGERA
+                    </span>
+                  )}
+                </div>
+              </div>
+              {getDaysUntil(nextSchedule.rentangAwal) <= 7 && getDaysUntil(nextSchedule.rentangAwal) >= 0 && (
+                <div className="mt-3 bg-white/80 rounded-lg p-3 text-xs text-gray-600">
+                  💡 <strong>Tips:</strong> Pastikan bayi dalam kondisi sehat saat pemeriksaan untuk hasil yang akurat
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="bg-white rounded-lg p-4 text-center">
+              <p className="text-sm text-gray-500">Tidak ada jadwal mendatang</p>
+              <p className="text-xs text-gray-400 mt-1">
+                Jadwal akan otomatis dibuat setelah pemeriksaan
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Quick Actions */}

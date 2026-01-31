@@ -116,7 +116,7 @@ export function PatientDetailModal({
         {/* Tab Content */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsContent value="overview">
-            <OverviewTab patient={patient} />
+            <OverviewTab patient={patient} bayiId={bayiId} />
           </TabsContent>
           <TabsContent value="history">
             <HistoryTab 
