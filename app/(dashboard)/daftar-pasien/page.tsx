@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/Header';
 import { Button } from '@/components/ui/Button';
@@ -148,7 +148,7 @@ const mockPatients: Patient[] = [
   },
 ];
 
-export default function DaftarPasienPage() {
+function DaftarPasienContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -457,5 +457,13 @@ export default function DaftarPasienPage() {
         onClose={() => setIsAddModalOpen(false)}
       />
     </>
+  );
+}
+
+export default function DaftarPasienPage() {
+  return (
+    <Suspense fallback={<div className="p-8">Loading...</div>}>
+      <DaftarPasienContent />
+    </Suspense>
   );
 }
