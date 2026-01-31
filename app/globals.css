@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
+  --background: #ffffff;
   --foreground: #0f172a;
 
   /* Risk colors */
@@ -12,9 +12,14 @@
   --risk-low: #22c55e;
   --risk-low-bg: #f0fdf4;
 
-  /* Brand colors */
-  --brand-primary: #2563eb;
-  --brand-secondary: #7c3aed;
+  /* Brand colors - Teal palette */
+  --brand-primary: #0D9488;
+  --brand-primary-dark: #0F766E;
+  --brand-primary-light: #14B8A6;
+  --brand-secondary: #2DD4BF;
+  --brand-accent: #5EEAD4;
+  --brand-accent-light: #99F6E4;
+  --brand-accent-lighter: #CCFBF1;
 }
 
 @theme inline {
@@ -27,7 +32,11 @@
   --color-risk-low: var(--risk-low);
   --color-risk-low-bg: var(--risk-low-bg);
   --color-brand-primary: var(--brand-primary);
+  --color-brand-primary-dark: var(--brand-primary-dark);
+  --color-brand-primary-light: var(--brand-primary-light);
   --color-brand-secondary: var(--brand-secondary);
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-accent-light: var(--brand-accent-light);
   --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
 }
@@ -95,8 +104,8 @@ body {
 
 /* Tab active state */
 .tab-active {
-  border-bottom: 2px solid #2563eb;
-  color: #2563eb;
+  border-bottom: 2px solid #0D9488;
+  color: #0D9488;
   font-weight: 600;
 }
 
@@ -120,7 +129,7 @@ body {
 
 /* Gradient backgrounds */
 .gradient-bg {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0D9488 0%, #14B8A6 100%);
 }
 
 /* Trend indicators */

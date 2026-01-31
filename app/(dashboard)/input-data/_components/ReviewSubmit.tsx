@@ -61,8 +61,8 @@ export function ReviewSubmit({ data, isSubmitting }: ReviewSubmitProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center space-x-3 pb-4 border-b border-gray-200">
-        <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
-          <CheckCircle className="w-6 h-6 text-blue-600" />
+        <div className="w-12 h-12 bg-teal-50 rounded-lg flex items-center justify-center">
+          <CheckCircle className="w-6 h-6 text-teal-600" />
         </div>
         <div>
           <h3 className="text-xl font-bold text-gray-900">Review & Submit</h3>
@@ -228,7 +228,7 @@ export function ReviewSubmit({ data, isSubmitting }: ReviewSubmitProps) {
 
       {isSubmitting && (
         <div className="text-center py-4">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-600 border-t-transparent"></div>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-teal-600 border-t-transparent"></div>
           <p className="text-sm text-gray-600 mt-2">Menyimpan data...</p>
         </div>
       )}

@@ -307,7 +307,7 @@ export default function InputDataPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <Card className="p-12 max-w-2xl w-full">
           <div className="text-center">
-            <Loader2 className="w-20 h-20 text-blue-600 animate-spin mx-auto mb-6" />
+            <Loader2 className="w-20 h-20 text-teal-600 animate-spin mx-auto mb-6" />
             <h3 className="text-2xl font-bold text-gray-900 mb-3">
               Memproses Data...
             </h3>
@@ -323,7 +323,7 @@ export default function InputDataPage() {
               </div>
               <div className="flex items-center gap-4 text-base">
                 {loadingStage.includes('AI') ? (
-                  <Loader2 className="w-6 h-6 text-blue-600 animate-spin flex-shrink-0" />
+                  <Loader2 className="w-6 h-6 text-teal-600 animate-spin flex-shrink-0" />
                 ) : (
                   <div className="w-6 h-6 rounded-full border-2 border-gray-300 flex-shrink-0" />
                 )}
@@ -366,7 +366,7 @@ export default function InputDataPage() {
                 <p className="text-lg text-gray-600 mb-2">
                   {analysisResult.bayi.nama} telah terdaftar dengan nomor pasien
                 </p>
-                <p className="text-2xl font-bold text-blue-600">
+                <p className="text-2xl font-bold text-teal-600">
                   {analysisResult.bayi.nomorPasien}
                 </p>
               </div>
@@ -415,7 +415,7 @@ export default function InputDataPage() {
                           <span className="font-medium">Nilai:</span> {faktor.nilai}
                         </p>
                         <p className="text-sm text-gray-700 mb-3">{faktor.penjelasan}</p>
-                        <p className="text-sm text-blue-700 bg-blue-50 p-3 rounded-lg border-l-2 border-blue-400">
+                        <p className="text-sm text-teal-700 bg-teal-50 p-3 rounded-lg border-l-2 border-teal-400">
                           <span className="font-semibold">Mengapa penting:</span> {faktor.mengapaIniPenting}
                         </p>
                       </div>
@@ -442,7 +442,7 @@ export default function InputDataPage() {
                                   ? 'bg-red-100 text-red-700'
                                   : rekomendasi.prioritas === 'Prioritas Sedang'
                                   ? 'bg-yellow-100 text-yellow-700'
-                                  : 'bg-blue-100 text-blue-700'
+                                  : 'bg-teal-100 text-teal-700'
                               }`}>
                                 {rekomendasi.prioritas}
                               </span>

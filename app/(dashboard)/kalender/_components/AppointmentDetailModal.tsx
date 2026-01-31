@@ -42,7 +42,7 @@ const getRiskBadgeColor = (level: string) => {
 const getStatusBadgeColor = (status: string) => {
   switch (status) {
     case 'dijadwalkan':
-      return 'bg-blue-100 text-blue-700';
+      return 'bg-teal-100 text-teal-700';
     case 'selesai':
       return 'bg-green-100 text-green-700';
     case 'dibatalkan':
@@ -57,9 +57,9 @@ const getStatusBadgeColor = (status: string) => {
 const getTypeBadgeColor = (type: string) => {
   switch (type) {
     case 'kontrol-rutin':
-      return 'bg-purple-100 text-purple-700';
+      return 'bg-teal-100 text-teal-700';
     case 'vaksinasi':
-      return 'bg-blue-100 text-blue-700';
+      return 'bg-teal-100 text-teal-700';
     case 'konsultasi':
       return 'bg-teal-100 text-teal-700';
     case 'tindakan':

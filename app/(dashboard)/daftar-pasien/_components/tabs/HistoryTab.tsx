@@ -105,7 +105,7 @@ export function HistoryTab({ patientId, bayiId, onAddControl }: HistoryTabProps)
             onClick={() => setActiveView('all')}
             className={`px-4 py-2 rounded-md text-sm font-medium transition ${
               activeView === 'all'
-                ? 'bg-blue-600 text-white'
+                ? 'bg-teal-600 text-white'
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
@@ -115,7 +115,7 @@ export function HistoryTab({ patientId, bayiId, onAddControl }: HistoryTabProps)
             onClick={() => setActiveView('upcoming')}
             className={`px-4 py-2 rounded-md text-sm font-medium transition ${
               activeView === 'upcoming'
-                ? 'bg-blue-600 text-white'
+                ? 'bg-teal-600 text-white'
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
@@ -125,7 +125,7 @@ export function HistoryTab({ patientId, bayiId, onAddControl }: HistoryTabProps)
             onClick={() => setActiveView('history')}
             className={`px-4 py-2 rounded-md text-sm font-medium transition ${
               activeView === 'history'
-                ? 'bg-blue-600 text-white'
+                ? 'bg-teal-600 text-white'
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
@@ -142,7 +142,7 @@ export function HistoryTab({ patientId, bayiId, onAddControl }: HistoryTabProps)
       {(activeView === 'all' || activeView === 'upcoming') && (
         <div className="space-y-4">
           <div className="flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-blue-600" />
+            <Calendar className="w-5 h-5 text-teal-600" />
             <h3 className="text-lg font-semibold text-gray-900">Jadwal Pemeriksaan Mendatang</h3>
           </div>
 
@@ -170,12 +170,12 @@ export function HistoryTab({ patientId, bayiId, onAddControl }: HistoryTabProps)
                       <div className="flex items-start space-x-4">
                         <div
                           className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
-                            isUrgent ? 'bg-orange-100' : 'bg-blue-100'
+                            isUrgent ? 'bg-orange-100' : 'bg-teal-100'
                           }`}
                         >
                           <Calendar
                             className={`w-5 h-5 ${
-                              isUrgent ? 'text-orange-600' : 'text-blue-600'
+                              isUrgent ? 'text-orange-600' : 'text-teal-600'
                             }`}
                           />
                         </div>

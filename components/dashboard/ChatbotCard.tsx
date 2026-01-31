@@ -148,24 +148,24 @@ export function ChatbotCard() {
 
   if (!isExpanded) {
     return (
-      <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200 hover:shadow-lg transition-all duration-300">
+      <Card className="bg-gradient-to-br from-teal-50 to-indigo-50 border-teal-200 hover:shadow-lg transition-all duration-300">
         <div className="p-6">
           <div className="flex items-start justify-between">
             <div className="flex items-start gap-4 flex-1">
-              <div className="p-3 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 text-white">
+              <div className="p-3 rounded-xl bg-gradient-to-br from-teal-500 to-indigo-600 text-white">
                 <Bot className="w-6 h-6" />
               </div>
               <div className="flex-1">
                 <h3 className="text-lg font-semibold text-gray-800 mb-2 flex items-center gap-2">
                   Dr. Gizi - AI Assistant
-                  <Sparkles className="w-4 h-4 text-purple-600" />
+                  <Sparkles className="w-4 h-4 text-teal-600" />
                 </h3>
                 <p className="text-sm text-gray-600 mb-4">
                   Tanyakan apa saja tentang data pasien stunting Anda. AI akan menganalisis database dan memberikan insight mendalam.
                 </p>
                 <Button
                   onClick={() => setIsExpanded(true)}
-                  className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-700 hover:to-indigo-700"
+                  className="bg-gradient-to-r from-teal-600 to-indigo-600 text-white hover:from-teal-700 hover:to-indigo-700"
                 >
                   <MessageSquare className="w-4 h-4 mr-2" />
                   Mulai Chat
@@ -179,10 +179,10 @@ export function ChatbotCard() {
   }
 
   return (
-    <Card className="bg-white border-purple-200 shadow-xl">
+    <Card className="bg-white border-teal-200 shadow-xl">
       <div className="flex flex-col h-[600px]">
         {/* Header */}
-        <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-4 rounded-t-lg flex items-center justify-between">
+        <div className="bg-gradient-to-r from-teal-600 to-indigo-600 text-white p-4 rounded-t-lg flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-white/20">
               <Bot className="w-5 h-5" />
@@ -192,7 +192,7 @@ export function ChatbotCard() {
                 Dr. Gizi - AI Assistant
                 <Sparkles className="w-4 h-4" />
               </h3>
-              <p className="text-xs text-purple-100">Always ready to help</p>
+              <p className="text-xs text-teal-100">Always ready to help</p>
             </div>
           </div>
           <button
@@ -215,7 +215,7 @@ export function ChatbotCard() {
                 <div
                   className={`p-2 rounded-lg ${
                     msg.role === 'user'
-                      ? 'bg-purple-600 text-white'
+                      ? 'bg-teal-600 text-white'
                       : 'bg-indigo-600 text-white'
                   }`}
                 >
@@ -229,7 +229,7 @@ export function ChatbotCard() {
                   <div
                     className={`rounded-2xl p-4 ${
                       msg.role === 'user'
-                        ? 'bg-purple-600 text-white'
+                        ? 'bg-teal-600 text-white'
                         : 'bg-white border border-gray-200 text-gray-800'
                     }`}
                   >
@@ -266,7 +266,7 @@ export function ChatbotCard() {
                           <button
                             key={i}
                             onClick={() => handleSuggestedQuestion(question)}
-                            className="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-full px-3 py-1.5 transition-colors"
+                            className="text-xs bg-teal-50 hover:bg-teal-100 text-teal-700 border border-teal-200 rounded-full px-3 py-1.5 transition-colors"
                           >
                             {question}
                           </button>
@@ -307,12 +307,12 @@ export function ChatbotCard() {
               onKeyPress={handleKeyPress}
               placeholder="Tanyakan tentang data pasien..."
               disabled={isLoading}
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed text-sm"
+              className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed text-sm"
             />
             <Button
               onClick={handleSend}
               disabled={!input.trim() || isLoading}
-              className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed px-6"
+              className="bg-gradient-to-r from-teal-600 to-indigo-600 text-white hover:from-teal-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed px-6"
             >
               {isLoading ? (
                 <Loader className="w-5 h-5 animate-spin" />

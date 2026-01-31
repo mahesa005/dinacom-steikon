@@ -20,8 +20,8 @@ export function BabyDataForm({ formData, onInputChange }: BabyDataFormProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center space-x-3 pb-4 border-b border-gray-200">
-        <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
-          <Baby className="w-6 h-6 text-blue-600" />
+        <div className="w-12 h-12 bg-teal-50 rounded-lg flex items-center justify-center">
+          <Baby className="w-6 h-6 text-teal-600" />
         </div>
         <div>
           <h3 className="text-xl font-bold text-gray-900">Data Bayi</h3>
@@ -57,7 +57,7 @@ export function BabyDataForm({ formData, onInputChange }: BabyDataFormProps) {
             onChange={onInputChange}
             placeholder="16 digit NIK"
             maxLength={16}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
           />
         </div>
 
@@ -72,7 +72,7 @@ export function BabyDataForm({ formData, onInputChange }: BabyDataFormProps) {
             onChange={onInputChange}
             required
             placeholder="Masukkan nama lengkap bayi"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
           />
         </div>
 
@@ -86,7 +86,7 @@ export function BabyDataForm({ formData, onInputChange }: BabyDataFormProps) {
             value={formData.birthDate}
             onChange={onInputChange}
             required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
           />
         </div>
 
@@ -101,7 +101,7 @@ export function BabyDataForm({ formData, onInputChange }: BabyDataFormProps) {
             onChange={onInputChange}
             required
             placeholder="Kota/Kabupaten lahir"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
           />
         </div>
 
@@ -114,7 +114,7 @@ export function BabyDataForm({ formData, onInputChange }: BabyDataFormProps) {
             value={formData.gender}
             onChange={onInputChange}
             required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
           >
             <option value="">Pilih jenis kelamin</option>
             <option value="male">Laki-laki</option>
@@ -135,7 +135,7 @@ export function BabyDataForm({ formData, onInputChange }: BabyDataFormProps) {
             step="0.1"
             min="0"
             placeholder="contoh: 3.2"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
           />
         </div>
 
@@ -152,7 +152,7 @@ export function BabyDataForm({ formData, onInputChange }: BabyDataFormProps) {
             step="0.1"
             min="0"
             placeholder="contoh: 48.5"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
           />
         </div>
 
@@ -164,7 +164,7 @@ export function BabyDataForm({ formData, onInputChange }: BabyDataFormProps) {
             name="bloodType"
             value={formData.bloodType}
             onChange={onInputChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
           >
             <option value="">Pilih golongan darah</option>
             <option value="A">A</option>
@@ -185,7 +185,7 @@ export function BabyDataForm({ formData, onInputChange }: BabyDataFormProps) {
             onChange={onInputChange}
             required
             placeholder="Jalan, RT/RW, Kelurahan, Kecamatan, Kota"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
           />
         </div>
       </div>

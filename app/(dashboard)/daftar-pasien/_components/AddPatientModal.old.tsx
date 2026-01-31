@@ -55,7 +55,7 @@ export function AddPatientModal({ isOpen, onClose }: AddPatientModalProps) {
           {/* Baby Information */}
           <div>
             <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <User className="w-5 h-5 text-blue-600" />
+              <User className="w-5 h-5 text-teal-600" />
               Informasi Bayi
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -68,7 +68,7 @@ export function AddPatientModal({ isOpen, onClose }: AddPatientModalProps) {
                   required
                   value={formData.babyName}
                   onChange={(e) => setFormData({ ...formData, babyName: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="Nama bayi"
                 />
               </div>
@@ -81,7 +81,7 @@ export function AddPatientModal({ isOpen, onClose }: AddPatientModalProps) {
                   required
                   value={formData.birthDate}
                   onChange={(e) => setFormData({ ...formData, birthDate: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                 />
               </div>
               <div>
@@ -92,7 +92,7 @@ export function AddPatientModal({ isOpen, onClose }: AddPatientModalProps) {
                   required
                   value={formData.gender}
                   onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                 >
                   <option value="">Pilih jenis kelamin</option>
                   <option value="male">Laki-laki</option>
@@ -109,7 +109,7 @@ export function AddPatientModal({ isOpen, onClose }: AddPatientModalProps) {
                   required
                   value={formData.birthWeight}
                   onChange={(e) => setFormData({ ...formData, birthWeight: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="2.5"
                 />
               </div>
@@ -122,7 +122,7 @@ export function AddPatientModal({ isOpen, onClose }: AddPatientModalProps) {
                   required
                   value={formData.birthLength}
                   onChange={(e) => setFormData({ ...formData, birthLength: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="48"
                 />
               </div>
@@ -132,7 +132,7 @@ export function AddPatientModal({ isOpen, onClose }: AddPatientModalProps) {
           {/* Mother Information */}
           <div>
             <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <Users className="w-5 h-5 text-purple-600" />
+              <Users className="w-5 h-5 text-teal-600" />
               Informasi Ibu
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -145,7 +145,7 @@ export function AddPatientModal({ isOpen, onClose }: AddPatientModalProps) {
                   required
                   value={formData.motherName}
                   onChange={(e) => setFormData({ ...formData, motherName: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="Nama ibu"
                 />
               </div>
@@ -158,7 +158,7 @@ export function AddPatientModal({ isOpen, onClose }: AddPatientModalProps) {
                   required
                   value={formData.motherPhone}
                   onChange={(e) => setFormData({ ...formData, motherPhone: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="08XX-XXXX-XXXX"
                 />
               </div>
@@ -170,7 +170,7 @@ export function AddPatientModal({ isOpen, onClose }: AddPatientModalProps) {
                   required
                   value={formData.motherEducation}
                   onChange={(e) => setFormData({ ...formData, motherEducation: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                 >
                   <option value="">Pilih pendidikan</option>
                   <option value="SD">SD</option>
@@ -190,7 +190,7 @@ export function AddPatientModal({ isOpen, onClose }: AddPatientModalProps) {
                   required
                   value={formData.motherHeight}
                   onChange={(e) => setFormData({ ...formData, motherHeight: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="150"
                 />
               </div>
@@ -213,7 +213,7 @@ export function AddPatientModal({ isOpen, onClose }: AddPatientModalProps) {
                   required
                   value={formData.fatherName}
                   onChange={(e) => setFormData({ ...formData, fatherName: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="Nama ayah"
                 />
               </div>
@@ -225,7 +225,7 @@ export function AddPatientModal({ isOpen, onClose }: AddPatientModalProps) {
                   required
                   value={formData.fatherEducation}
                   onChange={(e) => setFormData({ ...formData, fatherEducation: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                 >
                   <option value="">Pilih pendidikan</option>
                   <option value="SD">SD</option>
@@ -245,7 +245,7 @@ export function AddPatientModal({ isOpen, onClose }: AddPatientModalProps) {
                   required
                   value={formData.fatherHeight}
                   onChange={(e) => setFormData({ ...formData, fatherHeight: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="165"
                 />
               </div>
@@ -267,7 +267,7 @@ export function AddPatientModal({ isOpen, onClose }: AddPatientModalProps) {
                   required
                   value={formData.toiletFacility}
                   onChange={(e) => setFormData({ ...formData, toiletFacility: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                 >
                   <option value="">Pilih kondisi</option>
                   <option value="good">Baik</option>
@@ -283,7 +283,7 @@ export function AddPatientModal({ isOpen, onClose }: AddPatientModalProps) {
                   required
                   value={formData.wasteManagement}
                   onChange={(e) => setFormData({ ...formData, wasteManagement: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                 >
                   <option value="">Pilih kondisi</option>
                   <option value="good">Baik</option>
@@ -299,7 +299,7 @@ export function AddPatientModal({ isOpen, onClose }: AddPatientModalProps) {
                   required
                   value={formData.waterAccess}
                   onChange={(e) => setFormData({ ...formData, waterAccess: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                 >
                   <option value="">Pilih kondisi</option>
                   <option value="good">Baik</option>
