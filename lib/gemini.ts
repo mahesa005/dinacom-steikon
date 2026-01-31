@@ -260,9 +260,9 @@ Berikan analisis dalam format JSON berikut (sesuai UI yang diminta):
   "faktorPenyebab": [
     {
       "nama": "Nama Faktor (contoh: Tinggi Ibu, Pendapatan Keluarga, Kunjungan ANC)",
-      "nilai": "Nilai yang mudah dipahami (contoh: '150 cm (150-155 cm)', '< 1 juta', '2 kali (< 6 kali)')",
-      "persentasePengaruh": 15,  // Hitung dari absolute SHAP value, dikonversi ke persentase (0-100)
-      "penjelasan": "1-2 kalimat penjelasan faktor ini",
+      "nilai": "Nilai yang mudah dipahami (contoh: '150 cm (pendek, risiko)', '180 cm (tinggi, sangat baik)', '< 1 juta', '2 kali (< 6 kali)')",
+      "persentasePengaruh": 15,  // ⚠️ PENTING: Gunakan nilai ASLI dari SHAP (bisa POSITIF atau NEGATIF). Positif = meningkatkan risiko, Negatif = menurunkan risiko. Konversi ke persentase relatif (sum absolute = 100)
+      "penjelasan": "1-2 kalimat penjelasan faktor ini. WAJIB sebutkan apakah faktor ini MENINGKATKAN atau MENURUNKAN risiko sesuai tanda SHAP",
       "mengapaIniPenting": "1-2 kalimat mengapa faktor ini berkontribusi pada risiko stunting"
     }
   ],
@@ -314,14 +314,23 @@ Response HANYA JSON valid, tanpa markdown atau teks tambahan.
     const aiInsights = JSON.parse(jsonMatch[0]);
     
     // Calculate risk level based on confidence
+    // PENTING: Jika prediksi = TIDAK stunting (0), flip confidence rate
+    // Karena confidence tinggi untuk "tidak stunting" = risiko RENDAH
+    let adjustedConfidence = shapResult.confidence;
+    const isStunting = shapResult.is_stunting;
+    
+    if (isStunting === 0) {
+      adjustedConfidence = 1 - shapResult.confidence;
+    }
+    
     let levelRisiko: 'Risiko Rendah' | 'Risiko Sedang' | 'Risiko Tinggi';
-    if (shapResult.confidence < 0.35) levelRisiko = 'Risiko Rendah';
-    else if (shapResult.confidence <= 0.75) levelRisiko = 'Risiko Sedang';
+    if (adjustedConfidence < 0.35) levelRisiko = 'Risiko Rendah';
+    else if (adjustedConfidence <= 0.75) levelRisiko = 'Risiko Sedang';
     else levelRisiko = 'Risiko Tinggi';
 
     return {
       statusRisiko: {
-        skorRisiko: Math.round(shapResult.confidence * 100),
+        skorRisiko: Math.round(adjustedConfidence * 100),
         levelRisiko,
         penjelasan: aiInsights.statusRisiko.penjelasan,
       },

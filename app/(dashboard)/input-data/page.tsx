@@ -133,7 +133,6 @@ export default function InputDataPage() {
     // Environment data
     toiletFacility: '',
     wasteManagement: '',
-    waterAccess: '',
   });
 
   const handleInputChange = (
@@ -172,8 +171,7 @@ export default function InputDataPage() {
       case 'environment':
         return !!(
           formData.toiletFacility &&
-          formData.wasteManagement &&
-          formData.waterAccess
+          formData.wasteManagement
         );
       default:
         return true;
@@ -558,7 +556,6 @@ export default function InputDataPage() {
                       environment: {
                         toiletFacility: formData.toiletFacility,
                         wasteManagement: formData.wasteManagement,
-                        waterAccess: formData.waterAccess,
                       },
                     }}
                     isSubmitting={isSubmitting}

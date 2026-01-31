@@ -105,6 +105,7 @@ export default function DashboardPage() {
                 if (riskPercentage > 75) {
                   riskLevel = 'HIGH';
                 } else if (riskPercentage < 35) {
+                } else if (riskPercentage < 35) {
                   riskLevel = 'LOW';
                 } else {
                   riskLevel = 'MEDIUM';

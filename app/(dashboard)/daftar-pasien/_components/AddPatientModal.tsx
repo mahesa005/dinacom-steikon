@@ -85,12 +85,12 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
     try {
       // Map education levels to numbers
       const educationMap: { [key: string]: number } = {
-        'SD': 1,
-        'SMP': 2,
-        'SMA': 3,
-        'D3': 4,
-        'S1': 4,
-        'S2': 4,
+        'SD': 0,
+        'SMP': 1,
+        'SMA': 1,
+        'D3': 2,
+        'S1': 2,
+        'S2': 2,
       };
 
       // Map facility standards

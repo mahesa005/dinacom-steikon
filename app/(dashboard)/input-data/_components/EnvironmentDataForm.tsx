@@ -4,7 +4,6 @@ interface EnvironmentDataFormProps {
   formData: {
     toiletFacility: string;
     wasteManagement: string;
-    waterAccess: string;
   };
   onInputChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
@@ -62,27 +61,6 @@ export function EnvironmentDataForm({ formData, onInputChange }: EnvironmentData
           </select>
           <p className="text-xs text-gray-500 mt-1">
             Cara pengelolaan sampah rumah tangga
-          </p>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Akses Air Bersih <span className="text-red-500">*</span>
-          </label>
-          <select
-            name="waterAccess"
-            value={formData.waterAccess}
-            onChange={onInputChange}
-            required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-          >
-            <option value="">Pilih kondisi akses air bersih</option>
-            <option value="good">Baik - Air PAM atau sumur bor dengan kualitas baik</option>
-            <option value="adequate">Cukup - Sumur gali atau mata air</option>
-            <option value="poor">Buruk - Sumber air tidak layak atau jauh</option>
-          </select>
-          <p className="text-xs text-gray-500 mt-1">
-            Ketersediaan dan kualitas sumber air untuk kebutuhan sehari-hari
           </p>
         </div>
       </div>

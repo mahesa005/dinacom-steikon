@@ -26,7 +26,6 @@ interface ReviewData {
   environment: {
     toiletFacility: string;
     wasteManagement: string;
-    waterAccess: string;
   };
 }
 
@@ -203,12 +202,6 @@ export function ReviewSubmit({ data, isSubmitting }: ReviewSubmitProps) {
             <p className="text-sm text-gray-500 mb-2">Pengelolaan Sampah</p>
             <Badge className={formatFacilityLevel(data.environment.wasteManagement).color}>
               {formatFacilityLevel(data.environment.wasteManagement).label}
-            </Badge>
-          </div>
-          <div>
-            <p className="text-sm text-gray-500 mb-2">Akses Air Bersih</p>
-            <Badge className={formatFacilityLevel(data.environment.waterAccess).color}>
-              {formatFacilityLevel(data.environment.waterAccess).label}
             </Badge>
           </div>
         </div>
