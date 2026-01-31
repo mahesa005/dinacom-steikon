@@ -125,6 +125,7 @@ export default function DashboardPage() {
       <Header
         title="Dashboard"
         subtitle="Pantau dan kelola pasien stunting secara real-time"
+        showUserInfo
       />
 
       <div className="p-8 space-y-6">

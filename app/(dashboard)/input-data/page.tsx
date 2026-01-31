@@ -200,6 +200,7 @@ export default function InputDataPage() {
       <Header
         title="Input Data Baru"
         subtitle="Tambahkan data bayi baru untuk monitoring stunting"
+        showUserInfo
       />
 
       <div className="p-8">

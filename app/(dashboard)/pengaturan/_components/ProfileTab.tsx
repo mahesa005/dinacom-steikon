@@ -10,11 +10,21 @@ interface ProfileTabProps {
 }
 
 export function ProfileTab({ formData, onInputChange }: ProfileTabProps) {
+  const getInitials = (name: string) => {
+    if (!name) return 'U';
+    return name
+      .split(' ')
+      .map(word => word[0])
+      .join('')
+      .toUpperCase()
+      .substring(0, 2);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center space-x-4 pb-6 border-b border-gray-200">
         <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-semibold">
-          BA
+          {getInitials(formData.name)}
         </div>
         <div>
           <h3 className="text-xl font-bold text-gray-900">Informasi Profil</h3>

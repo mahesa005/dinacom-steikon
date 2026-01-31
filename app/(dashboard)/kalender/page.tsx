@@ -126,7 +126,7 @@ export default function KalenderPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header title="Kalender Kontrol" subtitle="Kelola jadwal kontrol dan kunjungan pasien" />
+      <Header title="Kalender Kontrol" subtitle="Kelola jadwal kontrol dan kunjungan pasien" showUserInfo />
 
       <div className="p-8">
         <div className="max-w-7xl mx-auto">
