@@ -17,8 +17,8 @@ export function CalendarStats({ todayCount, weekCount, highRiskCount, completedC
             <p className="text-sm text-gray-500">Hari Ini</p>
             <p className="text-2xl font-bold text-gray-900 mt-1">{todayCount}</p>
           </div>
-          <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
-            <CalendarIcon className="w-6 h-6 text-blue-600" />
+          <div className="w-12 h-12 bg-teal-50 rounded-lg flex items-center justify-center">
+            <CalendarIcon className="w-6 h-6 text-teal-600" />
           </div>
         </div>
       </Card>
@@ -29,8 +29,8 @@ export function CalendarStats({ todayCount, weekCount, highRiskCount, completedC
             <p className="text-sm text-gray-500">Minggu Ini</p>
             <p className="text-2xl font-bold text-gray-900 mt-1">{weekCount}</p>
           </div>
-          <div className="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center">
-            <Clock className="w-6 h-6 text-purple-600" />
+          <div className="w-12 h-12 bg-teal-50 rounded-lg flex items-center justify-center">
+            <Clock className="w-6 h-6 text-teal-600" />
           </div>
         </div>
       </Card>

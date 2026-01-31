@@ -81,7 +81,7 @@ export function InterventionTab({ patientId }: InterventionTabProps) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-teal-600" />
         <span className="ml-3 text-gray-600">Memuat rekomendasi intervensi...</span>
       </div>
     );
@@ -171,7 +171,7 @@ export function InterventionTab({ patientId }: InterventionTabProps) {
 
       {/* Action Buttons */}
       <div className="mt-6 pt-4 border-t border-gray-200 flex items-center space-x-3">
-        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium">
+        <button className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition text-sm font-medium">
           Cetak Rencana Intervensi
         </button>
         <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm font-medium">

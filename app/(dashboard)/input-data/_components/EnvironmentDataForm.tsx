@@ -4,7 +4,6 @@ interface EnvironmentDataFormProps {
   formData: {
     toiletFacility: string;
     wasteManagement: string;
-    waterAccess: string;
   };
   onInputChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
@@ -32,12 +31,12 @@ export function EnvironmentDataForm({ formData, onInputChange }: EnvironmentData
             value={formData.toiletFacility}
             onChange={onInputChange}
             required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
           >
             <option value="">Pilih kondisi fasilitas toilet</option>
-            <option value="good">Baik - Toilet bersih dengan septik tank</option>
-            <option value="adequate">Cukup - Toilet sederhana layak pakai</option>
-            <option value="poor">Buruk - Tidak ada toilet atau tidak layak</option>
+            <option value="good">Toilet dengan leher angsa (ada genangan air di lubang untuk menyekat bau/serangga)</option>
+            <option value="adequate">Toilet tanpa leher angsa (model cemplung atau lubang terbuka)</option>
+            <option value="poor">Tidak ada fasilitas (buang air langsung ke sungai, kolam, atau kebun)</option>
           </select>
           <p className="text-xs text-gray-500 mt-1">
             Penilaian berdasarkan kebersihan dan kelayakan fasilitas toilet
@@ -53,7 +52,7 @@ export function EnvironmentDataForm({ formData, onInputChange }: EnvironmentData
             value={formData.wasteManagement}
             onChange={onInputChange}
             required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
           >
             <option value="">Pilih kondisi pengelolaan sampah</option>
             <option value="good">Baik - Sampah dikelola dengan baik (TPA/diangkut)</option>
@@ -64,31 +63,10 @@ export function EnvironmentDataForm({ formData, onInputChange }: EnvironmentData
             Cara pengelolaan sampah rumah tangga
           </p>
         </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Akses Air Bersih <span className="text-red-500">*</span>
-          </label>
-          <select
-            name="waterAccess"
-            value={formData.waterAccess}
-            onChange={onInputChange}
-            required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          >
-            <option value="">Pilih kondisi akses air bersih</option>
-            <option value="good">Baik - Air PAM atau sumur bor dengan kualitas baik</option>
-            <option value="adequate">Cukup - Sumur gali atau mata air</option>
-            <option value="poor">Buruk - Sumber air tidak layak atau jauh</option>
-          </select>
-          <p className="text-xs text-gray-500 mt-1">
-            Ketersediaan dan kualitas sumber air untuk kebutuhan sehari-hari
-          </p>
-        </div>
       </div>
 
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <p className="text-sm text-blue-800">
+      <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
+        <p className="text-sm text-teal-800">
           <strong>Catatan:</strong> Data lingkungan dan sanitasi sangat penting untuk analisis
           risiko stunting. Pastikan informasi yang diberikan akurat.
         </p>

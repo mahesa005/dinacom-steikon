@@ -133,7 +133,6 @@ export default function InputDataPage() {
     // Environment data
     toiletFacility: '',
     wasteManagement: '',
-    waterAccess: '',
   });
 
   const handleInputChange = (
@@ -172,8 +171,7 @@ export default function InputDataPage() {
       case 'environment':
         return !!(
           formData.toiletFacility &&
-          formData.wasteManagement &&
-          formData.waterAccess
+          formData.wasteManagement
         );
       default:
         return true;
@@ -231,6 +229,12 @@ export default function InputDataPage() {
         'poor': 0,
       };
 
+      const toiletMap: { [key: string]: number } = {
+        'good': 1,
+        'adequate': 0,
+        'poor': 0,
+      }
+
       // Prepare payload with parent data for auto-predict
       const payload: any = {
         nomorPasien: formData.patientNumber,
@@ -262,7 +266,7 @@ export default function InputDataPage() {
         payload.pendidikanAyah = educationMap[formData.fatherEducation];
       }
       if (formData.toiletFacility) {
-        payload.fasilitas_toilet = facilityMap[formData.toiletFacility];
+        payload.fasilitas_toilet = toiletMap[formData.toiletFacility];
       }
       if (formData.wasteManagement) {
         payload.pengelolaan_sampah = facilityMap[formData.wasteManagement];
@@ -307,7 +311,7 @@ export default function InputDataPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <Card className="p-12 max-w-2xl w-full">
           <div className="text-center">
-            <Loader2 className="w-20 h-20 text-blue-600 animate-spin mx-auto mb-6" />
+            <Loader2 className="w-20 h-20 text-teal-600 animate-spin mx-auto mb-6" />
             <h3 className="text-2xl font-bold text-gray-900 mb-3">
               Memproses Data...
             </h3>
@@ -323,7 +327,7 @@ export default function InputDataPage() {
               </div>
               <div className="flex items-center gap-4 text-base">
                 {loadingStage.includes('AI') ? (
-                  <Loader2 className="w-6 h-6 text-blue-600 animate-spin flex-shrink-0" />
+                  <Loader2 className="w-6 h-6 text-teal-600 animate-spin flex-shrink-0" />
                 ) : (
                   <div className="w-6 h-6 rounded-full border-2 border-gray-300 flex-shrink-0" />
                 )}
@@ -366,7 +370,7 @@ export default function InputDataPage() {
                 <p className="text-lg text-gray-600 mb-2">
                   {analysisResult.bayi.nama} telah terdaftar dengan nomor pasien
                 </p>
-                <p className="text-2xl font-bold text-blue-600">
+                <p className="text-2xl font-bold text-teal-600">
                   {analysisResult.bayi.nomorPasien}
                 </p>
               </div>
@@ -400,27 +404,70 @@ export default function InputDataPage() {
                 <Card className="p-8">
                   <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
                     <AlertTriangle className="w-7 h-7 text-orange-600" />
-                    Faktor Risiko Terdeteksi
+                    Analisis Faktor
                   </h3>
-                  <div className="space-y-4">
-                    {analysisResult.analisisAI.insights.faktorPenyebab.map((faktor, idx) => (
-                      <div key={idx} className="border-l-4 border-orange-400 pl-6 py-4 bg-gray-50 rounded-r-lg">
-                        <div className="flex justify-between items-start mb-2">
-                          <h4 className="font-bold text-lg text-gray-900">{faktor.nama}</h4>
-                          <span className="text-sm font-semibold px-3 py-1 bg-orange-100 text-orange-700 rounded-full">
-                            {faktor.persentasePengaruh.toFixed(1)}%
-                          </span>
-                        </div>
-                        <p className="text-sm text-gray-600 mb-2">
-                          <span className="font-medium">Nilai:</span> {faktor.nilai}
-                        </p>
-                        <p className="text-sm text-gray-700 mb-3">{faktor.penjelasan}</p>
-                        <p className="text-sm text-blue-700 bg-blue-50 p-3 rounded-lg border-l-2 border-blue-400">
-                          <span className="font-semibold">Mengapa penting:</span> {faktor.mengapaIniPenting}
-                        </p>
+                  
+                  {/* Faktor yang meningkatkan risiko */}
+                  {analysisResult.analisisAI.insights.faktorPenyebab.some(f => f.persentasePengaruh > 0) && (
+                    <div className="mb-8">
+                      <h4 className="text-lg font-semibold text-red-600 mb-4 flex items-center gap-2">
+                        <span className="w-3 h-3 bg-red-500 rounded-full"></span>
+                        Faktor yang Meningkatkan Risiko
+                      </h4>
+                      <div className="space-y-4">
+                        {analysisResult.analisisAI.insights.faktorPenyebab
+                          .filter(faktor => faktor.persentasePengaruh > 0)
+                          .map((faktor, idx) => (
+                            <div key={idx} className="border-l-4 border-red-400 pl-6 py-4 bg-red-50 rounded-r-lg">
+                              <div className="flex justify-between items-start mb-2">
+                                <h4 className="font-bold text-lg text-gray-900">{faktor.nama}</h4>
+                                <span className="text-sm font-semibold px-3 py-1 bg-red-100 text-red-700 rounded-full">
+                                  +{Math.abs(faktor.persentasePengaruh).toFixed(1)}%
+                                </span>
+                              </div>
+                              <p className="text-sm text-gray-600 mb-2">
+                                <span className="font-medium">Nilai:</span> {faktor.nilai}
+                              </p>
+                              <p className="text-sm text-gray-700 mb-3">{faktor.penjelasan}</p>
+                              <p className="text-sm text-red-700 bg-red-100 p-3 rounded-lg border-l-2 border-red-400">
+                                <span className="font-semibold">Mengapa penting:</span> {faktor.mengapaIniPenting}
+                              </p>
+                            </div>
+                          ))}
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  )}
+
+                  {/* Faktor yang menurunkan risiko */}
+                  {analysisResult.analisisAI.insights.faktorPenyebab.some(f => f.persentasePengaruh < 0) && (
+                    <div>
+                      <h4 className="text-lg font-semibold text-green-600 mb-4 flex items-center gap-2">
+                        <span className="w-3 h-3 bg-green-500 rounded-full"></span>
+                        Faktor yang Menurunkan Risiko (Faktor Pelindung)
+                      </h4>
+                      <div className="space-y-4">
+                        {analysisResult.analisisAI.insights.faktorPenyebab
+                          .filter(faktor => faktor.persentasePengaruh < 0)
+                          .map((faktor, idx) => (
+                            <div key={idx} className="border-l-4 border-green-400 pl-6 py-4 bg-green-50 rounded-r-lg">
+                              <div className="flex justify-between items-start mb-2">
+                                <h4 className="font-bold text-lg text-gray-900">{faktor.nama}</h4>
+                                <span className="text-sm font-semibold px-3 py-1 bg-green-100 text-green-700 rounded-full">
+                                  {faktor.persentasePengaruh.toFixed(1)}%
+                                </span>
+                              </div>
+                              <p className="text-sm text-gray-600 mb-2">
+                                <span className="font-medium">Nilai:</span> {faktor.nilai}
+                              </p>
+                              <p className="text-sm text-gray-700 mb-3">{faktor.penjelasan}</p>
+                              <p className="text-sm text-green-700 bg-green-100 p-3 rounded-lg border-l-2 border-green-400">
+                                <span className="font-semibold">Mengapa penting:</span> {faktor.mengapaIniPenting}
+                              </p>
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+                  )}
                 </Card>
 
                 {/* Recommendations */}
@@ -442,7 +489,7 @@ export default function InputDataPage() {
                                   ? 'bg-red-100 text-red-700'
                                   : rekomendasi.prioritas === 'Prioritas Sedang'
                                   ? 'bg-yellow-100 text-yellow-700'
-                                  : 'bg-blue-100 text-blue-700'
+                                  : 'bg-teal-100 text-teal-700'
                               }`}>
                                 {rekomendasi.prioritas}
                               </span>
@@ -558,7 +605,6 @@ export default function InputDataPage() {
                       environment: {
                         toiletFacility: formData.toiletFacility,
                         wasteManagement: formData.wasteManagement,
-                        waterAccess: formData.waterAccess,
                       },
                     }}
                     isSubmitting={isSubmitting}

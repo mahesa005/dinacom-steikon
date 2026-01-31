@@ -14,7 +14,7 @@ export function Badge({ variant = 'default', children, className = '' }: BadgePr
     low: 'bg-green-100 text-green-700',
     default: 'bg-gray-100 text-gray-700',
     urgent: 'bg-red-500 text-white',
-    ai: 'bg-purple-200 text-purple-800',
+    ai: 'bg-teal-200 text-teal-800',
   };
 
   return (

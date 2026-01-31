@@ -45,8 +45,8 @@ export function StatsCard({
     },
     info: {
       bg: 'bg-white',
-      iconBg: 'bg-blue-100',
-      iconColor: 'text-blue-600',
+      iconBg: 'bg-teal-100',
+      iconColor: 'text-teal-600',
     },
   };
 

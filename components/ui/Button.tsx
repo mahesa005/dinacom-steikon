@@ -20,11 +20,11 @@ export function Button({
 
   const variantClasses = {
     primary:
-      'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
+      'bg-teal-600 text-white hover:bg-teal-700 focus:ring-teal-500',
     secondary:
-      'bg-purple-600 text-white hover:bg-purple-700 focus:ring-purple-500',
+      'bg-teal-500 text-white hover:bg-teal-600 focus:ring-teal-400',
     outline:
-      'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-gray-500',
+      'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-teal-500',
     danger:
       'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
     success:

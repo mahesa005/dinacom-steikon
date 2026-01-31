@@ -8,7 +8,7 @@ import { UrgentActionsCard } from '@/components/dashboard/UrgentActionsCard';
 import { AIInsightCard } from '@/components/dashboard/AIInsightCard';
 import { RiskDistributionChart } from '@/components/dashboard/RiskDistributionChart';
 import { PatientTable } from '@/components/dashboard/PatientTable';
-import { AlertTriangle, Eye, CheckCircle, Calendar } from 'lucide-react';
+import { AlertTriangle, Eye, CheckCircle, Users } from 'lucide-react';
 import type { Patient } from '@/types';
 
 export default function DashboardPage() {
@@ -69,6 +69,70 @@ export default function DashboardPage() {
 
           const latestControl = bayi.historyKontrol?.[0];
 
+          // Get latest AI analysis if available
+          const latestAnalysis = bayi.hasilAnalisis?.[0];
+
+          // Determine risk level from AI analysis or control data
+          let riskLevel = 'MEDIUM';
+          let riskPercentage = 50;
+          let mainFactor = '-';
+
+          if (latestAnalysis) {
+            // Parse hasilPrediksi to get skorRisiko and levelRisiko
+            try {
+              const hasilPrediksi = JSON.parse(latestAnalysis.hasilPrediksi || '{}');
+              
+              // Get skorRisiko from hasilPrediksi
+              if (hasilPrediksi.statusRisiko?.skorRisiko) {
+                riskPercentage = hasilPrediksi.statusRisiko.skorRisiko;
+              } else {
+                // Fallback to tingkatKepercayaan
+                riskPercentage = Math.round((latestAnalysis.tingkatKepercayaan || 0.5) * 100);
+              }
+
+              // Get levelRisiko from hasilPrediksi
+              if (hasilPrediksi.statusRisiko?.levelRisiko) {
+                const level = hasilPrediksi.statusRisiko.levelRisiko;
+                if (level.includes('Tinggi')) {
+                  riskLevel = 'HIGH';
+                } else if (level.includes('Rendah')) {
+                  riskLevel = 'LOW';
+                } else {
+                  riskLevel = 'MEDIUM';
+                }
+              } else {
+                // Fallback: determine from riskPercentage
+                if (riskPercentage > 75) {
+                  riskLevel = 'HIGH';
+                } else if (riskPercentage < 35) {
+                } else if (riskPercentage < 35) {
+                  riskLevel = 'LOW';
+                } else {
+                  riskLevel = 'MEDIUM';
+                }
+              }
+            } catch (error) {
+              // Fallback to tingkatKepercayaan if parsing fails
+              riskPercentage = Math.round((latestAnalysis.tingkatKepercayaan || 0.5) * 100);
+              if (riskPercentage > 75) riskLevel = 'HIGH';
+              else if (riskPercentage < 35) riskLevel = 'LOW';
+              else riskLevel = 'MEDIUM';
+            }
+
+            // Try to extract main factor from dataInput (SHAP analysis)
+            try {
+              const dataInput = JSON.parse(latestAnalysis.dataInput || '{}');
+              if (dataInput.top_factors && dataInput.top_factors.length > 0) {
+                mainFactor = dataInput.top_factors[0].feature || '-';
+              }
+            } catch {
+              mainFactor = '-';
+            }
+          } else if (latestControl?.statusStunting) {
+            // Fallback to control data if no AI analysis
+            riskLevel = latestControl.statusStunting;
+          }
+
           return {
             id: bayi.nomorPasien,
             name: bayi.nama,
@@ -88,9 +152,9 @@ export default function DashboardPage() {
             fatherName: bayi.namaAyah,
             fatherEducation: 'SMA',
             fatherHeight: 170,
-            riskLevel: latestControl?.statusStunting || 'MEDIUM',
-            riskPercentage: 50,
-            mainFactor: 'Sanitasi',
+            riskLevel,
+            riskPercentage,
+            mainFactor,
             mainFactorIcon: '',
             lastCheckup: latestControl
               ? new Date(latestControl.tanggalKontrol).toLocaleDateString('id-ID', {
@@ -159,12 +223,19 @@ export default function DashboardPage() {
         {/* Stats Cards Row */}
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatsCard
+            title="Total Pasien"
+            value={totalPatients}
+            icon={<Users className="w-6 h-6" />}
+            variant="info"
+            subtitle="Jumlah seluruh pasien terdaftar"
+          />
+          <StatsCard
             title="Risiko Tinggi"
             value={highRiskPatients.length}
             icon={<AlertTriangle className="w-6 h-6" />}
             variant="danger"
-            badge="URGENT"
-            trend={{ direction: 'down', value: '3% dari bulan lalu' }}
+            badge={highRiskPatients.length > 0 ? "URGENT" : undefined}
+            subtitle={`${riskDistributionData.high.percentage}% dari total pasien`}
           />
           <StatsCard
             title="Risiko Sedang"
@@ -178,14 +249,7 @@ export default function DashboardPage() {
             value={lowRiskPatients.length}
             icon={<CheckCircle className="w-6 h-6" />}
             variant="success"
-            trend={{ direction: 'up', value: '5% dari bulan lalu' }}
-          />
-          <StatsCard
-            title="Kontrol Hari Ini"
-            value={0}
-            icon={<Calendar className="w-6 h-6" />}
-            variant="info"
-            subtitle="Belum ada kontrol hari ini"
+            subtitle={`${riskDistributionData.low.percentage}% dari total pasien`}
           />
         </section>
 

@@ -238,6 +238,18 @@ ${shapEntries.map(entry =>
    Pengaruh: ${entry.shapValue?.toFixed(4)} ${entry.shapValue! > 0 ? '(Meningkatkan risiko)' : entry.shapValue! < 0 ? '(Menurunkan risiko)' : '(Netral)'}`
 ).join('\n')}
 
+⚠️ ATURAN PENTING INTERPRETASI SHAP VALUES:
+- Nilai SHAP POSITIF (+) = Faktor ini MENINGKATKAN risiko stunting (faktor risiko/buruk)
+- Nilai SHAP NEGATIF (-) = Faktor ini MENURUNKAN risiko stunting (faktor pelindung/baik)
+- Absolute value (|SHAP|) = Seberapa kuat pengaruhnya
+
+CONTOH INTERPRETASI YANG BENAR:
+✅ Tinggi ibu 150 cm dengan SHAP = +0.3 → "Tinggi ibu yang kurang ideal MENINGKATKAN risiko"
+✅ Tinggi ibu 165 cm dengan SHAP = -0.3 → "Tinggi ibu yang baik MENURUNKAN risiko" 
+✅ Tinggi ayah 140 cm dengan SHAP = +0.5 → "Tinggi ayah yang pendek MENINGKATKAN risiko"
+✅ Pendidikan SMA dengan SHAP = -0.1 → "Pendidikan yang memadai MENURUNKAN risiko"
+❌ JANGAN asumsikan berdasarkan nilai feature saja, WAJIB lihat tanda SHAP!
+
 TUGAS ANDA:
 Berikan analisis dalam format JSON berikut (sesuai UI yang diminta):
 
@@ -248,9 +260,12 @@ Berikan analisis dalam format JSON berikut (sesuai UI yang diminta):
   "faktorPenyebab": [
     {
       "nama": "Nama Faktor (contoh: Tinggi Ibu, Pendapatan Keluarga, Kunjungan ANC)",
-      "nilai": "Nilai yang mudah dipahami (contoh: '150 cm (150-155 cm)', '< 1 juta', '2 kali (< 6 kali)')",
-      "persentasePengaruh": 15,  // Hitung dari absolute SHAP value, dikonversi ke persentase (0-100)
-      "penjelasan": "1-2 kalimat penjelasan faktor ini",
+      "nilai": "Nilai yang mudah dipahami (contoh: '150 cm (pendek, risiko)', '180 cm (tinggi, sangat baik)', '< 1 juta', '2 kali (< 6 kali)')",
+      "persentasePengaruh": 15,  // ⚠️ CRITICAL: WAJIB PERTAHANKAN TANDA +/- DARI SHAP!
+                                 // Jika SHAP = +0.3 → persentasePengaruh HARUS POSITIF (contoh: 25.5)
+                                 // Jika SHAP = -0.4 → persentasePengaruh HARUS NEGATIF (contoh: -32.8)
+                                 // JANGAN GUNAKAN ABSOLUTE VALUE! Tanda sangat penting untuk UI filtering!
+      "penjelasan": "1-2 kalimat penjelasan faktor ini. WAJIB sebutkan apakah faktor ini MENINGKATKAN atau MENURUNKAN risiko sesuai tanda SHAP",
       "mengapaIniPenting": "1-2 kalimat mengapa faktor ini berkontribusi pada risiko stunting"
     }
   ],
@@ -266,15 +281,24 @@ Berikan analisis dalam format JSON berikut (sesuai UI yang diminta):
 }
 
 PANDUAN KHUSUS:
-1. **Faktor Penyebab**: Urutkan dari persentase pengaruh tertinggi (top 3-5 faktor saja)
-   - Persentase dihitung dari absolute SHAP value relatif terhadap total
-   - Contoh format nilai: "150 cm (150-155 cm)", "< 1 juta", "2 kali (< 6 kali)"
+1. **Faktor Penyebab**: Urutkan dari persentase pengaruh tertinggi (top 3-6 faktor)
+   - Persentase dihitung dari SHAP value relatif terhadap total absolute SHAP
+   - **CRITICAL**: PERTAHANKAN TANDA +/- DARI SHAP VALUE!
+     * Jika SHAP = +0.25 (meningkatkan risiko) → persentasePengaruh = 30.5 (POSITIF)
+     * Jika SHAP = -0.35 (menurunkan risiko) → persentasePengaruh = -42.8 (NEGATIF)
+     * CONTOH BENAR: {"nama": "Tinggi Ibu", "persentasePengaruh": -34.9} ✅
+     * CONTOH SALAH: {"nama": "Tinggi Ibu", "persentasePengaruh": 34.9} ❌ (kehilangan tanda -)
+   - Format nilai: Sebutkan nilai actual + interpretasi (contoh: "150 cm (kurang dari ideal)", "174 cm (tinggi, baik)")
+   - Contoh penjelasan BENAR:
+     * SHAP +0.5 → "Tinggi ayah 140 cm yang tergolong pendek menjadi FAKTOR RISIKO yang meningkatkan kemungkinan stunting"
+     * SHAP -0.4 → "Tinggi ibu 174 cm yang baik menjadi FAKTOR PELINDUNG yang menurunkan risiko stunting"
 
 2. **Rekomendasi Tindakan**: Berikan 5-7 rekomendasi konkret yang:
    - SPESIFIK dan ACTIONABLE (bukan saran umum)
-   - Disesuaikan dengan faktor risiko yang ditemukan
-   - Menggunakan contoh lokal Indonesia (tempe, tahu, telur, ikan)
-   - Prioritas Tinggi: faktor yang sangat urgent dan bisa diubah
+   - Disesuaikan dengan faktor risiko yang ditemukan (fokus pada SHAP positif untuk perbaikan)
+   - Apresiasi faktor protektif (SHAP negatif) dengan "pertahankan" atau "lanjutkan"
+   - Menggunakan contoh lokal Indonesia (tempe, tahu, telur, ikan, sayuran lokal)
+   - Prioritas Tinggi: faktor yang sangat urgent dan bisa diubah (biasanya SHAP positif tinggi)
    - Prioritas Sedang: penting tapi tidak immediate
    - Gunakan icon yang relevan untuk visualisasi
 
@@ -297,14 +321,23 @@ Response HANYA JSON valid, tanpa markdown atau teks tambahan.
     const aiInsights = JSON.parse(jsonMatch[0]);
     
     // Calculate risk level based on confidence
+    // PENTING: Jika prediksi = TIDAK stunting (0), flip confidence rate
+    // Karena confidence tinggi untuk "tidak stunting" = risiko RENDAH
+    let adjustedConfidence = shapResult.confidence;
+    const isStunting = shapResult.is_stunting;
+    
+    if (isStunting === 0) {
+      adjustedConfidence = 1 - shapResult.confidence;
+    }
+    
     let levelRisiko: 'Risiko Rendah' | 'Risiko Sedang' | 'Risiko Tinggi';
-    if (shapResult.confidence < 0.35) levelRisiko = 'Risiko Rendah';
-    else if (shapResult.confidence <= 0.75) levelRisiko = 'Risiko Sedang';
+    if (adjustedConfidence < 0.35) levelRisiko = 'Risiko Rendah';
+    else if (adjustedConfidence <= 0.75) levelRisiko = 'Risiko Sedang';
     else levelRisiko = 'Risiko Tinggi';
 
     return {
       statusRisiko: {
-        skorRisiko: Math.round(shapResult.confidence * 100),
+        skorRisiko: Math.round(adjustedConfidence * 100),
         levelRisiko,
         penjelasan: aiInsights.statusRisiko.penjelasan,
       },

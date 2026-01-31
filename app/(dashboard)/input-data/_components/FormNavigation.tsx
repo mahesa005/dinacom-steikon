@@ -30,7 +30,7 @@ export function FormNavigation({
             disabled={!isAccessible}
             className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${
               isActive
-                ? 'bg-blue-50 text-blue-700 border-2 border-blue-200'
+                ? 'bg-teal-50 text-teal-700 border-2 border-teal-200'
                 : isCompleted
                 ? 'bg-green-50 text-green-700 hover:bg-green-100'
                 : isAccessible
@@ -41,7 +41,7 @@ export function FormNavigation({
             <div
               className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
                 isActive
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-teal-600 text-white'
                   : isCompleted
                   ? 'bg-green-600 text-white'
                   : isAccessible

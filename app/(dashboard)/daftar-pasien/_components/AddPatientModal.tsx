@@ -85,12 +85,12 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
     try {
       // Map education levels to numbers
       const educationMap: { [key: string]: number } = {
-        'SD': 1,
-        'SMP': 2,
-        'SMA': 3,
-        'D3': 4,
-        'S1': 4,
-        'S2': 4,
+        'SD': 0,
+        'SMP': 1,
+        'SMA': 1,
+        'D3': 2,
+        'S1': 2,
+        'S2': 2,
       };
 
       // Map facility standards
@@ -198,7 +198,7 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
     return (
       <Modal isOpen={isOpen} onClose={() => {}} size="md">
         <div className="px-6 py-12 text-center">
-          <Loader2 className="w-16 h-16 text-blue-600 animate-spin mx-auto mb-6" />
+          <Loader2 className="w-16 h-16 text-teal-600 animate-spin mx-auto mb-6" />
           <h3 className="text-xl font-semibold text-gray-900 mb-2">
             Memproses Data...
           </h3>
@@ -214,7 +214,7 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
             </div>
             <div className="flex items-center gap-3 text-sm">
               {loadingStage.includes('AI') ? (
-                <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />
+                <Loader2 className="w-5 h-5 text-teal-600 animate-spin" />
               ) : (
                 <div className="w-5 h-5 rounded-full border-2 border-gray-300" />
               )}
@@ -285,7 +285,7 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
                     <div key={idx} className="bg-white rounded-lg p-4 border border-gray-200">
                       <div className="flex items-start justify-between mb-2">
                         <h5 className="font-semibold text-gray-900">{faktor.nama}</h5>
-                        <span className="text-sm font-bold text-blue-600">
+                        <span className="text-sm font-bold text-teal-600">
                           {faktor.persentasePengaruh}%
                         </span>
                       </div>
@@ -297,14 +297,14 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
               </div>
 
               {/* Top Recommendations */}
-              <div className="bg-blue-50 rounded-xl p-6">
+              <div className="bg-teal-50 rounded-xl p-6">
                 <h4 className="font-bold text-gray-900 mb-4">Rekomendasi Tindakan Prioritas</h4>
                 <div className="space-y-3">
                   {analysisResult.analisisAI.insights.rekomendasiTindakan
                     .filter(r => r.prioritas === 'Prioritas Tinggi')
                     .slice(0, 3)
                     .map((rekomendasi, idx) => (
-                      <div key={idx} className="bg-white rounded-lg p-4 border border-blue-200">
+                      <div key={idx} className="bg-white rounded-lg p-4 border border-teal-200">
                         <div className="flex items-start gap-3">
                           <span className="text-2xl">{rekomendasi.icon}</span>
                           <div className="flex-1">
@@ -362,7 +362,7 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
                   required
                   value={formData.nomorPasien}
                   onChange={(e) => setFormData({ ...formData, nomorPasien: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="Contoh: BP-2026-001"
                 />
               </div>
@@ -374,7 +374,7 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
                   type="text"
                   value={formData.nik}
                   onChange={(e) => setFormData({ ...formData, nik: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="16 digit NIK"
                   maxLength={16}
                 />
@@ -385,7 +385,7 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
           {/* Baby Information */}
           <div>
             <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <User className="w-5 h-5 text-blue-600" />
+              <User className="w-5 h-5 text-teal-600" />
               Informasi Bayi
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -398,7 +398,7 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
                   required
                   value={formData.nama}
                   onChange={(e) => setFormData({ ...formData, nama: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="Nama bayi"
                 />
               </div>
@@ -411,7 +411,7 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
                   required
                   value={formData.tempatLahir}
                   onChange={(e) => setFormData({ ...formData, tempatLahir: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="Kota/Kabupaten"
                 />
               </div>
@@ -424,7 +424,7 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
                   required
                   value={formData.tanggalLahir}
                   onChange={(e) => setFormData({ ...formData, tanggalLahir: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                 />
               </div>
               <div>
@@ -435,7 +435,7 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
                   required
                   value={formData.jenisKelamin}
                   onChange={(e) => setFormData({ ...formData, jenisKelamin: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                 >
                   <option value="">Pilih jenis kelamin</option>
                   <option value="male">Laki-laki</option>
@@ -452,7 +452,7 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
                   required
                   value={formData.beratLahir}
                   onChange={(e) => setFormData({ ...formData, beratLahir: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="2.5"
                 />
               </div>
@@ -465,7 +465,7 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
                   required
                   value={formData.panjangLahir}
                   onChange={(e) => setFormData({ ...formData, panjangLahir: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="48"
                 />
               </div>
@@ -476,7 +476,7 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
                 <select
                   value={formData.golonganDarah}
                   onChange={(e) => setFormData({ ...formData, golonganDarah: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                 >
                   <option value="">Belum Tahu</option>
                   <option value="A">A</option>
@@ -494,7 +494,7 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
                   required
                   value={formData.alamat}
                   onChange={(e) => setFormData({ ...formData, alamat: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="Jl. Contoh No. 123, RT 01 RW 02"
                 />
               </div>
@@ -504,7 +504,7 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
           {/* Mother Information */}
           <div>
             <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <Users className="w-5 h-5 text-purple-600" />
+              <Users className="w-5 h-5 text-teal-600" />
               Informasi Ibu
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -517,7 +517,7 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
                   required
                   value={formData.namaIbu}
                   onChange={(e) => setFormData({ ...formData, namaIbu: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="Nama ibu"
                 />
               </div>
@@ -530,7 +530,7 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
                   required
                   value={formData.nomorHpOrangTua}
                   onChange={(e) => setFormData({ ...formData, nomorHpOrangTua: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="08XX-XXXX-XXXX"
                 />
               </div>
@@ -542,7 +542,7 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
                   required
                   value={formData.pendidikanIbu}
                   onChange={(e) => setFormData({ ...formData, pendidikanIbu: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                 >
                   <option value="">Pilih pendidikan</option>
                   <option value="SD">SD</option>
@@ -562,7 +562,7 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
                   required
                   value={formData.tinggiIbu}
                   onChange={(e) => setFormData({ ...formData, tinggiIbu: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="150"
                 />
               </div>
@@ -585,7 +585,7 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
                   required
                   value={formData.namaAyah}
                   onChange={(e) => setFormData({ ...formData, namaAyah: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="Nama ayah"
                 />
               </div>
@@ -597,7 +597,7 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
                   required
                   value={formData.pendidikanAyah}
                   onChange={(e) => setFormData({ ...formData, pendidikanAyah: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                 >
                   <option value="">Pilih pendidikan</option>
                   <option value="SD">SD</option>
@@ -617,7 +617,7 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
                   required
                   value={formData.tinggiAyah}
                   onChange={(e) => setFormData({ ...formData, tinggiAyah: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="165"
                 />
               </div>
@@ -639,7 +639,7 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
                   required
                   value={formData.fasilitas_toilet}
                   onChange={(e) => setFormData({ ...formData, fasilitas_toilet: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                 >
                   <option value="">Pilih kondisi</option>
                   <option value="good">Baik (Memenuhi Standar)</option>
@@ -655,7 +655,7 @@ export function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalP
                   required
                   value={formData.pengelolaan_sampah}
                   onChange={(e) => setFormData({ ...formData, pengelolaan_sampah: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                 >
                   <option value="">Pilih kondisi</option>
                   <option value="good">Baik (Memenuhi Standar)</option>

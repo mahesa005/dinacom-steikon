@@ -59,7 +59,7 @@ export function AppointmentList({
         <select
           value={filterType}
           onChange={(e) => onFilterTypeChange(e.target.value)}
-          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
         >
           <option value="all">Semua Jenis</option>
           <option value="kontrol-rutin">Kontrol Rutin</option>
@@ -71,7 +71,7 @@ export function AppointmentList({
         <select
           value={filterStatus}
           onChange={(e) => onFilterStatusChange(e.target.value)}
-          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
         >
           <option value="all">Semua Status</option>
           <option value="dijadwalkan">Dijadwalkan</option>

@@ -18,7 +18,7 @@ export function SecurityTab({ formData, onInputChange }: SecurityTabProps) {
     <div className="space-y-6">
       <div className="pb-6 border-b border-gray-200">
         <div className="flex items-center space-x-3 mb-2">
-          <Shield className="w-6 h-6 text-blue-600" />
+          <Shield className="w-6 h-6 text-teal-600" />
           <h3 className="text-xl font-bold text-gray-900">Keamanan</h3>
         </div>
         <p className="text-sm text-gray-500">Ubah password dan kelola keamanan akun</p>
@@ -35,7 +35,7 @@ export function SecurityTab({ formData, onInputChange }: SecurityTabProps) {
               name="currentPassword"
               value={formData.currentPassword}
               onChange={onInputChange}
-              className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
             />
             <button
               type="button"
@@ -57,7 +57,7 @@ export function SecurityTab({ formData, onInputChange }: SecurityTabProps) {
               name="newPassword"
               value={formData.newPassword}
               onChange={onInputChange}
-              className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
             />
             <button
               type="button"
@@ -81,7 +81,7 @@ export function SecurityTab({ formData, onInputChange }: SecurityTabProps) {
             name="confirmPassword"
             value={formData.confirmPassword}
             onChange={onInputChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
           />
         </div>
       </div>

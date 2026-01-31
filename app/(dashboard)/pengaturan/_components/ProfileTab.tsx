@@ -23,7 +23,7 @@ export function ProfileTab({ formData, onInputChange }: ProfileTabProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center space-x-4 pb-6 border-b border-gray-200">
-        <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-semibold">
+        <div className="w-20 h-20 bg-gradient-to-br from-teal-500 to-teal-600 rounded-full flex items-center justify-center text-white text-2xl font-semibold">
           {getInitials(formData.name)}
         </div>
         <div>
@@ -42,7 +42,7 @@ export function ProfileTab({ formData, onInputChange }: ProfileTabProps) {
             name="name"
             value={formData.name}
             onChange={onInputChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
           />
         </div>
 
@@ -53,7 +53,7 @@ export function ProfileTab({ formData, onInputChange }: ProfileTabProps) {
             name="email"
             value={formData.email}
             onChange={onInputChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
           />
         </div>
 
@@ -66,7 +66,7 @@ export function ProfileTab({ formData, onInputChange }: ProfileTabProps) {
             name="phone"
             value={formData.phone}
             onChange={onInputChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
           />
         </div>
 
@@ -77,7 +77,7 @@ export function ProfileTab({ formData, onInputChange }: ProfileTabProps) {
             name="institution"
             value={formData.institution}
             onChange={onInputChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
           />
         </div>
 
@@ -88,7 +88,7 @@ export function ProfileTab({ formData, onInputChange }: ProfileTabProps) {
             value={formData.address}
             onChange={onInputChange}
             rows={3}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
           />
         </div>
       </div>

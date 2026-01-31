@@ -236,7 +236,7 @@ export function OverviewTab({ patient, bayiId }: OverviewTabProps) {
           <div className={`rounded-lg p-4 ${
             nextSchedule && getDaysUntil(nextSchedule.rentangAwal) <= 3
               ? 'bg-orange-100 border border-orange-200'
-              : 'bg-blue-100 border border-blue-200'
+              : 'bg-teal-100 border border-teal-200'
           }`}>
             <div className="flex items-start justify-between">
               <div>
@@ -265,7 +265,7 @@ export function OverviewTab({ patient, bayiId }: OverviewTabProps) {
             </div>
           </div>
           {getDaysUntil(nextSchedule.rentangAwal) <= 7 && getDaysUntil(nextSchedule.rentangAwal) >= 0 && (
-            <div className="bg-blue-50 rounded-lg p-3 text-xs text-gray-600 border border-blue-200">
+            <div className="bg-teal-50 rounded-lg p-3 text-xs text-gray-600 border border-teal-200">
               💡 <strong>Tips:</strong> Pastikan bayi dalam kondisi sehat saat pemeriksaan untuk hasil yang akurat
             </div>
           )}

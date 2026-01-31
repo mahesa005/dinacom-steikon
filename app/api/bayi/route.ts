@@ -81,22 +81,10 @@ export async function POST(request: NextRequest) {
     const firstControlDate = new Date();
     firstControlDate.setDate(firstControlDate.getDate() + 7);
   
-    // Generate jadwal pemeriksaan otomatis sampai umur 2 tahun
-    // Default risk level: MEDIUM (akan di-update setelah pemeriksaan pertama)
-    // Gunakan bayi.id (internal ID), bukan nomorPasien
-    try {
-      await generateJadwalPemeriksaan(
-        bayi.id, // Internal ID dari database
-        bayi.tanggalLahir,
-        'MEDIUM' // Default risk level untuk bayi baru
-      );
-    } catch (jadwalError) {
-      console.error('Error generating jadwal:', jadwalError);
-      // Lanjutkan walaupun gagal membuat jadwal
-    }
-
     // Auto-predict stunting risk jika data orang tua lengkap
     let analisisAI = null;
+    let predictedRiskLevel = 'MEDIUM'; // Default jika tidak ada prediksi
+    
     if (parentData.tinggiIbu && parentData.tinggiAyah && 
         parentData.pendidikanIbu !== undefined && parentData.pendidikanAyah !== undefined &&
         parentData.fasilitas_toilet !== undefined && parentData.pengelolaan_sampah !== undefined) {
@@ -113,6 +101,8 @@ export async function POST(request: NextRequest) {
           toilet_standard: parentData.fasilitas_toilet,
           waste_mgmt_std: parentData.pengelolaan_sampah,
         };
+
+        console.log(predictionInput);
 
         // Step 1: Call prediction API
         const predictionResult = await predictStunting(predictionInput);
@@ -160,13 +150,50 @@ export async function POST(request: NextRequest) {
         const shapAnalysisData = await shapAnalysisResponse.json();
         analisisAI = shapAnalysisData.data;
 
-        console.log('[AUTO-PREDICT] Analysis completed and saved successfully:', analisisAI.id);
+        // Extract risk level dari confidence score untuk penjadwalan
+        let confidence = predictionResult.data.confidence;
+        const isStunting = predictionResult.data.is_stunting ? 1 : 0;
+        
+        // PENTING: Jika prediksi = TIDAK stunting (0), flip confidence rate
+        // Karena confidence tinggi untuk "tidak stunting" = risiko RENDAH
+        // Contoh: is_stunting=0, confidence=0.9 → confidence menjadi 0.1 (risiko rendah)
+        if (isStunting === 0) {
+          confidence = 1 - confidence;
+        }
+        
+        // Threshold logic berdasarkan tingkat kepercayaan model:
+        // - confidence < 0.35: Model kurang yakin → Risiko Rendah (jadwal 30 hari)
+        // - confidence 0.35-0.75: Model cukup yakin → Risiko Sedang (jadwal 14 hari)
+        // - confidence > 0.75: Model sangat yakin → Risiko Tinggi (jadwal 14 hari)
+        if (confidence < 0.35) {
+          predictedRiskLevel = 'LOW';
+        } else if (confidence <= 0.75) {
+          predictedRiskLevel = 'MEDIUM';
+        } else {
+          predictedRiskLevel = 'HIGH';
+        }
+
+        console.log('[AUTO-PREDICT] Analysis completed. is_stunting:', isStunting, 'confidence:', predictionResult.data.confidence, '→ adjusted:', confidence.toFixed(2), '→ Risk level:', predictedRiskLevel);
       } catch (predictionError) {
         console.error('[AUTO-PREDICT] Error during auto-prediction:', predictionError);
         // Continue even if auto-prediction fails
       }
     } else {
       console.log('[AUTO-PREDICT] Skipped - incomplete parent data');
+    }
+
+    // Generate jadwal pemeriksaan otomatis sampai umur 2 tahun
+    // Gunakan risk level dari hasil prediksi AI (atau default MEDIUM jika tidak ada prediksi)
+    try {
+      await generateJadwalPemeriksaan(
+        bayi.id, // Internal ID dari database
+        bayi.tanggalLahir,
+        predictedRiskLevel // Gunakan hasil prediksi AI
+      );
+      console.log(`[JADWAL] Generated schedule with risk level: ${predictedRiskLevel}`);
+    } catch (jadwalError) {
+      console.error('[JADWAL] Error generating jadwal:', jadwalError);
+      // Lanjutkan walaupun gagal membuat jadwal
     }
 
     return NextResponse.json({

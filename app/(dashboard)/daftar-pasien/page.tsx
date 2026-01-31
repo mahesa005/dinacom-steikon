@@ -294,8 +294,8 @@ function DaftarPasienContent() {
                   {stats.total}
                 </p>
               </div>
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Users className="w-6 h-6 text-blue-600" />
+              <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
+                <Users className="w-6 h-6 text-teal-600" />
               </div>
             </div>
           </div>
@@ -381,14 +381,14 @@ function DaftarPasienContent() {
                     placeholder="Cari pasien berdasarkan nama atau ID..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
                   />
                 </div>
               </div>
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm font-medium"
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm font-medium"
               >
                 <option value="all">Semua Status</option>
                 <option value="high">Risiko Tinggi</option>
@@ -398,7 +398,7 @@ function DaftarPasienContent() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm font-medium"
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm font-medium"
               >
                 <option value="newest">Urutkan: Terbaru</option>
                 <option value="risk">Urutkan: Risiko Tertinggi</option>
@@ -493,7 +493,6 @@ function DaftarPasienContent() {
                           : patient.riskLevel === 'MEDIUM'
                           ? 'Sedang'
                           : 'Rendah'}{' '}
-                        ({patient.riskPercentage}%)
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -502,7 +501,7 @@ function DaftarPasienContent() {
                           e.stopPropagation();
                           openPatientDetail(patient);
                         }}
-                        className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center space-x-1"
+                        className="text-teal-600 hover:text-teal-800 text-sm font-medium flex items-center space-x-1"
                       >
                         <Eye className="w-4 h-4" />
                         <span>Detail</span>
@@ -543,7 +542,7 @@ function DaftarPasienContent() {
                     onClick={() => setCurrentPage(pageNum)}
                     className={`px-3 py-1 rounded text-sm $\{
                       currentPage === pageNum
-                        ? 'bg-blue-600 text-white'
+                        ? 'bg-teal-600 text-white'
                         : 'border border-gray-300 hover:bg-gray-50'
                     }`}
                   >
@@ -559,7 +558,7 @@ function DaftarPasienContent() {
                     onClick={() => setCurrentPage(totalPages)}
                     className={`px-3 py-1 rounded text-sm $\{
                       currentPage === totalPages
-                        ? 'bg-blue-600 text-white'
+                        ? 'bg-teal-600 text-white'
                         : 'border border-gray-300 hover:bg-gray-50'
                     }`}
                   >

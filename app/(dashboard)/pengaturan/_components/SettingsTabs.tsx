@@ -29,7 +29,7 @@ export function SettingsTabs({ activeTab, onTabChange }: SettingsTabsProps) {
             onClick={() => onTabChange(tab.id)}
             className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
               activeTab === tab.id
-                ? 'bg-blue-50 text-blue-700'
+                ? 'bg-teal-50 text-teal-700'
                 : 'text-gray-600 hover:bg-gray-50'
             }`}
           >

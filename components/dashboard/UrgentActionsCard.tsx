@@ -90,47 +90,6 @@ function UrgentPatientCard({
             Ibu: {patient.parentName} - HP: {patient.parentPhone}
           </p>
         </div>
-        <div className="flex flex-col space-y-2 ml-4">
-          {isToday ? (
-            <>
-              <Button
-                variant="success"
-                size="sm"
-                icon={<CheckCircle className="w-4 h-4" />}
-                onClick={onMarkPresent}
-              >
-                Tandai Hadir
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                icon={<Eye className="w-4 h-4" />}
-                onClick={onViewDetail}
-              >
-                Lihat Detail
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button
-                variant="primary"
-                size="sm"
-                icon={<Phone className="w-4 h-4" />}
-                onClick={onContact}
-              >
-                Hubungi
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                icon={<Calendar className="w-4 h-4" />}
-                onClick={onSchedule}
-              >
-                Jadwalkan
-              </Button>
-            </>
-          )}
-        </div>
       </div>
     </div>
   );
@@ -167,12 +126,6 @@ export function UrgentActionsCard({
               </p>
             </div>
           </div>
-          <button
-            onClick={onViewAll}
-            className="text-lg font-medium text-red-600 hover:text-red-700"
-          >
-            Lihat Semua &rarr;
-          </button>
         </div>
 
         <div className="space-y-3">
@@ -185,7 +138,10 @@ export function UrgentActionsCard({
           ))}
 
           {remainingCount > 0 && (
-            <button className="w-full py-2 text-sm text-gray-600 hover:text-gray-900 font-medium flex items-center justify-center space-x-2">
+            <button 
+              onClick={onViewAll}
+              className="w-full py-2 text-base text-gray-900 hover:text-red-600 font-bold flex items-center justify-center space-x-2 bg-red-50 rounded-lg hover:bg-red-100 transition"
+            >
               <span>+ {remainingCount} pasien lainnya</span>
               <ChevronDown className="w-4 h-4" />
             </button>

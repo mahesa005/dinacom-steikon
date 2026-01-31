@@ -90,7 +90,7 @@ export function Sidebar({ user }: SidebarProps) {
               href={item.href}
               className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
                 isActive
-                  ? 'bg-blue-50 text-blue-700'
+                  ? 'bg-teal-50 text-teal-700'
                   : 'text-gray-600 hover:bg-gray-50'
               }`}
             >
@@ -104,7 +104,7 @@ export function Sidebar({ user }: SidebarProps) {
       {/* User Profile */}
       <div className="p-4 border-t border-gray-200">
         <div className="flex items-center space-x-3 px-4 py-3 bg-gray-50 rounded-lg">
-          <div className="w-10 h-10 bg-linear-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
+          <div className="w-10 h-10 bg-linear-to-br from-teal-500 to-teal-700 rounded-full flex items-center justify-center text-white font-semibold">
             {currentUser.initials}
           </div>
           <div className="flex-1 min-w-0">

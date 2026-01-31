@@ -17,8 +17,8 @@ export function ParentDataForm({ formData, onInputChange }: ParentDataFormProps)
   return (
     <div className="space-y-6">
       <div className="flex items-center space-x-3 pb-4 border-b border-gray-200">
-        <div className="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center">
-          <Users className="w-6 h-6 text-purple-600" />
+        <div className="w-12 h-12 bg-teal-50 rounded-lg flex items-center justify-center">
+          <Users className="w-6 h-6 text-teal-600" />
         </div>
         <div>
           <h3 className="text-xl font-bold text-gray-900">Data Orang Tua</h3>
@@ -41,7 +41,7 @@ export function ParentDataForm({ formData, onInputChange }: ParentDataFormProps)
               onChange={onInputChange}
               required
               placeholder="Nama lengkap ibu"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
             />
           </div>
 
@@ -56,7 +56,7 @@ export function ParentDataForm({ formData, onInputChange }: ParentDataFormProps)
               onChange={onInputChange}
               required
               placeholder="08123456789"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
             />
           </div>
 
@@ -69,7 +69,7 @@ export function ParentDataForm({ formData, onInputChange }: ParentDataFormProps)
               value={formData.motherEducation}
               onChange={onInputChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
             >
               <option value="">Pilih pendidikan</option>
               <option value="SD">SD</option>
@@ -95,7 +95,7 @@ export function ParentDataForm({ formData, onInputChange }: ParentDataFormProps)
               step="0.1"
               min="0"
               placeholder="contoh: 155.5"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
             />
           </div>
         </div>
@@ -116,7 +116,7 @@ export function ParentDataForm({ formData, onInputChange }: ParentDataFormProps)
               onChange={onInputChange}
               required
               placeholder="Nama lengkap ayah"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
             />
           </div>
 
@@ -129,7 +129,7 @@ export function ParentDataForm({ formData, onInputChange }: ParentDataFormProps)
               value={formData.fatherEducation}
               onChange={onInputChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
             >
               <option value="">Pilih pendidikan</option>
               <option value="SD">SD</option>
@@ -155,7 +155,7 @@ export function ParentDataForm({ formData, onInputChange }: ParentDataFormProps)
               step="0.1"
               min="0"
               placeholder="contoh: 170.5"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
             />
           </div>
         </div>
