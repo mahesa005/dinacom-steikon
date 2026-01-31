@@ -11,6 +11,7 @@ import { BabyDataForm } from './_components/BabyDataForm';
 import { ParentDataForm } from './_components/ParentDataForm';
 import { EnvironmentDataForm } from './_components/EnvironmentDataForm';
 import { ReviewSubmit } from './_components/ReviewSubmit';
+import { predictStunting, explainStunting } from '@/lib/stunting-prediction';
 
 const formSections = [
   { id: 'baby', title: 'Data Bayi' },
@@ -18,6 +19,29 @@ const formSections = [
   { id: 'environment', title: 'Lingkungan' },
   { id: 'review', title: 'Review & Submit' },
 ];
+
+// Mapping functions untuk konversi form data ke format API prediksi
+const mapEducationToLevel = (education: string): number => {
+  const mapping: Record<string, number> = {
+    'SD': 2,
+    'SMP': 3,
+    'SMA': 4,
+    'D3': 5,
+    'S1': 5,
+    'S2': 5,
+    'S3': 5,
+  };
+  return mapping[education] || 1;
+};
+
+const mapFacilityToStandard = (facility: string): number => {
+  const mapping: Record<string, number> = {
+    'good': 2,
+    'adequate': 1,
+    'poor': 0,
+  };
+  return mapping[facility] ?? 0;
+};
 
 export default function InputDataPage() {
   const router = useRouter();
@@ -161,7 +185,7 @@ export default function InputDataPage() {
       // Map form data to API format
       const payload = {
         nomorPasien: formData.patientNumber,
-        nik: formData.nik || undefined,
+        nik: formData.nik?.trim() || null,
         nama: formData.name,
         tanggalLahir: new Date(formData.birthDate).toISOString(),
         tempatLahir: formData.birthPlace,
@@ -172,10 +196,11 @@ export default function InputDataPage() {
         namaAyah: formData.fatherName,
         nomorHpOrangTua: formData.motherPhone,
         alamat: formData.address,
-        golonganDarah: formData.bloodType || undefined,
+        golonganDarah: formData.bloodType?.trim() || null,
         // createdById akan di-handle otomatis oleh backend
       };
 
+      // 1. Simpan data bayi ke database
       const response = await fetch('/api/bayi', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -186,6 +211,47 @@ export default function InputDataPage() {
 
       if (!response.ok) {
         throw new Error(result.error || 'Gagal menyimpan data');
+      }
+
+      // 2. Prepare prediction payload with threshold fallback
+      const motherHeight = parseFloat(formData.motherHeight);
+      const fatherHeight = parseFloat(formData.fatherHeight);
+
+      const predictionPayload = {
+        mother_height_cm: motherHeight < 100 ? 100 : motherHeight,
+        father_height_cm: fatherHeight < 100 ? 100 : fatherHeight,
+        mother_edu_level: mapEducationToLevel(formData.motherEducation),
+        father_edu_level: mapEducationToLevel(formData.fatherEducation),
+        toilet_standard: mapFacilityToStandard(formData.toiletFacility),
+        waste_mgmt_std: mapFacilityToStandard(formData.wasteManagement),
+      };
+
+      const bayiId = result.data.id;
+
+      try {
+        // Call both prediction and explanation APIs in parallel
+        const [predictionResult, explainResult] = await Promise.all([
+          predictStunting(predictionPayload),
+          explainStunting(predictionPayload),
+        ]);
+
+        if (predictionResult.success && explainResult.success) {
+          // 3. Save analysis results to hasil_analisis_ai
+          await fetch(`/api/bayi/${bayiId}/analisis`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              jenisAnalisis: 'SHAP',
+              tingkatKepercayaan: predictionResult.data.confidence,
+              dataInput: JSON.stringify(explainResult.data),
+              hasilPrediksi: '{placeholder}',
+              rekomendasiTindakan: '{placeholder}',
+              catatanAI: '{placeholder}',
+            }),
+          });
+        }
+      } catch (predictionError) {
+        console.error('Prediction error (non-blocking):', predictionError);
       }
 
       alert('Data berhasil disimpan!');
