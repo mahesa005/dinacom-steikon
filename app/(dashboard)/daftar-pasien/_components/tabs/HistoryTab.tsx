@@ -253,9 +253,168 @@ export function HistoryTab({ patientId, bayiId, onAddControl }: HistoryTabProps)
               Belum ada riwayat pemeriksaan
             </div>
           ) : (
-            <div className="space-y-3">
-              {history.map((record) => {
-                const riskLevel = record.statusStunting || 'MEDIUM';
+            <>
+              {/* Growth Chart */}
+              <div className="bg-white border border-gray-200 rounded-lg p-6">
+                <h4 className="text-md font-semibold text-gray-900 mb-4">Grafik Pertumbuhan</h4>
+                
+                {/* Weight Chart */}
+                <div className="mb-6">
+                  <p className="text-sm font-medium text-gray-700 mb-3">Berat Badan (kg)</p>
+                  <div className="relative h-48 border border-gray-200 rounded-lg p-4 bg-gray-50">
+                    <svg width="100%" height="100%" viewBox="0 0 400 150" preserveAspectRatio="xMidYMid meet">
+                      {/* Grid lines */}
+                      {[0, 37.5, 75, 112.5, 150].map((y, idx) => (
+                        <line
+                          key={idx}
+                          x1="0"
+                          y1={y}
+                          x2="400"
+                          y2={y}
+                          stroke="#e5e7eb"
+                          strokeWidth="1"
+                        />
+                      ))}
+                      
+                      {/* Weight line */}
+                      {history.length > 1 && (
+                        <polyline
+                          fill="none"
+                          stroke="#14b8a6"
+                          strokeWidth="3"
+                          points={history
+                            .slice()
+                            .reverse()
+                            .map((record, idx) => {
+                              const x = (idx / (history.length - 1)) * 400;
+                              const maxWeight = Math.max(...history.map(h => h.beratBadan)) * 1.2;
+                              const y = 150 - (record.beratBadan / maxWeight) * 150;
+                              return `${x},${y}`;
+                            })
+                            .join(' ')}
+                        />
+                      )}
+                      
+                      {/* Data points */}
+                      {history
+                        .slice()
+                        .reverse()
+                        .map((record, idx) => {
+                          const x = (idx / (history.length - 1 || 1)) * 400;
+                          const maxWeight = Math.max(...history.map(h => h.beratBadan)) * 1.2;
+                          const y = 150 - (record.beratBadan / maxWeight) * 150;
+                          return (
+                            <g key={idx}>
+                              <circle
+                                cx={x}
+                                cy={y}
+                                r="6"
+                                fill="#14b8a6"
+                                stroke="white"
+                                strokeWidth="2"
+                              />
+                              <text
+                                x={x}
+                                y={y - 10}
+                                textAnchor="middle"
+                                className="text-xs fill-gray-700 font-semibold"
+                                style={{ fontSize: '12px' }}
+                              >
+                                {record.beratBadan}
+                              </text>
+                            </g>
+                          );
+                        })}
+                    </svg>
+                  </div>
+                  <div className="flex justify-between text-xs text-gray-500 mt-2">
+                    {history.slice().reverse().map((record, idx) => (
+                      <span key={idx}>{record.umurBulan}m</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Height Chart */}
+                <div>
+                  <p className="text-sm font-medium text-gray-700 mb-3">Tinggi Badan (cm)</p>
+                  <div className="relative h-48 border border-gray-200 rounded-lg p-4 bg-gray-50">
+                    <svg width="100%" height="100%" viewBox="0 0 400 150" preserveAspectRatio="xMidYMid meet">
+                      {/* Grid lines */}
+                      {[0, 37.5, 75, 112.5, 150].map((y, idx) => (
+                        <line
+                          key={idx}
+                          x1="0"
+                          y1={y}
+                          x2="400"
+                          y2={y}
+                          stroke="#e5e7eb"
+                          strokeWidth="1"
+                        />
+                      ))}
+                      
+                      {/* Height line */}
+                      {history.length > 1 && (
+                        <polyline
+                          fill="none"
+                          stroke="#3b82f6"
+                          strokeWidth="3"
+                          points={history
+                            .slice()
+                            .reverse()
+                            .map((record, idx) => {
+                              const x = (idx / (history.length - 1)) * 400;
+                              const maxHeight = Math.max(...history.map(h => h.tinggiBadan)) * 1.1;
+                              const minHeight = Math.min(...history.map(h => h.tinggiBadan)) * 0.9;
+                              const y = 150 - ((record.tinggiBadan - minHeight) / (maxHeight - minHeight)) * 150;
+                              return `${x},${y}`;
+                            })
+                            .join(' ')}
+                        />
+                      )}
+                      
+                      {/* Data points */}
+                      {history
+                        .slice()
+                        .reverse()
+                        .map((record, idx) => {
+                          const x = (idx / (history.length - 1 || 1)) * 400;
+                          const maxHeight = Math.max(...history.map(h => h.tinggiBadan)) * 1.1;
+                          const minHeight = Math.min(...history.map(h => h.tinggiBadan)) * 0.9;
+                          const y = 150 - ((record.tinggiBadan - minHeight) / (maxHeight - minHeight)) * 150;
+                          return (
+                            <g key={idx}>
+                              <circle
+                                cx={x}
+                                cy={y}
+                                r="6"
+                                fill="#3b82f6"
+                                stroke="white"
+                                strokeWidth="2"
+                              />
+                              <text
+                                x={x}
+                                y={y - 10}
+                                textAnchor="middle"
+                                className="text-xs fill-gray-700 font-semibold"
+                                style={{ fontSize: '12px' }}
+                              >
+                                {record.tinggiBadan}
+                              </text>
+                            </g>
+                          );
+                        })}
+                    </svg>
+                  </div>
+                  <div className="flex justify-between text-xs text-gray-500 mt-2">
+                    {history.slice().reverse().map((record, idx) => (
+                      <span key={idx}>{record.umurBulan}m</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* History List */}
+              <div className="space-y-3">{history.map((record) => {
                 return (
                   <div
                     key={record.id}
@@ -263,48 +422,15 @@ export function HistoryTab({ patientId, bayiId, onAddControl }: HistoryTabProps)
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex items-start space-x-4">
-                        <div
-                          className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
-                            riskLevel === 'HIGH'
-                              ? 'bg-red-100'
-                              : riskLevel === 'MEDIUM'
-                              ? 'bg-yellow-100'
-                              : 'bg-green-100'
-                          }`}
-                        >
-                          <CheckCircle
-                            className={`w-5 h-5 ${
-                              riskLevel === 'HIGH'
-                                ? 'text-red-600'
-                                : riskLevel === 'MEDIUM'
-                                ? 'text-yellow-600'
-                                : 'text-green-600'
-                            }`}
-                          />
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 bg-teal-100">
+                          <CheckCircle className="w-5 h-5 text-teal-600" />
                         </div>
                         <div>
                           <p className="font-semibold text-gray-900">
                             Pemeriksaan Rutin - Bulan ke-{record.umurBulan}
                           </p>
                           <p className="text-sm text-gray-600 mt-1">
-                            Berat: {record.beratBadan} kg • Tinggi: {record.tinggiBadan} cm •
-                            Status:{' '}
-                            <span
-                              className={
-                                riskLevel === 'HIGH'
-                                  ? 'text-red-600 font-semibold'
-                                  : riskLevel === 'MEDIUM'
-                                  ? 'text-yellow-600 font-semibold'
-                                  : 'text-green-600 font-semibold'
-                              }
-                            >
-                              Risiko{' '}
-                              {riskLevel === 'HIGH'
-                                ? 'Tinggi'
-                                : riskLevel === 'MEDIUM'
-                                ? 'Sedang'
-                                : 'Rendah'}
-                            </span>
+                            Berat: {record.beratBadan} kg • Tinggi: {record.tinggiBadan} cm
                           </p>
                           {record.catatanTambahan && (
                             <p className="text-xs text-gray-500 mt-2">
@@ -325,6 +451,7 @@ export function HistoryTab({ patientId, bayiId, onAddControl }: HistoryTabProps)
                 );
               })}
             </div>
+            </>
           )}
         </div>
       )}
