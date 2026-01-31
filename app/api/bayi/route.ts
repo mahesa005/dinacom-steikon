@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createBayi, getAllBayi } from '@/lib/db';
 import { generateJadwalPemeriksaan } from '@/lib/jadwal';
+import { predictStunting, explainStunting, type StuntingPredictionInput } from '@/lib/stunting-prediction';
 
 // GET /api/bayi - Get all bayi dengan filter
 export async function GET(request: NextRequest) {
@@ -61,7 +62,20 @@ export async function POST(request: NextRequest) {
       body.nik = null;
     }
 
-    const bayi = await createBayi(body);
+    // Extract parent data untuk prediction (tidak masuk database bayi)
+    const parentData = {
+      tinggiIbu: body.tinggiIbu,
+      tinggiAyah: body.tinggiAyah,
+      pendidikanIbu: body.pendidikanIbu,
+      pendidikanAyah: body.pendidikanAyah,
+      fasilitas_toilet: body.fasilitas_toilet,
+      pengelolaan_sampah: body.pengelolaan_sampah,
+    };
+
+    // Remove parent data dari body sebelum create bayi
+    const { tinggiIbu, tinggiAyah, pendidikanIbu, pendidikanAyah, fasilitas_toilet, pengelolaan_sampah, ...bayiData } = body;
+
+    const bayi = await createBayi(bayiData);
 
     // Auto create first control schedule (1 week from now at 09:00)
     const firstControlDate = new Date();
@@ -81,13 +95,98 @@ export async function POST(request: NextRequest) {
       // Lanjutkan walaupun gagal membuat jadwal
     }
 
+    // Auto-predict stunting risk jika data orang tua lengkap
+    let analisisAI = null;
+    if (parentData.tinggiIbu && parentData.tinggiAyah && 
+        parentData.pendidikanIbu !== undefined && parentData.pendidikanAyah !== undefined &&
+        parentData.fasilitas_toilet !== undefined && parentData.pengelolaan_sampah !== undefined) {
+      
+      try {
+        console.log('[AUTO-PREDICT] Starting prediction for new baby:', bayi.nama);
+        
+        // Prepare prediction input
+        const predictionInput: StuntingPredictionInput = {
+          mother_height_cm: parentData.tinggiIbu,
+          father_height_cm: parentData.tinggiAyah,
+          mother_edu_level: parentData.pendidikanIbu,
+          father_edu_level: parentData.pendidikanAyah,
+          toilet_standard: parentData.fasilitas_toilet,
+          waste_mgmt_std: parentData.pengelolaan_sampah,
+        };
+
+        // Step 1: Call prediction API
+        const predictionResult = await predictStunting(predictionInput);
+        if (!predictionResult.success) {
+          console.error('[AUTO-PREDICT] Prediction failed:', predictionResult.error);
+          throw new Error('Prediction failed');
+        }
+
+        // Step 2: Call explain API untuk SHAP values
+        const explainResult = await explainStunting(predictionInput);
+        if (!explainResult.success) {
+          console.error('[AUTO-PREDICT] Explain failed:', explainResult.error);
+          throw new Error('Explain failed');
+        }
+
+        console.log('[AUTO-PREDICT] Calling shap-analysis endpoint to generate insights...');
+
+        // Step 3: Call POST shap-analysis endpoint untuk generate insights dengan Gemini
+        // dan otomatis save ke database
+        const shapAnalysisResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/bayi/${bayi.nomorPasien}/shap-analysis`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              shapResult: {
+                is_stunting: predictionResult.data.is_stunting ? 1 : 0,
+                stunting_risk: predictionResult.data.is_stunting ? 'HIGH' : 'LOW',
+                confidence: predictionResult.data.confidence,
+                shap_values: explainResult.data.shap_values,
+                input_features: predictionInput,
+              },
+            }),
+          }
+        );
+
+        if (!shapAnalysisResponse.ok) {
+          const errorData = await shapAnalysisResponse.json();
+          console.error('[AUTO-PREDICT] SHAP analysis failed:', errorData);
+          throw new Error('SHAP analysis failed');
+        }
+
+        const shapAnalysisData = await shapAnalysisResponse.json();
+        analisisAI = shapAnalysisData.data;
+
+        console.log('[AUTO-PREDICT] Analysis completed and saved successfully:', analisisAI.id);
+      } catch (predictionError) {
+        console.error('[AUTO-PREDICT] Error during auto-prediction:', predictionError);
+        // Continue even if auto-prediction fails
+      }
+    } else {
+      console.log('[AUTO-PREDICT] Skipped - incomplete parent data');
+    }
+
     return NextResponse.json({
       success: true,
-      message: 'Bayi berhasil didaftarkan dan jadwal pemeriksaan telah dibuat',
-      data: bayi,
+      message: analisisAI 
+        ? 'Bayi berhasil didaftarkan, jadwal pemeriksaan telah dibuat, dan analisis AI telah dilakukan'
+        : 'Bayi berhasil didaftarkan dan jadwal pemeriksaan telah dibuat',
+      data: {
+        bayi,
+        analisisAI: analisisAI ? {
+          id: analisisAI.id,
+          createdAt: analisisAI.createdAt,
+          insights: analisisAI.insights,
+        } : null,
+      },
     });
   } catch (error: any) {
     console.error('Create bayi error:', error);
+    console.error('Error stack:', error?.stack);
+    console.error('Error message:', error?.message);
 
     // Handle unique constraint violation
     if (error.code === 'P2002') {
@@ -98,7 +197,11 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { success: false, error: 'Gagal mendaftarkan bayi' },
+      { 
+        success: false, 
+        error: 'Gagal mendaftarkan bayi',
+        details: error?.message || 'Unknown error'
+      },
       { status: 500 }
     );
   }
