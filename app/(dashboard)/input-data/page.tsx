@@ -236,22 +236,75 @@ export default function InputDataPage() {
         ]);
 
         if (predictionResult.success && explainResult.success) {
+          // Determine risk level based on prediction
+          const stuntingRisk = predictionResult.data.stunting_risk;
+          let riskLevel = 'MEDIUM';
+          if (predictionResult.data.is_stunting || stuntingRisk > 70) {
+            riskLevel = 'HIGH';
+          } else if (stuntingRisk < 30) {
+            riskLevel = 'LOW';
+          }
+
+          // Get top contributing factors from SHAP values
+          console.log('Explain result data:', explainResult.data);
+          const shapValues = Array.isArray(explainResult.data?.shap_values)
+            ? explainResult.data.shap_values
+            : [];
+          const topFactors = shapValues
+            .slice()
+            .sort((a: any, b: any) => Math.abs(b.value) - Math.abs(a.value))
+            .slice(0, 3);
+
+          // Generate recommendations based on top factors
+          const recommendations = topFactors.map(factor => {
+            const featureName = factor.feature.replace(/_/g, ' ');
+            if (factor.value > 0) {
+              return `Perhatikan faktor ${featureName} yang berkontribusi terhadap risiko stunting.`;
+            }
+            return `Faktor ${featureName} sudah baik, pertahankan kondisi ini.`;
+          }).join(' ');
+
           // 3. Save analysis results to hasil_analisis_ai
-          await fetch(`/api/bayi/${bayiId}/analisis`, {
+          console.log('Saving analysis for bayiId:', bayiId);
+
+          const analisisPayload = {
+            jenisAnalisis: 'SHAP_ANALYSIS',
+            tingkatKepercayaan: predictionResult.data.confidence,
+            dataInput: JSON.stringify({
+              input_features: predictionResult.data.input_features,
+              shap_values: shapValues,
+              top_factors: topFactors,
+              base_value: explainResult.data.base_value,
+            }),
+            hasilPrediksi: JSON.stringify({
+              is_stunting: predictionResult.data.is_stunting,
+              stunting_risk: stuntingRisk,
+              risk_level: riskLevel,
+            }),
+            rekomendasiTindakan: recommendations || 'Lakukan pemantauan rutin terhadap pertumbuhan bayi.',
+            catatanAI: `Analisis SHAP - Risiko ${riskLevel} (${Math.round(stuntingRisk)}%). Confidence: ${Math.round(predictionResult.data.confidence * 100)}%`,
+          };
+
+          console.log('Analisis payload:', analisisPayload);
+
+          const analisisResponse = await fetch(`/api/bayi/${bayiId}/analisis`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              jenisAnalisis: 'SHAP',
-              tingkatKepercayaan: predictionResult.data.confidence,
-              dataInput: JSON.stringify(explainResult.data),
-              hasilPrediksi: '{placeholder}',
-              rekomendasiTindakan: '{placeholder}',
-              catatanAI: '{placeholder}',
-            }),
+            body: JSON.stringify(analisisPayload),
           });
+
+          const analisisResult = await analisisResponse.json();
+          console.log('Analisis response:', analisisResult);
+
+          if (!analisisResponse.ok) {
+            console.error('Failed to save analysis:', analisisResult);
+          }
+        } else {
+          console.log('Prediction failed:', predictionResult);
+          console.log('Explain failed:', explainResult);
         }
       } catch (predictionError) {
-        console.error('Prediction error (non-blocking):', predictionError);
+        console.error('Prediction/Analysis error (non-blocking):', predictionError);
       }
 
       alert('Data berhasil disimpan!');
