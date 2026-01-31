@@ -142,8 +142,8 @@ export function AIInsightCard({ insight }: AIInsightCardProps) {
           <div className="flex-1">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center space-x-2">
-                <h3 className="text-lg font-bold text-gray-900">
-                  Insight Harian Hari Ini
+                <h3 className="text-2xl font-bold text-gray-900">
+                  Insight Hari Ini
                 </h3>
                 <span className="text-xs font-semibold bg-purple-200 text-purple-800 px-2 py-1 rounded flex items-center gap-1">
                   <Sparkles className="w-3 h-3" />
@@ -159,7 +159,7 @@ export function AIInsightCard({ insight }: AIInsightCardProps) {
               </button>
             </div>
             <p
-              className="text-gray-700 leading-relaxed"
+              className="text-gray-700 leading-relaxed text-lg"
               dangerouslySetInnerHTML={{ __html: insight }}
             />
           </div>

@@ -65,9 +65,9 @@ export function OverviewTab({ patient, bayiId }: OverviewTabProps) {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      {/* Left Column: Patient Info */}
-      <div className="space-y-6">
+    <div className="space-y-6">
+      {/* Patient Info Grid - 3 Columns */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Basic Info */}
         <div className="bg-gray-50 rounded-lg p-4">
           <h5 className="font-semibold text-gray-900 mb-4">
@@ -221,155 +221,64 @@ export function OverviewTab({ patient, bayiId }: OverviewTabProps) {
         </div>
       </div>
 
-      {/* Right Column: Charts & Status */}
-      <div className="space-y-6">
-        {/* Risk Breakdown */}
-        <div className="bg-white border border-gray-200 rounded-lg p-6">
-          <h5 className="font-semibold text-gray-900 mb-4">
-            Breakdown Faktor Risiko
-          </h5>
-          <div className="space-y-4">
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center space-x-2">
-                  <span className="text-lg">🚽</span>
-                  <span className="text-sm font-medium text-gray-700">
-                    Sanitasi
-                  </span>
-                </div>
-                <span className="text-sm font-bold text-red-600">35%</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div
-                  className="bg-red-500 h-2 rounded-full chart-bar"
-                  style={{ width: '35%' }}
-                />
-              </div>
-            </div>
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center space-x-2">
-                  <span className="text-lg">👩</span>
-                  <span className="text-sm font-medium text-gray-700">
-                    Tinggi Badan Ibu
-                  </span>
-                </div>
-                <span className="text-sm font-bold text-red-600">28%</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div
-                  className="bg-red-500 h-2 rounded-full chart-bar"
-                  style={{ width: '28%' }}
-                />
-              </div>
-            </div>
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center space-x-2">
-                  <span className="text-lg">📚</span>
-                  <span className="text-sm font-medium text-gray-700">
-                    Pendidikan Ibu
-                  </span>
-                </div>
-                <span className="text-sm font-bold text-orange-600">15%</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div
-                  className="bg-orange-500 h-2 rounded-full chart-bar"
-                  style={{ width: '15%' }}
-                />
-              </div>
-            </div>
-          </div>
+      {/* Next Checkup - Fourth Card in Grid */}
+      <div className="bg-gray-50 rounded-lg p-4">
+      <h5 className="font-semibold text-gray-900 mb-4">
+        Jadwal Pemeriksaan Berikutnya
+      </h5>
+      
+      {isLoadingSchedule ? (
+        <div className="text-center py-4">
+          <p className="text-sm text-gray-500">Memuat jadwal...</p>
         </div>
-
-        {/* Next Checkup */}
-        <div className={`border rounded-lg p-6 ${
-          nextSchedule && getDaysUntil(nextSchedule.rentangAwal) <= 3
-            ? 'bg-orange-50 border-orange-200'
-            : 'bg-blue-50 border-blue-200'
-        }`}>
-          <div className="flex items-center space-x-3 mb-4">
-            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-              nextSchedule && getDaysUntil(nextSchedule.rentangAwal) <= 3
-                ? 'bg-orange-500'
-                : 'bg-blue-500'
-            }`}>
-              <Calendar className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h5 className="font-semibold text-gray-900">Jadwal Pemeriksaan Berikutnya</h5>
-              <p className="text-sm text-gray-600">Pemeriksaan rutin terjadwal</p>
+      ) : nextSchedule ? (
+        <div className="space-y-3">
+          <div className={`rounded-lg p-4 ${
+            nextSchedule && getDaysUntil(nextSchedule.rentangAwal) <= 3
+              ? 'bg-orange-100 border border-orange-200'
+              : 'bg-blue-100 border border-blue-200'
+          }`}>
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-lg font-bold text-gray-900">
+                  {formatDateRange(nextSchedule.rentangAwal, nextSchedule.rentangAkhir)}
+                </p>
+                <p className="text-sm text-gray-600 mt-1 flex items-center gap-1">
+                  <Clock className="w-4 h-4" />
+                  {(() => {
+                    const days = getDaysUntil(nextSchedule.rentangAwal);
+                    if (days === 0) return 'Hari ini';
+                    if (days === 1) return 'Besok';
+                    if (days < 0) return `Terlambat ${Math.abs(days)} hari`;
+                    return `${days} hari lagi`;
+                  })()}
+                </p>
+                <p className="text-xs text-gray-500 mt-2">
+                  Pemeriksaan untuk umur {nextSchedule.targetUmurBulan} bulan
+                </p>
+              </div>
+              {getDaysUntil(nextSchedule.rentangAwal) <= 3 && getDaysUntil(nextSchedule.rentangAwal) >= 0 && (
+                <span className="px-2 py-1 bg-orange-100 text-orange-700 text-xs font-semibold rounded-full border border-orange-300">
+                  SEGERA
+                </span>
+              )}
             </div>
           </div>
-          
-          {isLoadingSchedule ? (
-            <div className="bg-white rounded-lg p-4 text-center">
-              <p className="text-sm text-gray-500">Memuat jadwal...</p>
-            </div>
-          ) : nextSchedule ? (
-            <>
-              <div className="bg-white rounded-lg p-4">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-2xl font-bold text-gray-900">
-                      {formatDateRange(nextSchedule.rentangAwal, nextSchedule.rentangAkhir)}
-                    </p>
-                    <p className="text-sm text-gray-600 mt-1 flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
-                      {(() => {
-                        const days = getDaysUntil(nextSchedule.rentangAwal);
-                        if (days === 0) return 'Hari ini';
-                        if (days === 1) return 'Besok';
-                        if (days < 0) return `Terlambat ${Math.abs(days)} hari`;
-                        return `${days} hari lagi`;
-                      })()}
-                    </p>
-                    <p className="text-xs text-gray-500 mt-2">
-                      Pemeriksaan untuk umur {nextSchedule.targetUmurBulan} bulan
-                    </p>
-                  </div>
-                  {getDaysUntil(nextSchedule.rentangAwal) <= 3 && getDaysUntil(nextSchedule.rentangAwal) >= 0 && (
-                    <span className="px-2 py-1 bg-orange-100 text-orange-700 text-xs font-semibold rounded-full">
-                      SEGERA
-                    </span>
-                  )}
-                </div>
-              </div>
-              {getDaysUntil(nextSchedule.rentangAwal) <= 7 && getDaysUntil(nextSchedule.rentangAwal) >= 0 && (
-                <div className="mt-3 bg-white/80 rounded-lg p-3 text-xs text-gray-600">
-                  💡 <strong>Tips:</strong> Pastikan bayi dalam kondisi sehat saat pemeriksaan untuk hasil yang akurat
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="bg-white rounded-lg p-4 text-center">
-              <p className="text-sm text-gray-500">Tidak ada jadwal mendatang</p>
-              <p className="text-xs text-gray-400 mt-1">
-                Jadwal akan otomatis dibuat setelah pemeriksaan
-              </p>
+          {getDaysUntil(nextSchedule.rentangAwal) <= 7 && getDaysUntil(nextSchedule.rentangAwal) >= 0 && (
+            <div className="bg-blue-50 rounded-lg p-3 text-xs text-gray-600 border border-blue-200">
+              💡 <strong>Tips:</strong> Pastikan bayi dalam kondisi sehat saat pemeriksaan untuk hasil yang akurat
             </div>
           )}
         </div>
-
-        {/* Quick Actions */}
-        <div className="grid grid-cols-2 gap-3">
-          <Button
-            variant="success"
-            className="w-full py-3"
-            icon={<Phone className="w-5 h-5" />}
-          >
-            Hubungi
-          </Button>
-          <Button
-            variant="secondary"
-            className="w-full py-3"
-            icon={<MessageCircle className="w-5 h-5" />}
-          >
-            WhatsApp
-          </Button>
+      ) : (
+        <div className="text-center py-4">
+          <p className="text-sm text-gray-500">Tidak ada jadwal mendatang</p>
+          <p className="text-xs text-gray-400 mt-1">
+            Jadwal akan otomatis dibuat setelah pemeriksaan
+          </p>
         </div>
-      </div>
+      )}
     </div>
+  </div>
   );
 }

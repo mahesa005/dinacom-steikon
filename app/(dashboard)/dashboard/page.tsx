@@ -189,27 +189,17 @@ export default function DashboardPage() {
           />
         </section>
 
-        {/* AI Insight + Chart Row */}
-        <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <AIInsightCard 
-              insight={isLoadingInsight ? 'Memuat insight AI...' : aiInsight} 
-            />
-          </div>
+        {/* Risk Distribution Chart - Full Width */}
+        <section>
           <RiskDistributionChart data={riskDistributionData} />
         </section>
 
-        {/* Patient Table */}
-        {isLoading ? (
-          <div className="text-center py-8 text-gray-500">Memuat data...</div>
-        ) : (
-          <PatientTable
-            patients={patients.slice(0, 10)}
-            totalCount={totalPatients}
-            onAddPatient={handleAddPatient}
-            onViewPatient={handleViewPatient}
+        {/* AI Insight */}
+        <section>
+          <AIInsightCard 
+            insight={isLoadingInsight ? 'Memuat insight AI...' : aiInsight} 
           />
-        )}
+        </section>
       </div>
     </>
   );

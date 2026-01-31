@@ -72,17 +72,44 @@ function DaftarPasienContent() {
           let mainFactor = '-';
 
           if (latestAnalysis) {
-            // Use AI analysis confidence as risk percentage
-            riskPercentage = Math.round((latestAnalysis.tingkatKepercayaan || 0.5) * 100);
+            // Parse hasilPrediksi to get skorRisiko and levelRisiko
+            try {
+              const hasilPrediksi = JSON.parse(latestAnalysis.hasilPrediksi || '{}');
+              
+              // Get skorRisiko from hasilPrediksi
+              if (hasilPrediksi.statusRisiko?.skorRisiko) {
+                riskPercentage = hasilPrediksi.statusRisiko.skorRisiko;
+              } else {
+                // Fallback to tingkatKepercayaan
+                riskPercentage = Math.round((latestAnalysis.tingkatKepercayaan || 0.5) * 100);
+              }
 
-            // Determine risk level based on prediction result
-            const prediksi = latestAnalysis.hasilPrediksi?.toLowerCase() || '';
-            if (prediksi.includes('tinggi') || prediksi.includes('high') || prediksi === 'stunting') {
-              riskLevel = 'HIGH';
-            } else if (prediksi.includes('rendah') || prediksi.includes('low') || prediksi === 'normal') {
-              riskLevel = 'LOW';
-            } else {
-              riskLevel = 'MEDIUM';
+              // Get levelRisiko from hasilPrediksi
+              if (hasilPrediksi.statusRisiko?.levelRisiko) {
+                const level = hasilPrediksi.statusRisiko.levelRisiko;
+                if (level.includes('Tinggi')) {
+                  riskLevel = 'HIGH';
+                } else if (level.includes('Rendah')) {
+                  riskLevel = 'LOW';
+                } else {
+                  riskLevel = 'MEDIUM';
+                }
+              } else {
+                // Fallback: determine from riskPercentage
+                if (riskPercentage > 75) {
+                  riskLevel = 'HIGH';
+                } else if (riskPercentage < 35) {
+                  riskLevel = 'LOW';
+                } else {
+                  riskLevel = 'MEDIUM';
+                }
+              }
+            } catch (error) {
+              // Fallback to tingkatKepercayaan if parsing fails
+              riskPercentage = Math.round((latestAnalysis.tingkatKepercayaan || 0.5) * 100);
+              if (riskPercentage > 75) riskLevel = 'HIGH';
+              else if (riskPercentage < 35) riskLevel = 'LOW';
+              else riskLevel = 'MEDIUM';
             }
 
             // Try to extract main factor from dataInput (SHAP analysis)

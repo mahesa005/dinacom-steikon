@@ -12,13 +12,13 @@ interface RiskDistributionChartProps {
 export function RiskDistributionChart({ data }: RiskDistributionChartProps) {
   return (
     <div className="bg-white rounded-xl p-6 card-shadow">
-      <h3 className="text-lg font-bold text-gray-900 mb-4">Distribusi Risiko</h3>
+      <h3 className="text-2xl font-bold text-gray-900 mb-4">Distribusi Risiko</h3>
       <div className="space-y-4">
         {/* High Risk */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700">Tinggi</span>
-            <span className="text-sm font-bold text-gray-900">
+            <span className="text-lg font-medium text-gray-700">Tinggi</span>
+            <span className="text-lg font-bold text-gray-900">
               {data.high.count} ({data.high.percentage}%)
             </span>
           </div>
@@ -33,8 +33,8 @@ export function RiskDistributionChart({ data }: RiskDistributionChartProps) {
         {/* Medium Risk */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700">Sedang</span>
-            <span className="text-sm font-bold text-gray-900">
+            <span className="text-lg font-medium text-gray-700">Sedang</span>
+            <span className="text-lg font-bold text-gray-900">
               {data.medium.count} ({data.medium.percentage}%)
             </span>
           </div>
@@ -49,8 +49,8 @@ export function RiskDistributionChart({ data }: RiskDistributionChartProps) {
         {/* Low Risk */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700">Rendah</span>
-            <span className="text-sm font-bold text-gray-900">
+            <span className="text-lg font-medium text-gray-700">Rendah</span>
+            <span className="text-lg font-bold text-gray-900">
               {data.low.count} ({data.low.percentage}%)
             </span>
           </div>
@@ -64,9 +64,9 @@ export function RiskDistributionChart({ data }: RiskDistributionChartProps) {
       </div>
 
       <div className="mt-6 pt-4 border-t border-gray-200">
-        <div className="flex items-center justify-between text-sm">
+        <div className="flex items-center justify-between text-lg">
           <span className="text-gray-600">Total Pasien</span>
-          <span className="text-xl font-bold text-gray-900">{data.total}</span>
+          <span className="text-2xl font-bold text-gray-900">{data.total}</span>
         </div>
       </div>
     </div>

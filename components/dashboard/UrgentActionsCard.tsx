@@ -159,17 +159,17 @@ export function UrgentActionsCard({
               <AlertTriangle className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-gray-900">
+              <h3 className="text-2xl font-bold text-gray-900">
                 Perlu Tindakan Segera
               </h3>
-              <p className="text-sm text-gray-600">
+              <p className="text-lg text-gray-600">
                 {totalCount} pasien membutuhkan perhatian Anda hari ini
               </p>
             </div>
           </div>
           <button
             onClick={onViewAll}
-            className="text-sm font-medium text-red-600 hover:text-red-700"
+            className="text-lg font-medium text-red-600 hover:text-red-700"
           >
             Lihat Semua &rarr;
           </button>

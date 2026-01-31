@@ -136,24 +136,13 @@ export function PatientDetailModal({
       </div>
 
       {/* Modal Footer */}
-      <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 flex items-center justify-between rounded-b-xl">
+      <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 flex items-center justify-end rounded-b-xl">
         <button
           onClick={onClose}
           className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-white transition text-sm font-medium"
         >
           Tutup
         </button>
-        <div className="flex items-center space-x-3">
-          <button className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm font-medium">
-            Cetak Laporan
-          </button>
-          <button 
-            onClick={() => setIsAddControlOpen(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-semibold"
-          >
-            Tambah Kontrol Baru
-          </button>
-        </div>
       </div>
 
       {/* Add Control Modal */}

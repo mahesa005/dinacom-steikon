@@ -298,8 +298,8 @@ Response HANYA JSON valid, tanpa markdown atau teks tambahan.
     
     // Calculate risk level based on confidence
     let levelRisiko: 'Risiko Rendah' | 'Risiko Sedang' | 'Risiko Tinggi';
-    if (shapResult.confidence < 0.3) levelRisiko = 'Risiko Rendah';
-    else if (shapResult.confidence < 0.6) levelRisiko = 'Risiko Sedang';
+    if (shapResult.confidence < 0.35) levelRisiko = 'Risiko Rendah';
+    else if (shapResult.confidence <= 0.75) levelRisiko = 'Risiko Sedang';
     else levelRisiko = 'Risiko Tinggi';
 
     return {
