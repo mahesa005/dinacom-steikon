@@ -1,7 +1,3 @@
-/**
- * WhatsApp Notification Service
- * Mengirim notifikasi via WhatsApp API
- */
 
 interface SendWhatsAppParams {
   nomor: string;
