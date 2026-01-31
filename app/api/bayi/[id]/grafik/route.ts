@@ -4,13 +4,14 @@ import { getGrafikPertumbuhan } from '@/lib/db';
 // GET /api/bayi/[id]/grafik - Get grafik pertumbuhan
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get('limit') || '12');
 
-    const grafik = await getGrafikPertumbuhan(params.id, limit);
+    const grafik = await getGrafikPertumbuhan(id, limit);
 
     return NextResponse.json({
       success: true,

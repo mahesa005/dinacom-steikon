@@ -4,10 +4,11 @@ import { createHistoryKontrol, getHistoryKontrolByBayiId } from '@/lib/db';
 // GET /api/bayi/[id]/kontrol - Get history kontrol by bayi ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const history = await getHistoryKontrolByBayiId(params.id);
+    const { id } = await params;
+    const history = await getHistoryKontrolByBayiId(id);
 
     return NextResponse.json({
       success: true,
@@ -26,9 +27,10 @@ export async function GET(
 // POST /api/bayi/[id]/kontrol - Create history kontrol baru
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
 
     // Validasi required fields
@@ -47,7 +49,7 @@ export async function POST(
 
     // Convert tanggalKontrol ke Date
     body.tanggalKontrol = new Date(body.tanggalKontrol);
-    body.bayiId = params.id;
+    body.bayiId = id;
 
     const kontrol = await createHistoryKontrol(body);
 

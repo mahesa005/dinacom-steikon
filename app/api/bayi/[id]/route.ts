@@ -4,10 +4,11 @@ import { getBayiById, updateBayi, deleteBayi } from '@/lib/db';
 // GET /api/bayi/[id] - Get bayi by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const bayi = await getBayiById(params.id);
+    const { id } = await params;
+    const bayi = await getBayiById(id);
 
     if (!bayi) {
       return NextResponse.json(
@@ -32,12 +33,13 @@ export async function GET(
 // PATCH /api/bayi/[id] - Update bayi
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
 
-    const bayi = await updateBayi(params.id, body);
+    const bayi = await updateBayi(id, body);
 
     return NextResponse.json({
       success: true,
@@ -56,10 +58,11 @@ export async function PATCH(
 // DELETE /api/bayi/[id] - Delete bayi
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await deleteBayi(params.id);
+    const { id } = await params;
+    await deleteBayi(id);
 
     return NextResponse.json({
       success: true,
