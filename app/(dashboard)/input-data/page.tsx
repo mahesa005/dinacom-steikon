@@ -231,6 +231,12 @@ export default function InputDataPage() {
         'poor': 0,
       };
 
+      const toiletMap: { [key: string]: number } = {
+        'good': 1,
+        'adequate': 0,
+        'poor': 0,
+      }
+
       // Prepare payload with parent data for auto-predict
       const payload: any = {
         nomorPasien: formData.patientNumber,
@@ -262,7 +268,7 @@ export default function InputDataPage() {
         payload.pendidikanAyah = educationMap[formData.fatherEducation];
       }
       if (formData.toiletFacility) {
-        payload.fasilitas_toilet = facilityMap[formData.toiletFacility];
+        payload.fasilitas_toilet = toiletMap[formData.toiletFacility];
       }
       if (formData.wasteManagement) {
         payload.pengelolaan_sampah = facilityMap[formData.wasteManagement];

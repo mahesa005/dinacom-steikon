@@ -114,6 +114,8 @@ export async function POST(request: NextRequest) {
           waste_mgmt_std: parentData.pengelolaan_sampah,
         };
 
+        console.log(predictionInput);
+
         // Step 1: Call prediction API
         const predictionResult = await predictStunting(predictionInput);
         if (!predictionResult.success) {
