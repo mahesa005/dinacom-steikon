@@ -34,9 +34,9 @@ export function EnvironmentDataForm({ formData, onInputChange }: EnvironmentData
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
           >
             <option value="">Pilih kondisi fasilitas toilet</option>
-            <option value="good">Baik - Toilet bersih dengan septik tank</option>
-            <option value="adequate">Cukup - Toilet sederhana layak pakai</option>
-            <option value="poor">Buruk - Tidak ada toilet atau tidak layak</option>
+            <option value="good">Toilet dengan leher angsa (ada genangan air di lubang untuk menyekat bau/serangga)</option>
+            <option value="adequate">Toilet tanpa leher angsa (model cemplung atau lubang terbuka)</option>
+            <option value="poor">Tidak ada fasilitas (buang air langsung ke sungai, kolam, atau kebun)</option>
           </select>
           <p className="text-xs text-gray-500 mt-1">
             Penilaian berdasarkan kebersihan dan kelayakan fasilitas toilet
