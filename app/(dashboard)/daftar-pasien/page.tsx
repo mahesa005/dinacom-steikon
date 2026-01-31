@@ -1,11 +1,10 @@
 'use client';
 
-import { useState, Suspense, useEffect } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/Header';
 import { Button } from '@/components/ui/Button';
 import { PatientDetailModal } from './_components/PatientDetailModal';
-import { AddPatientModal } from './_components/AddPatientModal';
 import {
   Search,
   Plus,
@@ -26,7 +25,6 @@ function DaftarPasienContent() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [patients, setPatients] = useState<Patient[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -65,9 +63,45 @@ function DaftarPasienContent() {
           // Get latest control data if available
           const latestControl = bayi.historyKontrol?.[0];
 
+          // Get latest AI analysis if available
+          const latestAnalysis = bayi.hasilAnalisis?.[0];
+
+          // Determine risk level from AI analysis or control data
+          let riskLevel = 'MEDIUM';
+          let riskPercentage = 50;
+          let mainFactor = '-';
+
+          if (latestAnalysis) {
+            // Use AI analysis confidence as risk percentage
+            riskPercentage = Math.round((latestAnalysis.tingkatKepercayaan || 0.5) * 100);
+
+            // Determine risk level based on prediction result
+            const prediksi = latestAnalysis.hasilPrediksi?.toLowerCase() || '';
+            if (prediksi.includes('tinggi') || prediksi.includes('high') || prediksi === 'stunting') {
+              riskLevel = 'HIGH';
+            } else if (prediksi.includes('rendah') || prediksi.includes('low') || prediksi === 'normal') {
+              riskLevel = 'LOW';
+            } else {
+              riskLevel = 'MEDIUM';
+            }
+
+            // Try to extract main factor from dataInput (SHAP analysis)
+            try {
+              const dataInput = JSON.parse(latestAnalysis.dataInput || '{}');
+              if (dataInput.top_factors && dataInput.top_factors.length > 0) {
+                mainFactor = dataInput.top_factors[0].feature || '-';
+              }
+            } catch {
+              mainFactor = '-';
+            }
+          } else if (latestControl?.statusStunting) {
+            // Fallback to control data if no AI analysis
+            riskLevel = latestControl.statusStunting;
+          }
+
           return {
             id: bayi.nomorPasien,
-            bayiId: bayi.id, // Store the actual database ID
+            bayiId: bayi.id,
             name: bayi.nama,
             birthDate: new Date(bayi.tanggalLahir).toLocaleDateString('id-ID', {
               day: 'numeric',
@@ -80,14 +114,14 @@ function DaftarPasienContent() {
             birthLength: bayi.panjangLahir,
             parentName: bayi.namaIbu,
             parentPhone: bayi.nomorHpOrangTua,
-            parentEducation: 'SMA', // TODO: Add to schema
-            parentHeight: 155, // TODO: Add to schema
+            parentEducation: 'SMA',
+            parentHeight: 155,
             fatherName: bayi.namaAyah,
-            fatherEducation: 'SMA', // TODO: Add to schema
-            fatherHeight: 170, // TODO: Add to schema
-            riskLevel: latestControl?.statusStunting || 'MEDIUM',
-            riskPercentage: 50, // TODO: Calculate from AI analysis
-            mainFactor: 'Sanitasi',
+            fatherEducation: 'SMA',
+            fatherHeight: 170,
+            riskLevel,
+            riskPercentage,
+            mainFactor,
             mainFactorIcon: '',
             lastCheckup: latestControl
               ? new Date(latestControl.tanggalKontrol).toLocaleDateString('id-ID', {
@@ -96,10 +130,10 @@ function DaftarPasienContent() {
                   year: 'numeric',
                 })
               : '-',
-            nextCheckup: '-', // TODO: Calculate next checkup
-            toiletFacility: 'adequate', // TODO: Add to schema
-            wasteManagement: 'adequate', // TODO: Add to schema
-            waterAccess: 'good', // TODO: Add to schema
+            nextCheckup: '-',
+            toiletFacility: 'adequate',
+            wasteManagement: 'adequate',
+            waterAccess: 'good',
           };
         });
 
@@ -302,7 +336,7 @@ function DaftarPasienContent() {
                 variant="primary"
                 size="lg"
                 icon={<Plus className="w-5 h-5" />}
-                onClick={() => setIsAddModalOpen(true)}
+                onClick={() => router.push('/input-data')}
               >
                 Tambah Pasien Baru
               </Button>
@@ -527,11 +561,6 @@ function DaftarPasienContent() {
         patient={selectedPatient || null}
         bayiId={selectedPatient?.bayiId}
         onRefresh={fetchPatients}
-      />
-
-      <AddPatientModal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
       />
     </>
   );

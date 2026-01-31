@@ -56,8 +56,17 @@ export async function POST(request: NextRequest) {
     // Convert tanggalLahir ke Date
     body.tanggalLahir = new Date(body.tanggalLahir);
 
+    // Handle NIK: jika kosong, set ke null untuk menghindari unique constraint error
+    if (!body.nik || body.nik.trim() === '') {
+      body.nik = null;
+    }
+
     const bayi = await createBayi(body);
 
+    // Auto create first control schedule (1 week from now at 09:00)
+    const firstControlDate = new Date();
+    firstControlDate.setDate(firstControlDate.getDate() + 7);
+  
     // Generate jadwal pemeriksaan otomatis sampai umur 2 tahun
     // Default risk level: MEDIUM (akan di-update setelah pemeriksaan pertama)
     // Gunakan bayi.id (internal ID), bukan nomorPasien

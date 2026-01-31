@@ -147,6 +147,12 @@ export async function getAllBayi(filters?: {
         },
         take: 1, // Hanya kontrol terakhir
       },
+      hasilAnalisis: {
+        orderBy: {
+          createdAt: 'desc',
+        },
+        take: 1, // Hanya analisis terakhir
+      },
     },
     orderBy: {
       createdAt: 'desc',

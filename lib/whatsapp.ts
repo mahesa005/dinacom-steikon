@@ -82,6 +82,36 @@ export async function kirimNotifPengingatKontrol(
 }
 
 /**
+ * Mengirim notifikasi jadwal pemeriksaan dengan rentang waktu
+ */
+export async function kirimNotifJadwalPemeriksaan(
+  nomor: string,
+  namaBayi: string,
+  namaIbu: string,
+  umurBulan: number,
+  rentangAwal: Date,
+  rentangAkhir: Date
+): Promise<WhatsAppResponse> {
+  const formatTanggal = (date: Date) => date.toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+
+  const message = `🏥 *PENGINGAT JADWAL PEMERIKSAAN STUNTING*\n\n` +
+    `👶 Nama Bayi: *${namaBayi}*\n` +
+    `👩 Nama Ibu: ${namaIbu}\n` +
+    `📅 Umur: ${umurBulan} bulan\n\n` +
+    `🗓️ *JADWAL PEMERIKSAAN*\n` +
+    `Periode: ${formatTanggal(rentangAwal)} - ${formatTanggal(rentangAkhir)}\n\n` +
+    `⚠️ Mohon untuk segera membawa bayi ke Posyandu/Puskesmas untuk pemeriksaan rutin dalam rentang waktu tersebut.\n\n` +
+    `Pemeriksaan rutin sangat penting untuk memantau tumbuh kembang bayi dan mencegah stunting.\n\n` +
+    `Terima kasih atas perhatiannya! 🙏`;
+
+  return kirimNotifWhatsApp(nomor, message);
+}
+
+/**
  * Mengirim notifikasi hasil deteksi stunting
  */
 export async function kirimNotifHasilDeteksi(
