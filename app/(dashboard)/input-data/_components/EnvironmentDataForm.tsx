@@ -32,7 +32,7 @@ export function EnvironmentDataForm({ formData, onInputChange }: EnvironmentData
             value={formData.toiletFacility}
             onChange={onInputChange}
             required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
           >
             <option value="">Pilih kondisi fasilitas toilet</option>
             <option value="good">Baik - Toilet bersih dengan septik tank</option>
@@ -53,7 +53,7 @@ export function EnvironmentDataForm({ formData, onInputChange }: EnvironmentData
             value={formData.wasteManagement}
             onChange={onInputChange}
             required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
           >
             <option value="">Pilih kondisi pengelolaan sampah</option>
             <option value="good">Baik - Sampah dikelola dengan baik (TPA/diangkut)</option>
@@ -74,7 +74,7 @@ export function EnvironmentDataForm({ formData, onInputChange }: EnvironmentData
             value={formData.waterAccess}
             onChange={onInputChange}
             required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
           >
             <option value="">Pilih kondisi akses air bersih</option>
             <option value="good">Baik - Air PAM atau sumur bor dengan kualitas baik</option>
@@ -87,8 +87,8 @@ export function EnvironmentDataForm({ formData, onInputChange }: EnvironmentData
         </div>
       </div>
 
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <p className="text-sm text-blue-800">
+      <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
+        <p className="text-sm text-teal-800">
           <strong>Catatan:</strong> Data lingkungan dan sanitasi sangat penting untuk analisis
           risiko stunting. Pastikan informasi yang diberikan akurat.
         </p>

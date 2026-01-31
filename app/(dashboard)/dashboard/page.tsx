@@ -17,11 +17,27 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [aiInsight, setAiInsight] = useState<string>('');
   const [isLoadingInsight, setIsLoadingInsight] = useState(true);
+  const [todayKontrolCount, setTodayKontrolCount] = useState(0);
 
   useEffect(() => {
     fetchPatients();
     fetchAIInsight();
+    fetchTodayKontrol();
   }, []);
+
+  const fetchTodayKontrol = async () => {
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const response = await fetch(`/api/jadwal-pemeriksaan?tanggal=${today}`);
+      const result = await response.json();
+
+      if (result.success) {
+        setTodayKontrolCount(result.count || 0);
+      }
+    } catch (error) {
+      console.error('Error fetching today kontrol:', error);
+    }
+  };
 
   const fetchAIInsight = async () => {
     setIsLoadingInsight(true);
@@ -69,6 +85,52 @@ export default function DashboardPage() {
 
           const latestControl = bayi.historyKontrol?.[0];
 
+          // Get latest AI analysis if available
+          const latestAnalysis = bayi.hasilAnalisis?.[0];
+
+          // Determine risk level from AI analysis or control data
+          let riskLevel = 'MEDIUM';
+          let riskPercentage = 50;
+          let mainFactor = '-';
+
+          if (latestAnalysis) {
+            // Use AI analysis confidence as risk percentage
+            riskPercentage = Math.round((latestAnalysis.tingkatKepercayaan || 0.5) * 100);
+
+            // Parse hasilPrediksi to get risk level
+            try {
+              const hasilPrediksi = JSON.parse(latestAnalysis.hasilPrediksi || '{}');
+              if (hasilPrediksi.risk_level) {
+                riskLevel = hasilPrediksi.risk_level;
+              } else if (hasilPrediksi.is_stunting !== undefined) {
+                // Fallback: determine from is_stunting and stunting_risk
+                const stuntingRisk = hasilPrediksi.stunting_risk || 0;
+                if (hasilPrediksi.is_stunting || stuntingRisk > 70) {
+                  riskLevel = 'HIGH';
+                } else if (stuntingRisk < 30) {
+                  riskLevel = 'LOW';
+                } else {
+                  riskLevel = 'MEDIUM';
+                }
+              }
+            } catch {
+              // If parsing fails, use default
+            }
+
+            // Try to extract main factor from dataInput (SHAP analysis)
+            try {
+              const dataInput = JSON.parse(latestAnalysis.dataInput || '{}');
+              if (dataInput.top_factors && dataInput.top_factors.length > 0) {
+                mainFactor = dataInput.top_factors[0].feature || '-';
+              }
+            } catch {
+              mainFactor = '-';
+            }
+          } else if (latestControl?.statusStunting) {
+            // Fallback to control data if no AI analysis
+            riskLevel = latestControl.statusStunting;
+          }
+
           return {
             id: bayi.nomorPasien,
             name: bayi.nama,
@@ -88,9 +150,9 @@ export default function DashboardPage() {
             fatherName: bayi.namaAyah,
             fatherEducation: 'SMA',
             fatherHeight: 170,
-            riskLevel: latestControl?.statusStunting || 'MEDIUM',
-            riskPercentage: 50,
-            mainFactor: 'Sanitasi',
+            riskLevel,
+            riskPercentage,
+            mainFactor,
             mainFactorIcon: '',
             lastCheckup: latestControl
               ? new Date(latestControl.tanggalKontrol).toLocaleDateString('id-ID', {
@@ -163,8 +225,8 @@ export default function DashboardPage() {
             value={highRiskPatients.length}
             icon={<AlertTriangle className="w-6 h-6" />}
             variant="danger"
-            badge="URGENT"
-            trend={{ direction: 'down', value: '3% dari bulan lalu' }}
+            badge={highRiskPatients.length > 0 ? "URGENT" : undefined}
+            subtitle={`${riskDistributionData.high.percentage}% dari total pasien`}
           />
           <StatsCard
             title="Risiko Sedang"
@@ -178,14 +240,14 @@ export default function DashboardPage() {
             value={lowRiskPatients.length}
             icon={<CheckCircle className="w-6 h-6" />}
             variant="success"
-            trend={{ direction: 'up', value: '5% dari bulan lalu' }}
+            subtitle={`${riskDistributionData.low.percentage}% dari total pasien`}
           />
           <StatsCard
             title="Kontrol Hari Ini"
-            value={0}
+            value={todayKontrolCount}
             icon={<Calendar className="w-6 h-6" />}
             variant="info"
-            subtitle="Belum ada kontrol hari ini"
+            subtitle={todayKontrolCount > 0 ? `${todayKontrolCount} jadwal pemeriksaan` : "Tidak ada kontrol hari ini"}
           />
         </section>
 

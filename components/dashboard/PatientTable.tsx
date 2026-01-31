@@ -84,14 +84,14 @@ export function PatientTable({
                   placeholder="Cari nama bayi, ID, atau nama orang tua..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                 />
               </div>
             </div>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
             >
               <option value="all">Semua Status</option>
               <option value="high">Risiko Tinggi</option>
@@ -101,7 +101,7 @@ export function PatientTable({
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
             >
               <option value="newest">Urutkan: Terbaru</option>
               <option value="risk">Urutkan: Risiko Tertinggi</option>
@@ -198,7 +198,7 @@ export function PatientTable({
                         e.stopPropagation();
                         onViewPatient?.(patient);
                       }}
-                      className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center space-x-1"
+                      className="text-teal-600 hover:text-teal-800 text-sm font-medium flex items-center space-x-1"
                     >
                       <Eye className="w-4 h-4" />
                       <span>Detail</span>
@@ -224,7 +224,7 @@ export function PatientTable({
               <ChevronLeft className="w-4 h-4 mr-1" />
               Previous
             </button>
-            <button className="px-3 py-1 bg-blue-600 text-white rounded text-sm">
+            <button className="px-3 py-1 bg-teal-600 text-white rounded text-sm">
               1
             </button>
             <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm">

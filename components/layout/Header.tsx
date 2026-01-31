@@ -90,7 +90,7 @@ export function Header({ title, subtitle, showUserInfo = false, user }: HeaderPr
                   </p>
                   <p className="text-xs text-gray-500">{currentUser.institution}</p>
                 </div>
-                <div className="w-10 h-10 bg-linear-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold cursor-pointer">
+                <div className="w-10 h-10 bg-linear-to-br from-teal-500 to-teal-700 rounded-full flex items-center justify-center text-white font-semibold cursor-pointer">
                   {currentUser.initials}
                 </div>
               </div>

@@ -133,10 +133,10 @@ export function AIInsightCard({ insight }: AIInsightCardProps) {
   };
 
   return (
-    <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl card-shadow-lg border border-purple-100 overflow-hidden">
+    <div className="bg-gradient-to-br from-teal-50 to-teal-50 rounded-xl card-shadow-lg border border-teal-100 overflow-hidden">
       <div className="p-6">
         <div className="flex items-start space-x-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-600 rounded-xl flex items-center justify-center shrink-0">
+          <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center shrink-0">
             <Lightbulb className="w-7 h-7 text-white" />
           </div>
           <div className="flex-1">
@@ -145,14 +145,14 @@ export function AIInsightCard({ insight }: AIInsightCardProps) {
                 <h3 className="text-2xl font-bold text-gray-900">
                   Insight Hari Ini
                 </h3>
-                <span className="text-xs font-semibold bg-purple-200 text-purple-800 px-2 py-1 rounded flex items-center gap-1">
+                <span className="text-xs font-semibold bg-teal-200 text-teal-800 px-2 py-1 rounded flex items-center gap-1">
                   <Sparkles className="w-3 h-3" />
                   AI POWERED
                 </span>
               </div>
               <button
                 onClick={() => setShowChat(!showChat)}
-                className="text-sm font-medium text-purple-700 hover:text-purple-800 flex items-center gap-2 bg-purple-100 hover:bg-purple-200 px-3 py-1.5 rounded-lg transition-colors"
+                className="text-sm font-medium text-teal-700 hover:text-teal-800 flex items-center gap-2 bg-teal-100 hover:bg-teal-200 px-3 py-1.5 rounded-lg transition-colors"
               >
                 <MessageSquare className="w-4 h-4" />
                 {showChat ? 'Sembunyikan Chat' : 'Tanya AI'}
@@ -167,7 +167,7 @@ export function AIInsightCard({ insight }: AIInsightCardProps) {
 
         {/* Chat Interface */}
         {showChat && (
-          <div className="mt-6 border-t border-purple-200 pt-6">
+          <div className="mt-6 border-t border-teal-200 pt-6">
             {/* Search/Input Bar */}
             <div className="mb-4">
               <div className="flex gap-2">
@@ -180,14 +180,14 @@ export function AIInsightCard({ insight }: AIInsightCardProps) {
                     onKeyPress={handleKeyPress}
                     placeholder="Tanyakan tentang data pasien, tren stunting, atau rekomendasi..."
                     disabled={isLoading}
-                    className="w-full px-4 py-3 pr-12 border border-purple-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed text-sm bg-white"
+                    className="w-full px-4 py-3 pr-12 border border-teal-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed text-sm bg-white"
                   />
-                  <Bot className="absolute right-4 top-3.5 w-5 h-5 text-purple-400" />
+                  <Bot className="absolute right-4 top-3.5 w-5 h-5 text-teal-400" />
                 </div>
                 <button
                   onClick={handleSend}
                   disabled={!input.trim() || isLoading}
-                  className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed px-6 py-3 rounded-xl transition-all flex items-center gap-2 font-medium"
+                  className="bg-gradient-to-r from-teal-600 to-indigo-600 text-white hover:from-teal-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed px-6 py-3 rounded-xl transition-all flex items-center gap-2 font-medium"
                 >
                   {isLoading ? (
                     <Loader className="w-5 h-5 animate-spin" />
@@ -200,7 +200,7 @@ export function AIInsightCard({ insight }: AIInsightCardProps) {
 
             {/* Messages */}
             {messages.length > 0 && (
-              <div className="max-h-[400px] overflow-y-auto space-y-4 bg-white rounded-xl p-4 border border-purple-200">
+              <div className="max-h-[400px] overflow-y-auto space-y-4 bg-white rounded-xl p-4 border border-teal-200">
                 {messages.map((msg, idx) => (
                   <div key={idx}>
                     <div
@@ -211,7 +211,7 @@ export function AIInsightCard({ insight }: AIInsightCardProps) {
                       <div
                         className={`p-2 rounded-lg ${
                           msg.role === 'user'
-                            ? 'bg-purple-600 text-white'
+                            ? 'bg-teal-600 text-white'
                             : 'bg-indigo-600 text-white'
                         }`}
                       >
@@ -225,7 +225,7 @@ export function AIInsightCard({ insight }: AIInsightCardProps) {
                         <div
                           className={`rounded-2xl p-4 ${
                             msg.role === 'user'
-                              ? 'bg-purple-600 text-white'
+                              ? 'bg-teal-600 text-white'
                               : 'bg-gray-50 border border-gray-200 text-gray-800'
                           }`}
                         >
@@ -262,7 +262,7 @@ export function AIInsightCard({ insight }: AIInsightCardProps) {
                                 <button
                                   key={i}
                                   onClick={() => handleSuggestedQuestion(question)}
-                                  className="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-full px-3 py-1.5 transition-colors"
+                                  className="text-xs bg-teal-50 hover:bg-teal-100 text-teal-700 border border-teal-200 rounded-full px-3 py-1.5 transition-colors"
                                 >
                                   {question}
                                 </button>
@@ -294,27 +294,27 @@ export function AIInsightCard({ insight }: AIInsightCardProps) {
             )}
 
             {messages.length === 0 && (
-              <div className="bg-white rounded-xl p-6 border border-purple-200 text-center">
-                <Bot className="w-12 h-12 text-purple-400 mx-auto mb-3" />
+              <div className="bg-white rounded-xl p-6 border border-teal-200 text-center">
+                <Bot className="w-12 h-12 text-teal-400 mx-auto mb-3" />
                 <p className="text-sm text-gray-600 mb-4">
                   Tanyakan apa saja tentang data pasien stunting Anda. AI akan menganalisis database dan memberikan insight mendalam.
                 </p>
                 <div className="flex flex-wrap gap-2 justify-center">
                   <button
                     onClick={() => handleSuggestedQuestion('Berapa jumlah pasien dengan risiko tinggi?')}
-                    className="text-xs bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-full px-3 py-1.5 transition-colors"
+                    className="text-xs bg-teal-50 hover:bg-teal-100 text-teal-700 border border-teal-200 rounded-full px-3 py-1.5 transition-colors"
                   >
                     Berapa jumlah pasien dengan risiko tinggi?
                   </button>
                   <button
                     onClick={() => handleSuggestedQuestion('Siapa pasien yang perlu perhatian khusus?')}
-                    className="text-xs bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-full px-3 py-1.5 transition-colors"
+                    className="text-xs bg-teal-50 hover:bg-teal-100 text-teal-700 border border-teal-200 rounded-full px-3 py-1.5 transition-colors"
                   >
                     Siapa pasien yang perlu perhatian khusus?
                   </button>
                   <button
                     onClick={() => handleSuggestedQuestion('Bagaimana tren kasus stunting bulan ini?')}
-                    className="text-xs bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-full px-3 py-1.5 transition-colors"
+                    className="text-xs bg-teal-50 hover:bg-teal-100 text-teal-700 border border-teal-200 rounded-full px-3 py-1.5 transition-colors"
                   >
                     Bagaimana tren kasus stunting bulan ini?
                   </button>

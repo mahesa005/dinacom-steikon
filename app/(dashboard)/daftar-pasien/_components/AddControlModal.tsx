@@ -186,7 +186,7 @@ export function AddControlModal({
             <input
               type="date"
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
               value={formData.tanggalKontrol}
               onChange={(e) => setFormData({ ...formData, tanggalKontrol: e.target.value })}
             />
@@ -200,7 +200,7 @@ export function AddControlModal({
               required
               min="0"
               max="60"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
               value={formData.umurBulan}
               onChange={(e) => setFormData({ ...formData, umurBulan: parseInt(e.target.value) || 0 })}
             />
@@ -217,7 +217,7 @@ export function AddControlModal({
               required
               step="0.1"
               min="0"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
               placeholder="Contoh: 7.5"
               value={formData.beratBadan}
               onChange={(e) => setFormData({ ...formData, beratBadan: e.target.value })}
@@ -232,7 +232,7 @@ export function AddControlModal({
               required
               step="0.1"
               min="0"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
               placeholder="Contoh: 65"
               value={formData.tinggiBadan}
               onChange={(e) => setFormData({ ...formData, tinggiBadan: e.target.value })}
@@ -246,7 +246,7 @@ export function AddControlModal({
           </label>
           <textarea
             rows={3}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
             placeholder="Catatan pemeriksaan (opsional)"
             value={formData.catatanTambahan}
             onChange={(e) => setFormData({ ...formData, catatanTambahan: e.target.value })}

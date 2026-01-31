@@ -64,7 +64,7 @@ export function ShapTab({ patient }: ShapTabProps) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-teal-600" />
         <span className="ml-3 text-gray-600">Memuat analisis SHAP...</span>
       </div>
     );
@@ -88,7 +88,7 @@ export function ShapTab({ patient }: ShapTabProps) {
   if (!analysis) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-teal-600" />
         <span className="ml-3 text-gray-600">Sedang generate analisis SHAP...</span>
       </div>
     );
@@ -97,9 +97,9 @@ export function ShapTab({ patient }: ShapTabProps) {
   return (
     <div className="space-y-6">
       {/* Status Risiko */}
-      <div className="bg-purple-50 border border-purple-200 rounded-lg p-6">
+      <div className="bg-teal-50 border border-teal-200 rounded-lg p-6">
         <div className="flex items-center space-x-3 mb-4">
-          <div className="w-12 h-12 bg-linear-to-br from-purple-500 to-blue-600 rounded-xl flex items-center justify-center">
+          <div className="w-12 h-12 bg-linear-to-br from-teal-500 to-teal-700 rounded-xl flex items-center justify-center">
             <Lightbulb className="w-7 h-7 text-white" />
           </div>
           <div>
@@ -116,7 +116,7 @@ export function ShapTab({ patient }: ShapTabProps) {
             <span className="text-sm font-medium text-gray-700">
               {analysis.statusRisiko.levelRisiko}
             </span>
-            <span className="text-2xl font-bold text-purple-600">
+            <span className="text-2xl font-bold text-teal-600">
               {analysis.statusRisiko.skorRisiko}%
             </span>
           </div>

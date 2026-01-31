@@ -59,22 +59,22 @@ export function PatientDetailModal({
       size="xl"
       title="Detail Pasien"
       subtitle="Informasi lengkap dan riwayat pemeriksaan"
-      headerClassName="bg-linear-to-r from-blue-50 to-purple-50"
+      headerClassName="bg-linear-to-r from-teal-50 to-teal-50"
     >
       <div className="px-6 py-6 max-h-[calc(100vh-200px)] overflow-y-auto">
         {/* Patient Header Card */}
-        <div className="bg-linear-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white mb-6">
+        <div className="bg-linear-to-r from-teal-600 to-teal-600 rounded-xl p-6 text-white mb-6">
           <div className="flex items-start justify-between">
             <div className="flex items-center space-x-4">
               <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center">
-                <User className="w-12 h-12 text-blue-600" />
+                <User className="w-12 h-12 text-teal-600" />
               </div>
               <div>
                 <h4 className="text-2xl font-bold">{patient.name}</h4>
-                <p className="text-blue-100 mt-1">
+                <p className="text-teal-100 mt-1">
                   ID Pasien: {patient.id} • Umur: {patient.ageMonths} bulan
                 </p>
-                <p className="text-blue-100 text-sm mt-1">
+                <p className="text-teal-100 text-sm mt-1">
                   Orang Tua: {patient.parentName} • HP: {patient.parentPhone}
                 </p>
               </div>
@@ -94,7 +94,7 @@ export function PatientDetailModal({
               <p className="text-3xl font-bold mt-2">
                 {patient.riskPercentage}%
               </p>
-              <p className="text-blue-100 text-sm">Probabilitas Stunting</p>
+              <p className="text-teal-100 text-sm">Probabilitas Stunting</p>
             </div>
           </div>
         </div>

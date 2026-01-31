@@ -48,7 +48,7 @@ export function TabsTrigger({ value, children }: TabsTriggerProps) {
       onClick={() => ctx.onValueChange(value)}
       className={`pb-3 text-sm font-medium transition-colors border-b-2 ${
         isActive
-          ? 'border-blue-600 text-blue-600 font-semibold'
+          ? 'border-teal-600 text-teal-600 font-semibold'
           : 'border-transparent text-gray-500 hover:text-gray-700'
       }`}
     >

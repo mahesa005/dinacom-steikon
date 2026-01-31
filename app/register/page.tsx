@@ -204,7 +204,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-50 px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-teal-50 to-indigo-50 px-4 py-12">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <div className="flex justify-center mb-6">
@@ -245,7 +245,7 @@ export default function RegisterPage() {
                   required
                   value={formData.username}
                   onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="Username untuk login"
                 />
               </div>
@@ -266,7 +266,7 @@ export default function RegisterPage() {
                   required
                   value={formData.namaPuskesmas}
                   onChange={(e) => setFormData({ ...formData, namaPuskesmas: e.target.value })}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="Nama puskesmas Anda"
                 />
               </div>
@@ -286,7 +286,7 @@ export default function RegisterPage() {
                     name="provinsi"
                     required
                     onChange={handleProvinsiChange}
-                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   >
                     <option value="">Pilih Provinsi</option>
                     {provinsiList.map((prov) => (
@@ -308,7 +308,7 @@ export default function RegisterPage() {
                   required
                   onChange={handleKotaChange}
                   disabled={!formData.provinsi}
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent disabled:bg-gray-100"
                 >
                   <option value="">Pilih Kota/Kabupaten</option>
                   {kotaList.map((kota) => (
@@ -329,7 +329,7 @@ export default function RegisterPage() {
                   required
                   onChange={handleKecamatanChange}
                   disabled={!formData.kota}
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent disabled:bg-gray-100"
                 >
                   <option value="">Pilih Kecamatan</option>
                   {kecamatanList.map((kec) => (
@@ -350,7 +350,7 @@ export default function RegisterPage() {
                   required
                   onChange={handleKelurahanChange}
                   disabled={!formData.kecamatan}
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent disabled:bg-gray-100"
                 >
                   <option value="">Pilih Kelurahan/Desa</option>
                   {kelurahanList.map((kel) => (
@@ -378,7 +378,7 @@ export default function RegisterPage() {
                   required
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="••••••••"
                 />
                 <button
@@ -411,7 +411,7 @@ export default function RegisterPage() {
                   required
                   value={formData.confirmPassword}
                   onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                  className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="••••••••"
                 />
                 <button
@@ -435,17 +435,17 @@ export default function RegisterPage() {
                   name="terms"
                   type="checkbox"
                   required
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded"
                 />
               </div>
               <div className="ml-2 text-sm">
                 <label htmlFor="terms" className="text-gray-700">
                   Saya setuju dengan{' '}
-                  <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
+                  <a href="#" className="font-medium text-teal-600 hover:text-teal-500">
                     Syarat & Ketentuan
                   </a>{' '}
                   dan{' '}
-                  <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
+                  <a href="#" className="font-medium text-teal-600 hover:text-teal-500">
                     Kebijakan Privasi
                   </a>
                 </label>

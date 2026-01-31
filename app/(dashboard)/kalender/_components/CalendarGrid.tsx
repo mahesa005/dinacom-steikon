@@ -70,9 +70,9 @@ export function CalendarGrid({
           onClick={() => onDateSelect(date)}
           className={`aspect-square p-2 rounded-lg border transition-all ${
             isSelected
-              ? 'bg-blue-600 text-white border-blue-600'
+              ? 'bg-teal-600 text-white border-teal-600'
               : isToday
-              ? 'bg-blue-50 border-blue-200 text-blue-700'
+              ? 'bg-teal-50 border-teal-200 text-teal-700'
               : 'border-gray-200 hover:bg-gray-50'
           }`}
         >

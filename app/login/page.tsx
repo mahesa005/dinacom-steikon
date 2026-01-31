@@ -54,7 +54,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-teal-50 to-indigo-50 px-4">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <div className="flex justify-center mb-6">
@@ -96,7 +96,7 @@ export default function LoginPage() {
                   required
                   value={formData.username}
                   onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="Masukkan username"
                 />
               </div>
@@ -118,7 +118,7 @@ export default function LoginPage() {
                   required
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   placeholder="••••••••"
                 />
                 <button
@@ -136,7 +136,7 @@ export default function LoginPage() {
             </div>
 
             <div className="text-sm text-right">
-              <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
+              <a href="#" className="font-medium text-teal-600 hover:text-teal-500">
                 Lupa password?
               </a>
             </div>
