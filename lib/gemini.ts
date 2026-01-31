@@ -259,7 +259,7 @@ Berikan analisis dalam format JSON berikut (sesuai UI yang diminta):
       "judul": "Judul rekomendasi (singkat, actionable)",
       "deskripsi": "Deskripsi detail tindakan yang harus dilakukan",
       "prioritas": "Prioritas Tinggi|Prioritas Sedang|Prioritas Rendah",
-      "icon": "🏠|🍼|🍎|📚|📅|💊|🏥",  // Pilih icon yang sesuai
+      "icon": "",  // Icon removed
       "dayLabel": "Day-1|Week-1|Month-1"  // Optional, untuk timeline
     }
   ]

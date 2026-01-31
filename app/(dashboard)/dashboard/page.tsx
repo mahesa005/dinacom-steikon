@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/Header';
 import { StatsCard } from '@/components/dashboard/StatsCard';
 import { UrgentActionsCard } from '@/components/dashboard/UrgentActionsCard';
@@ -9,122 +11,115 @@ import { PatientTable } from '@/components/dashboard/PatientTable';
 import { AlertTriangle, Eye, CheckCircle, Calendar } from 'lucide-react';
 import type { Patient } from '@/types';
 
-// Mock data matching the HTML mockup
-const mockPatients: Patient[] = [
-  {
-    id: 'P001',
-    name: 'Ahmad Fadhil',
-    birthDate: '2025-07-30',
-    ageMonths: 6,
-    gender: 'male',
-    birthWeight: 2.8,
-    birthLength: 47,
-    parentName: 'Siti Nurhaliza',
-    parentPhone: '0812-3456-7890',
-    parentEducation: 'SMP',
-    parentHeight: 148,
-    fatherName: 'Ahmad Dhani',
-    fatherEducation: 'SMA',
-    fatherHeight: 165,
-    riskLevel: 'HIGH',
-    riskPercentage: 78,
-    mainFactor: 'Sanitasi',
-    mainFactorIcon: '🚽',
-    lastCheckup: '8 Jan',
-    nextCheckup: '15 Jan 2026',
-    toiletFacility: 'poor',
-    wasteManagement: 'poor',
-    waterAccess: 'adequate',
-  },
-  {
-    id: 'P002',
-    name: 'Zahra Amelia',
-    birthDate: '2025-09-30',
-    ageMonths: 4,
-    gender: 'female',
-    birthWeight: 3.0,
-    birthLength: 49,
-    parentName: 'Dewi Kartika',
-    parentPhone: '0813-9876-5432',
-    parentEducation: 'SMA',
-    parentHeight: 155,
-    fatherName: 'Budi Santoso',
-    fatherEducation: 'S1',
-    fatherHeight: 170,
-    riskLevel: 'MEDIUM',
-    riskPercentage: 45,
-    mainFactor: 'Pend. Ibu',
-    mainFactorIcon: '👩',
-    lastCheckup: '10 Jan 2026',
-    nextCheckup: '10 Jan 2026',
-    toiletFacility: 'adequate',
-    wasteManagement: 'adequate',
-    waterAccess: 'good',
-  },
-  {
-    id: 'P003',
-    name: 'Muhammad Rizki',
-    birthDate: '2025-05-30',
-    ageMonths: 8,
-    gender: 'male',
-    birthWeight: 3.2,
-    birthLength: 50,
-    parentName: 'Ani Suryani',
-    parentPhone: '0814-5678-1234',
-    parentEducation: 'S1',
-    parentHeight: 160,
-    fatherName: 'Rudi Hartono',
-    fatherEducation: 'S1',
-    fatherHeight: 172,
-    riskLevel: 'LOW',
-    riskPercentage: 18,
-    mainFactor: 'Normal',
-    mainFactorIcon: '✅',
-    lastCheckup: '5 Jan 2026',
-    nextCheckup: '9 Feb 2026',
-    toiletFacility: 'good',
-    wasteManagement: 'good',
-    waterAccess: 'good',
-  },
-  {
-    id: 'P004',
-    name: 'Aisha Putri',
-    birthDate: '2025-08-30',
-    ageMonths: 5,
-    gender: 'female',
-    birthWeight: 2.6,
-    birthLength: 46,
-    parentName: 'Rina Marlina',
-    parentPhone: '0813-8765-4321',
-    parentEducation: 'SD',
-    parentHeight: 145,
-    fatherName: 'Joko Widodo',
-    fatherEducation: 'SMP',
-    fatherHeight: 160,
-    riskLevel: 'HIGH',
-    riskPercentage: 82,
-    mainFactor: 'Pendidikan Ibu',
-    mainFactorIcon: '👩',
-    lastCheckup: '3 Jan 2026',
-    nextCheckup: 'Hari ini, 14:00',
-    toiletFacility: 'poor',
-    wasteManagement: 'poor',
-    waterAccess: 'adequate',
-  },
-];
-
-const urgentPatients = mockPatients.filter((p) => p.riskLevel === 'HIGH');
-
-const riskDistributionData = {
-  high: { count: 24, percentage: 16 },
-  medium: { count: 38, percentage: 25 },
-  low: { count: 88, percentage: 59 },
-  total: 150,
-};
-
-const aiInsight = `"<strong>Sanitasi buruk</strong> menjadi faktor utama pada <strong>15 dari 24 kasus</strong> risiko tinggi di wilayah ini. Prioritaskan <strong>edukasi kebersihan lingkungan</strong> dan koordinasi dengan program STBM (Sanitasi Total Berbasis Masyarakat) untuk hasil maksimal."`;
-
 export default function DashboardPage() {
+  const router = useRouter();
+  const [patients, setPatients] = useState<Patient[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchPatients();
+  }, []);
+
+  const handleViewAllUrgent = () => {
+    router.push('/daftar-pasien?filter=high');
+  };
+
+  const handleAddPatient = () => {
+    router.push('/input-data');
+  };
+
+  const handleViewPatient = (patient: Patient) => {
+    router.push(`/daftar-pasien?patient=${patient.id}`);
+  };
+
+  const fetchPatients = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/bayi');
+      const result = await response.json();
+
+      if (result.success) {
+        // Map API data to Patient type
+        const mappedPatients: Patient[] = result.data.map((bayi: any) => {
+          const birthDate = new Date(bayi.tanggalLahir);
+          const today = new Date();
+          const ageMonths = Math.floor(
+            (today.getTime() - birthDate.getTime()) / (1000 * 60 * 60 * 24 * 30)
+          );
+
+          const latestControl = bayi.historyKontrol?.[0];
+
+          return {
+            id: bayi.nomorPasien,
+            name: bayi.nama,
+            birthDate: new Date(bayi.tanggalLahir).toLocaleDateString('id-ID', {
+              day: 'numeric',
+              month: 'short',
+              year: 'numeric',
+            }),
+            ageMonths,
+            gender: bayi.jenisKelamin === 'LAKI-LAKI' ? 'male' : 'female',
+            birthWeight: bayi.beratLahir,
+            birthLength: bayi.panjangLahir,
+            parentName: bayi.namaIbu,
+            parentPhone: bayi.nomorHpOrangTua,
+            parentEducation: 'SMA',
+            parentHeight: 155,
+            fatherName: bayi.namaAyah,
+            fatherEducation: 'SMA',
+            fatherHeight: 170,
+            riskLevel: latestControl?.statusStunting || 'MEDIUM',
+            riskPercentage: 50,
+            mainFactor: 'Sanitasi',
+            mainFactorIcon: '',
+            lastCheckup: latestControl
+              ? new Date(latestControl.tanggalKontrol).toLocaleDateString('id-ID', {
+                  day: 'numeric',
+                  month: 'short',
+                  year: 'numeric',
+                })
+              : '-',
+            nextCheckup: '-',
+            toiletFacility: 'adequate',
+            wasteManagement: 'adequate',
+            waterAccess: 'good',
+          };
+        });
+
+        setPatients(mappedPatients);
+      }
+    } catch (error) {
+      console.error('Error fetching patients:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Calculate statistics from actual data
+  const highRiskPatients = patients.filter((p) => p.riskLevel === 'HIGH');
+  const mediumRiskPatients = patients.filter((p) => p.riskLevel === 'MEDIUM');
+  const lowRiskPatients = patients.filter((p) => p.riskLevel === 'LOW');
+  const totalPatients = patients.length;
+
+  const riskDistributionData = {
+    high: {
+      count: highRiskPatients.length,
+      percentage: totalPatients > 0 ? Math.round((highRiskPatients.length / totalPatients) * 100) : 0,
+    },
+    medium: {
+      count: mediumRiskPatients.length,
+      percentage: totalPatients > 0 ? Math.round((mediumRiskPatients.length / totalPatients) * 100) : 0,
+    },
+    low: {
+      count: lowRiskPatients.length,
+      percentage: totalPatients > 0 ? Math.round((lowRiskPatients.length / totalPatients) * 100) : 0,
+    },
+    total: totalPatients,
+  };
+
+  // Get urgent patients (high risk patients)
+  const urgentPatients = highRiskPatients.slice(0, 3);
+
   return (
     <>
       <Header
@@ -134,13 +129,17 @@ export default function DashboardPage() {
 
       <div className="p-8 space-y-6">
         {/* Urgent Actions */}
-        <UrgentActionsCard patients={urgentPatients} totalCount={3} />
+        <UrgentActionsCard
+          patients={urgentPatients}
+          totalCount={highRiskPatients.length}
+          onViewAll={handleViewAllUrgent}
+        />
 
         {/* Stats Cards Row */}
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatsCard
             title="Risiko Tinggi"
-            value={24}
+            value={highRiskPatients.length}
             icon={<AlertTriangle className="w-6 h-6" />}
             variant="danger"
             badge="URGENT"
@@ -148,37 +147,46 @@ export default function DashboardPage() {
           />
           <StatsCard
             title="Risiko Sedang"
-            value={38}
+            value={mediumRiskPatients.length}
             icon={<Eye className="w-6 h-6" />}
             variant="warning"
-            subtitle="25% dari total pasien"
+            subtitle={`${riskDistributionData.medium.percentage}% dari total pasien`}
           />
           <StatsCard
             title="Risiko Rendah"
-            value={88}
+            value={lowRiskPatients.length}
             icon={<CheckCircle className="w-6 h-6" />}
             variant="success"
             trend={{ direction: 'up', value: '5% dari bulan lalu' }}
           />
           <StatsCard
             title="Kontrol Hari Ini"
-            value={12}
+            value={0}
             icon={<Calendar className="w-6 h-6" />}
             variant="info"
-            subtitle="5 sudah hadir • 7 pending"
+            subtitle="Belum ada kontrol hari ini"
           />
         </section>
 
         {/* AI Insight + Chart Row */}
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <AIInsightCard insight={aiInsight} />
+            <AIInsightCard insight="" />
           </div>
           <RiskDistributionChart data={riskDistributionData} />
         </section>
 
         {/* Patient Table */}
-        <PatientTable patients={mockPatients} totalCount={150} />
+        {isLoading ? (
+          <div className="text-center py-8 text-gray-500">Memuat data...</div>
+        ) : (
+          <PatientTable
+            patients={patients.slice(0, 10)}
+            totalCount={totalPatients}
+            onAddPatient={handleAddPatient}
+            onViewPatient={handleViewPatient}
+          />
+        )}
       </div>
     </>
   );
