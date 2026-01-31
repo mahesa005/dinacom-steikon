@@ -16,10 +16,38 @@ export async function createBayi(data: {
   nomorHpOrangTua: string;
   alamat: string;
   golonganDarah?: string;
-  createdById: string;
+  createdById?: string;
 }) {
+  // Jika createdById tidak disediakan, ambil atau buat user default
+  let userId = data.createdById;
+  
+  if (!userId) {
+    // Cari user pertama yang ada
+    let defaultUser = await prisma.user.findFirst();
+    
+    // Jika belum ada user, buat default user
+    if (!defaultUser) {
+      defaultUser = await prisma.user.create({
+        data: {
+          username: 'admin',
+          password: 'default', // IMPORTANT: Ganti dengan hash password yang proper di production
+          namaPuskesmas: 'Puskesmas Default',
+          provinsi: 'Default',
+          kota: 'Default',
+          kecamatan: 'Default',
+          kelurahan: 'Default',
+        },
+      });
+    }
+    
+    userId = defaultUser.id;
+  }
+
   return await prisma.bayi.create({
-    data,
+    data: {
+      ...data,
+      createdById: userId,
+    },
     include: {
       createdBy: {
         select: {

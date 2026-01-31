@@ -36,11 +36,11 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    // Validasi required fields
+    // Validasi required fields (exclude createdById karena akan di-handle otomatis)
     const requiredFields = [
       'nomorPasien', 'nama', 'tanggalLahir', 'tempatLahir', 'jenisKelamin',
       'beratLahir', 'panjangLahir', 'namaIbu', 'namaAyah', 'nomorHpOrangTua',
-      'alamat', 'kelurahan', 'kecamatan', 'kota', 'provinsi', 'createdById'
+      'alamat'
     ];
 
     for (const field of requiredFields) {

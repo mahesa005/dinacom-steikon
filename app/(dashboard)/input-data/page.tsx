@@ -51,10 +51,6 @@ export default function InputDataPage() {
     nik: '',
     address: '',
     bloodType: '',
-    kelurahan: 'Default',
-    kecamatan: 'Default',
-    kota: 'Default',
-    provinsi: 'Default',
 
     // Parent data
     motherName: '',
@@ -161,12 +157,8 @@ export default function InputDataPage() {
         namaAyah: formData.fatherName,
         nomorHpOrangTua: formData.motherPhone,
         alamat: formData.address,
-        kelurahan: formData.kelurahan,
-        kecamatan: formData.kecamatan,
-        kota: formData.kota,
-        provinsi: formData.provinsi,
         golonganDarah: formData.bloodType || undefined,
-        createdById: 'temp-user-id',
+        // createdById akan di-handle otomatis oleh backend
       };
 
       const response = await fetch('/api/bayi', {
