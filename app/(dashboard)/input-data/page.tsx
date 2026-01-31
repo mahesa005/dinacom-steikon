@@ -246,13 +246,26 @@ export default function InputDataPage() {
           }
 
           // Get top contributing factors from SHAP values
+          // API returns shap_values as object {feature: value}, need to convert to array
           console.log('Explain result data:', explainResult.data);
-          const shapValues = Array.isArray(explainResult.data?.shap_values)
-            ? explainResult.data.shap_values
-            : [];
+          const rawShapValues = explainResult.data?.shap_values || {};
+          const inputFeatures = explainResult.data?.input_features || {};
+
+          // Convert object to array format
+          let shapValues: Array<{ feature: string; value: number; feature_value: number }> = [];
+          if (typeof rawShapValues === 'object' && !Array.isArray(rawShapValues)) {
+            shapValues = Object.entries(rawShapValues).map(([feature, value]) => ({
+              feature,
+              value: value as number,
+              feature_value: (inputFeatures as any)[feature] || 0,
+            }));
+          } else if (Array.isArray(rawShapValues)) {
+            shapValues = rawShapValues;
+          }
+
           const topFactors = shapValues
             .slice()
-            .sort((a: any, b: any) => Math.abs(b.value) - Math.abs(a.value))
+            .sort((a, b) => Math.abs(b.value) - Math.abs(a.value))
             .slice(0, 3);
 
           // Generate recommendations based on top factors
