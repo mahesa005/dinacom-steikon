@@ -34,11 +34,8 @@ export function ShapTab({ patient }: ShapTabProps) {
                 : 'rendah'}{' '}
               ({patient.riskPercentage}%)
             </strong>{' '}
-            berdasarkan kombinasi faktor.{' '}
-            <strong>Sanitasi buruk (35%)</strong> dan{' '}
-            <strong>tinggi badan ibu rendah (28%)</strong> adalah kontributor
-            utama. Intervensi prioritas: perbaikan sanitasi keluarga dan
-            pemberian makanan tambahan (PMT) tinggi protein.
+            berdasarkan kombinasi faktor. Analisis SHAP akan menunjukkan kontributor
+            utama risiko stunting untuk pasien ini.
           </p>
         </div>
       </div>

@@ -78,7 +78,9 @@ function UrgentPatientCard({
               </span>
             </div>
             <div className="flex items-center space-x-1">
-              <span className="text-lg">{patient.mainFactorIcon}</span>
+              {patient.mainFactorIcon && (
+                <span className="text-lg">{patient.mainFactorIcon}</span>
+              )}
               <span>
                 Faktor utama: <strong>{patient.mainFactor}</strong>
               </span>

@@ -3,11 +3,16 @@ import { Badge } from '@/components/ui/Badge';
 
 interface ReviewData {
   baby: {
+    patientNumber: string;
+    nik: string;
     name: string;
     birthDate: string;
+    birthPlace: string;
     gender: string;
     birthWeight: string;
     birthLength: string;
+    bloodType: string;
+    address: string;
   };
   parent: {
     motherName: string;
@@ -72,6 +77,14 @@ export function ReviewSubmit({ data, isSubmitting }: ReviewSubmitProps) {
         <h4 className="text-lg font-semibold text-gray-900 mb-4">Data Bayi</h4>
         <div className="grid grid-cols-2 gap-4">
           <div>
+            <p className="text-sm text-gray-500">Nomor Pasien</p>
+            <p className="text-base font-medium text-gray-900">{data.baby.patientNumber || '-'}</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">NIK</p>
+            <p className="text-base font-medium text-gray-900">{data.baby.nik || '-'}</p>
+          </div>
+          <div className="col-span-2">
             <p className="text-sm text-gray-500">Nama Lengkap</p>
             <p className="text-base font-medium text-gray-900">{data.baby.name || '-'}</p>
           </div>
@@ -82,10 +95,18 @@ export function ReviewSubmit({ data, isSubmitting }: ReviewSubmitProps) {
             </p>
           </div>
           <div>
+            <p className="text-sm text-gray-500">Tempat Lahir</p>
+            <p className="text-base font-medium text-gray-900">{data.baby.birthPlace || '-'}</p>
+          </div>
+          <div>
             <p className="text-sm text-gray-500">Jenis Kelamin</p>
             <p className="text-base font-medium text-gray-900">
               {formatGender(data.baby.gender)}
             </p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">Golongan Darah</p>
+            <p className="text-base font-medium text-gray-900">{data.baby.bloodType || '-'}</p>
           </div>
           <div>
             <p className="text-sm text-gray-500">Berat Lahir</p>
@@ -98,6 +119,10 @@ export function ReviewSubmit({ data, isSubmitting }: ReviewSubmitProps) {
             <p className="text-base font-medium text-gray-900">
               {data.baby.birthLength ? `${data.baby.birthLength} cm` : '-'}
             </p>
+          </div>
+          <div className="col-span-2">
+            <p className="text-sm text-gray-500">Alamat</p>
+            <p className="text-base font-medium text-gray-900">{data.baby.address || '-'}</p>
           </div>
         </div>
       </div>

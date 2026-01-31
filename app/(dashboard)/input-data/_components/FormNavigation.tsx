@@ -1,7 +1,6 @@
 interface FormSection {
   id: string;
   title: string;
-  icon: string;
 }
 
 interface FormNavigationProps {

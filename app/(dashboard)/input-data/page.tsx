@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/Header';
 import { Card } from '@/components/ui/Card';
@@ -13,10 +13,10 @@ import { EnvironmentDataForm } from './_components/EnvironmentDataForm';
 import { ReviewSubmit } from './_components/ReviewSubmit';
 
 const formSections = [
-  { id: 'baby', title: 'Data Bayi', icon: '👶' },
-  { id: 'parent', title: 'Data Orang Tua', icon: '👨‍👩‍👧' },
-  { id: 'environment', title: 'Lingkungan', icon: '🏠' },
-  { id: 'review', title: 'Review & Submit', icon: '✓' },
+  { id: 'baby', title: 'Data Bayi' },
+  { id: 'parent', title: 'Data Orang Tua' },
+  { id: 'environment', title: 'Lingkungan' },
+  { id: 'review', title: 'Review & Submit' },
 ];
 
 export default function InputDataPage() {
@@ -25,13 +25,36 @@ export default function InputDataPage() {
   const [completedSections, setCompletedSections] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Generate patient number automatically
+  useEffect(() => {
+    const generatePatientNumber = () => {
+      const timestamp = Date.now().toString().slice(-6);
+      const random = Math.random().toString(36).substring(2, 5).toUpperCase();
+      return `P${timestamp}${random}`;
+    };
+    
+    setFormData(prev => ({
+      ...prev,
+      patientNumber: generatePatientNumber()
+    }));
+  }, []);
+
   const [formData, setFormData] = useState({
     // Baby data
     name: '',
     birthDate: '',
+    birthPlace: '',
     gender: '',
     birthWeight: '',
     birthLength: '',
+    patientNumber: '',
+    nik: '',
+    address: '',
+    bloodType: '',
+    kelurahan: 'Default',
+    kecamatan: 'Default',
+    kota: 'Default',
+    provinsi: 'Default',
 
     // Parent data
     motherName: '',
@@ -64,9 +87,12 @@ export default function InputDataPage() {
         return !!(
           formData.name &&
           formData.birthDate &&
+          formData.birthPlace &&
           formData.gender &&
           formData.birthWeight &&
-          formData.birthLength
+          formData.birthLength &&
+          formData.patientNumber &&
+          formData.address
         );
       case 'parent':
         return !!(
@@ -121,21 +147,45 @@ export default function InputDataPage() {
     setIsSubmitting(true);
 
     try {
-      // TODO: Implement API call to save data
-      // const response = await fetch('/api/bayi', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(formData),
-      // });
+      // Map form data to API format
+      const payload = {
+        nomorPasien: formData.patientNumber,
+        nik: formData.nik || undefined,
+        nama: formData.name,
+        tanggalLahir: new Date(formData.birthDate).toISOString(),
+        tempatLahir: formData.birthPlace,
+        jenisKelamin: formData.gender === 'male' ? 'LAKI-LAKI' : 'PEREMPUAN',
+        beratLahir: parseFloat(formData.birthWeight),
+        panjangLahir: parseFloat(formData.birthLength),
+        namaIbu: formData.motherName,
+        namaAyah: formData.fatherName,
+        nomorHpOrangTua: formData.motherPhone,
+        alamat: formData.address,
+        kelurahan: formData.kelurahan,
+        kecamatan: formData.kecamatan,
+        kota: formData.kota,
+        provinsi: formData.provinsi,
+        golonganDarah: formData.bloodType || undefined,
+        createdById: 'temp-user-id',
+      };
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const response = await fetch('/api/bayi', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Gagal menyimpan data');
+      }
 
       alert('Data berhasil disimpan!');
       router.push('/daftar-pasien');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving data:', error);
-      alert('Terjadi kesalahan saat menyimpan data');
+      alert(error.message || 'Terjadi kesalahan saat menyimpan data');
     } finally {
       setIsSubmitting(false);
     }
@@ -190,11 +240,16 @@ export default function InputDataPage() {
                   <ReviewSubmit
                     data={{
                       baby: {
+                        patientNumber: formData.patientNumber,
+                        nik: formData.nik,
                         name: formData.name,
                         birthDate: formData.birthDate,
+                        birthPlace: formData.birthPlace,
                         gender: formData.gender,
                         birthWeight: formData.birthWeight,
                         birthLength: formData.birthLength,
+                        bloodType: formData.bloodType,
+                        address: formData.address,
                       },
                       parent: {
                         motherName: formData.motherName,
