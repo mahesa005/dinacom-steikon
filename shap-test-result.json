@@ -1,0 +1,119 @@
+﻿{
+    "success":  true,
+    "testData":  {
+                     "is_stunting":  0,
+                     "stunting_risk":  "LOW",
+                     "confidence":  0.6666666666666666,
+                     "shap_values":  {
+                                         "mother_height_cm":  -0.4007222222222225,
+                                         "father_height_cm":  0.47555555555555595,
+                                         "mother_edu_level":  -0.058722222222222224,
+                                         "father_edu_level":  -0.05716666666666682,
+                                         "toilet_standard":  -0.04233333333333346,
+                                         "waste_mgmt_std":  0.043388888888888935
+                                     },
+                     "input_features":  {
+                                            "mother_height_cm":  174,
+                                            "father_height_cm":  140,
+                                            "mother_edu_level":  1,
+                                            "father_edu_level":  2,
+                                            "toilet_standard":  1,
+                                            "waste_mgmt_std":  0
+                                        }
+                 },
+    "insights":  {
+                     "statusRisiko":  {
+                                          "skorRisiko":  67,
+                                          "levelRisiko":  "Risiko Sedang",
+                                          "penjelasan":  "Hasil analisis menunjukkan bahwa risiko stunting anak Anda tergolong RENDAH dengan skor 67%. Ini kabar baik, Ayah dan Ibu! Namun, mari kita tetap waspada dan terus memantau tumbuh kembang anak secara rutin agar potensi stunting bisa dicegah sepenuhnya."
+                                      },
+                     "faktorPenyebab":  [
+                                            {
+                                                "nama":  "Tinggi Badan Ayah",
+                                                "nilai":  "140 cm (tergolong pendek)",
+                                                "persentasePengaruh":  44,
+                                                "penjelasan":  "Tinggi badan ayah yang 140 cm ini menjadi faktor yang sedikit meningkatkan potensi risiko stunting anak dalam model prediksi kami.",
+                                                "mengapaIniPenting":  "Tinggi badan orang tua, termasuk ayah, seringkali memberi gambaran tentang latar belakang gizi atau genetik keluarga. Meskipun tidak bisa diubah, ini menjadi pengingat untuk fokus lebih pada optimalisasi gizi dan lingkungan tumbuh kembang anak."
+                                            },
+                                            {
+                                                "nama":  "Tinggi Badan Ibu",
+                                                "nilai":  "174 cm (tinggi, sangat baik)",
+                                                "persentasePengaruh":  37,
+                                                "penjelasan":  "Tinggi badan ibu yang mencapai 174 cm menjadi faktor pelindung yang sangat kuat dan sangat berperan dalam menurunkan risiko stunting anak.",
+                                                "mengapaIniPenting":  "Tinggi ibu yang baik umumnya mencerminkan status gizi ibu yang optimal sejak sebelum dan selama kehamilan, yang sangat penting untuk mendukung pertumbuhan dan perkembangan janin serta anak di kemudian hari."
+                                            },
+                                            {
+                                                "nama":  "Tingkat Pendidikan Ibu",
+                                                "nilai":  "SD",
+                                                "persentasePengaruh":  5,
+                                                "penjelasan":  "Tingkat pendidikan ibu (SD) ini, meskipun tidak terlalu tinggi, ternyata memberikan pengaruh positif dan membantu menurunkan risiko stunting.",
+                                                "mengapaIniPenting":  "Pendidikan ibu, sekecil apapun, seringkali berkorelasi dengan pemahaman tentang kesehatan dan gizi anak. Ibu yang berpendidikan cenderung lebih siap menerima dan menerapkan informasi penting untuk kesehatan keluarga."
+                                            },
+                                            {
+                                                "nama":  "Tingkat Pendidikan Ayah",
+                                                "nilai":  "SMP",
+                                                "persentasePengaruh":  5,
+                                                "penjelasan":  "Tingkat pendidikan ayah (SMP) ini juga merupakan faktor positif yang turut membantu menurunkan risiko stunting.",
+                                                "mengapaIniPenting":  "Sama seperti ibu, pendidikan ayah yang memadai dapat mempengaruhi kesadaran akan pentingnya gizi, kebersihan, dan pola asuh yang baik bagi anak, serta kemampuan untuk mencari informasi yang relevan."
+                                            },
+                                            {
+                                                "nama":  "Standar Pengelolaan Sampah",
+                                                "nilai":  "Tidak Memenuhi Standar",
+                                                "persentasePengaruh":  4,
+                                                "penjelasan":  "Kondisi pengelolaan sampah di lingkungan sekitar yang belum memenuhi standar sedikit meningkatkan risiko stunting.",
+                                                "mengapaIniPenting":  "Lingkungan yang kurang bersih karena pengelolaan sampah yang buruk dapat menjadi sumber kuman dan penyakit. Anak yang sering sakit akan sulit menyerap nutrisi dari makanan, menghambat tumbuh kembangnya."
+                                            },
+                                            {
+                                                "nama":  "Standar Fasilitas Toilet",
+                                                "nilai":  "Memenuhi Standar",
+                                                "persentasePengaruh":  4,
+                                                "penjelasan":  "Fasilitas toilet di rumah Anda sudah memenuhi standar, ini adalah faktor pelindung yang sangat membantu menurunkan risiko stunting.",
+                                                "mengapaIniPenting":  "Toilet yang bersih dan sehat sangat vital untuk menjaga kebersihan diri dan keluarga, mencegah penularan penyakit berbasis lingkungan, serta menciptakan lingkungan rumah yang higienis untuk anak."
+                                            }
+                                        ],
+                     "rekomendasiTindakan":  [
+                                                 {
+                                                     "judul":  "Optimalkan Gizi Anak Sejak Dini",
+                                                     "deskripsi":  "Meskipun ada faktor genetik dari ayah, kita bisa bantu anak mencapai potensi tumbuh kembang maksimalnya. Pastikan anak mendapatkan ASI eksklusif hingga 6 bulan (jika masih balita) dan lanjutkan dengan MPASI yang bergizi lengkap dan seimbang. Prioritaskan protein hewani seperti telur, ikan kembung, hati ayam, atau daging. Tambahkan juga sayuran hijau dan buah-buahan lokal seperti bayam, kangkung, wortel, pisang, atau pepaya.",
+                                                     "prioritas":  "Prioritas Tinggi",
+                                                     "icon":  "ð",
+                                                     "dayLabel":  "Day-1"
+                                                 },
+                                                 {
+                                                     "judul":  "Tingkatkan Kebersihan Lingkungan Rumah",
+                                                     "deskripsi":  "Mari kita fokus pada pengelolaan sampah agar tidak menumpuk dan mencemari lingkungan. Pisahkan sampah organik dan non-organik, buang sampah pada tempatnya secara rutin. Lingkungan yang bersih sangat penting untuk mencegah anak sering sakit, sehingga nutrisinya dapat terserap optimal.",
+                                                     "prioritas":  "Prioritas Tinggi",
+                                                     "icon":  "ð ",
+                                                     "dayLabel":  "Day-1"
+                                                 },
+                                                 {
+                                                     "judul":  "Manfaatkan Layanan Posyandu dan Puskesmas",
+                                                     "deskripsi":  "Kunjungi posyandu atau puskesmas secara rutin setiap bulan untuk menimbang berat badan, mengukur tinggi badan, mendapatkan imunisasi, serta edukasi gizi dan kesehatan anak dari tenaga kesehatan. Ini adalah langkah penting untuk deteksi dini masalah tumbuh kembang.",
+                                                     "prioritas":  "Prioritas Tinggi",
+                                                     "icon":  "ð¥",
+                                                     "dayLabel":  "Month-1"
+                                                 },
+                                                 {
+                                                     "judul":  "Fokus pada Protein Hewani dan Nabati",
+                                                     "deskripsi":  "Pastikan anak mengonsumsi makanan sumber protein hewani (telur, ikan, daging, ayam, hati) dan nabati (tempe, tahu, kacang-kacangan) setiap hari dalam jumlah cukup sesuai usianya. Protein adalah \u0027batu bata\u0027 utama untuk pertumbuhan tulang dan otot anak.",
+                                                     "prioritas":  "Prioritas Sedang",
+                                                     "icon":  "ð¼",
+                                                     "dayLabel":  "Day-1"
+                                                 },
+                                                 {
+                                                     "judul":  "Pertahankan dan Tingkatkan Kebersihan Diri \u0026 Sanitasi",
+                                                     "deskripsi":  "Lanjutkan kebiasaan baik menggunakan fasilitas toilet yang bersih dan sehat. Pastikan seluruh anggota keluarga rajin mencuci tangan pakai sabun dengan air mengalir, terutama sebelum makan, setelah dari toilet, dan setelah beraktivitas di luar rumah, untuk mencegah penyebaran kuman.",
+                                                     "prioritas":  "Prioritas Sedang",
+                                                     "icon":  "ð ",
+                                                     "dayLabel":  "Week-1"
+                                                 },
+                                                 {
+                                                     "judul":  "Edukasi Gizi dan Kesehatan Berkelanjutan",
+                                                     "deskripsi":  "Dengan dasar pendidikan yang baik dari Ayah dan Ibu, teruslah mencari informasi tentang gizi seimbang, pola asuh, dan kesehatan anak dari sumber terpercaya seperti buku KIA, poster di puskesmas, atau webinar kesehatan anak. Pengetahuan adalah kunci untuk menjaga anak tetap sehat dan tumbuh optimal.",
+                                                     "prioritas":  "Prioritas Rendah",
+                                                     "icon":  "ð",
+                                                     "dayLabel":  "Month-1"
+                                                 }
+                                             ]
+                 }
+}

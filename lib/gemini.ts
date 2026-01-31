@@ -238,6 +238,18 @@ ${shapEntries.map(entry =>
    Pengaruh: ${entry.shapValue?.toFixed(4)} ${entry.shapValue! > 0 ? '(Meningkatkan risiko)' : entry.shapValue! < 0 ? '(Menurunkan risiko)' : '(Netral)'}`
 ).join('\n')}
 
+⚠️ ATURAN PENTING INTERPRETASI SHAP VALUES:
+- Nilai SHAP POSITIF (+) = Faktor ini MENINGKATKAN risiko stunting (faktor risiko/buruk)
+- Nilai SHAP NEGATIF (-) = Faktor ini MENURUNKAN risiko stunting (faktor pelindung/baik)
+- Absolute value (|SHAP|) = Seberapa kuat pengaruhnya
+
+CONTOH INTERPRETASI YANG BENAR:
+✅ Tinggi ibu 150 cm dengan SHAP = +0.3 → "Tinggi ibu yang kurang ideal MENINGKATKAN risiko"
+✅ Tinggi ibu 165 cm dengan SHAP = -0.3 → "Tinggi ibu yang baik MENURUNKAN risiko" 
+✅ Tinggi ayah 140 cm dengan SHAP = +0.5 → "Tinggi ayah yang pendek MENINGKATKAN risiko"
+✅ Pendidikan SMA dengan SHAP = -0.1 → "Pendidikan yang memadai MENURUNKAN risiko"
+❌ JANGAN asumsikan berdasarkan nilai feature saja, WAJIB lihat tanda SHAP!
+
 TUGAS ANDA:
 Berikan analisis dalam format JSON berikut (sesuai UI yang diminta):
 
@@ -266,15 +278,20 @@ Berikan analisis dalam format JSON berikut (sesuai UI yang diminta):
 }
 
 PANDUAN KHUSUS:
-1. **Faktor Penyebab**: Urutkan dari persentase pengaruh tertinggi (top 3-5 faktor saja)
+1. **Faktor Penyebab**: Urutkan dari persentase pengaruh tertinggi (top 3-6 faktor)
    - Persentase dihitung dari absolute SHAP value relatif terhadap total
-   - Contoh format nilai: "150 cm (150-155 cm)", "< 1 juta", "2 kali (< 6 kali)"
+   - **WAJIB**: Sebutkan apakah faktor ini "meningkatkan" atau "menurunkan" risiko berdasarkan TANDA SHAP
+   - Format nilai: Sebutkan nilai actual + interpretasi (contoh: "150 cm (kurang dari ideal)", "174 cm (tinggi, baik)")
+   - Contoh penjelasan BENAR:
+     * SHAP +0.5 → "Tinggi ayah 140 cm yang tergolong pendek menjadi FAKTOR RISIKO yang meningkatkan kemungkinan stunting"
+     * SHAP -0.4 → "Tinggi ibu 174 cm yang baik menjadi FAKTOR PELINDUNG yang menurunkan risiko stunting"
 
 2. **Rekomendasi Tindakan**: Berikan 5-7 rekomendasi konkret yang:
    - SPESIFIK dan ACTIONABLE (bukan saran umum)
-   - Disesuaikan dengan faktor risiko yang ditemukan
-   - Menggunakan contoh lokal Indonesia (tempe, tahu, telur, ikan)
-   - Prioritas Tinggi: faktor yang sangat urgent dan bisa diubah
+   - Disesuaikan dengan faktor risiko yang ditemukan (fokus pada SHAP positif untuk perbaikan)
+   - Apresiasi faktor protektif (SHAP negatif) dengan "pertahankan" atau "lanjutkan"
+   - Menggunakan contoh lokal Indonesia (tempe, tahu, telur, ikan, sayuran lokal)
+   - Prioritas Tinggi: faktor yang sangat urgent dan bisa diubah (biasanya SHAP positif tinggi)
    - Prioritas Sedang: penting tapi tidak immediate
    - Gunakan icon yang relevan untuk visualisasi
 
